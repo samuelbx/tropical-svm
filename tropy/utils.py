@@ -1,5 +1,4 @@
 import numpy as np
-from itertools import permutations, combinations
 
 
 def min_min2_idx(a: np.ndarray) -> np.ndarray:
@@ -22,28 +21,23 @@ def count_points_sectors(C: np.ndarray, apex: np.ndarray) -> np.ndarray:
 
 
 # Applies Normal Gaussian noise to data
-def apply_noise(C: np.ndarray, seed: int = 2024) -> np.ndarray:
+def apply_noise(C: np.ndarray, noise: int = 1, seed: int = 2024) -> np.ndarray:
   np.random.seed(seed)
   r, c = C.shape
-  C += np.random.randn(r, c)
+  C += noise * np.random.randn(r, c)
 
 
-# Generates sorted integer values whose sum is smaller than size
-def lattice_values(d: int, size: int):
-  if size == 0:
-    yield []
-  if size == 1:
-    yield [1]
-  else:
-    for k in range(1, size + 1):
-      for cur in lattice_values(d, size - k):
-        cur.append(k)
-        yield cur
-
-
-# Generates the integer points of the dilated simplex
-def simplex_lattice_points(d: int, size: int):
-  for items in lattice_values(d, size):
-    for permutated_items in permutations(items):
-      for comb in combinations(np.arange(d), len(permutated_items)):
-        yield comb, permutated_items
+def build_toy_dataset(n_points: int, n_features: int, n_positive_sectors: int, 
+                      noise: bool = False, L: int = 10, seed: int = 2024) -> tuple[np.ndarray, np.ndarray]:
+  assert n_positive_sectors <= n_features
+  np.random.seed(seed)
+  C = np.random.uniform(-L, L, (n_features, n_points))
+  max_indices = np.argmax(C, axis=0)
+  positive_mask = np.isin(max_indices, range(n_positive_sectors))
+  negative_mask = ~positive_mask
+  Cplus = C[:, positive_mask]
+  Cminus = C[:, negative_mask]
+  if noise:
+    apply_noise(Cplus, seed)
+    apply_noise(Cminus, seed)
+  return Cplus, Cminus

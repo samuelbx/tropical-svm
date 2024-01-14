@@ -2,20 +2,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 
 
-def accuracy_precision_recall_confusion(
-    pred: callable, Ptest: np.ndarray,
-    Ntest: np.ndarray) -> tuple[float, float, float, np.ndarray]:
-  TP, TN = 0, 0
-  for row in Ptest.T:
-    TP += pred(row)
-  for row in Ntest.T:
-    TN += 1 - pred(row)
-  FP, FN = len(Ptest.T) - TP, len(Ntest.T) - TN
-  accuracy = (TP + TN) / (TP + TN + FP + FN)
-  precision = TP / (TP + FP) if TP + FP != 0 else 0
-  recall = TP / (TP + FN) if TP + FN != 0 else 0
-  conf_matrix = np.array([[TP, FP], [FN, TN]])
-  return accuracy, precision, recall, conf_matrix
+# TODO: Make one main function to have model profile & accuracies & etc
 
 
 # TODO: Make cleaner, no sklearn
@@ -24,7 +11,7 @@ def accuracy_multiple(pred: callable, Clist: list[np.ndarray]) -> float:
   predicted_labels = []
   for label, points in enumerate(Clist):
     true_labels.extend([label] * points.shape[1])
-    predicted_labels.extend([pred(point) for point in points.T])
+    predicted_labels.extend(pred(points))
   return accuracy_score(true_labels, predicted_labels)
 
 
