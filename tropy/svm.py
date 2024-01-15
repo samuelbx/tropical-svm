@@ -8,11 +8,13 @@ from sklearn.svm import LinearSVC
 
 class TropicalSVM():
   
-  predictor = None
+  _predictor = None
 
-  def fit(self, data_classes: np.ndarray, veronese_size: int = 1, one_vs_all: bool = False):
-    """
-    TODO: write documentation
+  def fit(self, data_classes: list[np.ndarray], veronese_size: int = 1, one_vs_all: bool = False) -> None:
+    """Fit the model according to the given training data.
+    data_classes: list of classes (2D numpy arrays whose columns are the data points)
+    veronese_size: complexity parameter of the model
+    one_vs_all: whether to perform 1-vs-all or all-vs-all classification
     """
     d = data_classes[0].shape[0]
     self.veronese_coefficients = list(simplex_lattice_points(d, veronese_size))
@@ -20,12 +22,12 @@ class TropicalSVM():
     self.apex, self.eigval = _inrad_eigenpair(aug_data_classes, N=50)
 
     if not one_vs_all:
-      # TODO: Reset apex coordinates corresponding to unreached sectors to infty?
+      # TODO: Set apex coordinate to inf for unreached sectors
       Counts = np.array([count_points_sectors(C, self.apex) for C in aug_data_classes])
-      zero_mask = np.all(Counts == 0, axis=0)
-      self.apex[zero_mask] = np.inf
+      # zero_mask = np.all(Counts == 0, axis=0)
+      # self.apex[zero_mask] = np.inf
       sector_indicator = np.argmax(Counts, axis=0)
-      sector_indicator[zero_mask] = -1
+      # sector_indicator[zero_mask] = -1
 
       def _predict(point: np.ndarray) -> int:
         sector = np.argmax(point - self.apex)
@@ -56,15 +58,15 @@ class TropicalSVM():
 
     self._predictor = _predict
 
-  def predict(self, data_points: np.ndarray):
+  def predict(self, data_points: np.ndarray) -> list[int]:
+    """Predict the labels of some data points (as a 2D matrix whose columns are the points)"""
     assert self._predictor is not None, "Model must be trained before prediction"
     aug_data_points = veronese(self.veronese_coefficients, [data_points])[0]
     return [self._predictor(row) for row in aug_data_points.T]
 
 
-def _apply_inrad_onevsall(Clist: list[np.ndarray],
-                          N: int = 50,
-                          x0: np.ndarray = None):
+def _apply_inrad_onevsall(Clist: list[np.ndarray],  N: int = 50,  x0: np.ndarray = None) -> list[np.ndarray]:
+  """Compute the overlaps between each class & their complementary for one-vs-all classification"""
   apices = []
   if x0 is None:
     x0 = np.ones(Clist[0].shape[0])
@@ -74,8 +76,8 @@ def _apply_inrad_onevsall(Clist: list[np.ndarray],
   return apices
 
 
-# Describes the intersection between two convex hulls
 def _inrad_op(Clist: list[np.ndarray]) -> callable:
+  """Returns the Shapley operator describing the overlap between convex hulls"""
   def op(x):
     d = Clist[0].shape[0]
     comb_idxes = list(combinations(range(len(Clist)), 2))
@@ -86,11 +88,11 @@ def _inrad_op(Clist: list[np.ndarray]) -> callable:
     for k, (i, j) in enumerate(comb_idxes):
       minimums[k] = np.minimum(projections[i], projections[j])
     return np.maximum.reduce(minimums, axis=0)
-
   return op
 
 
-def fit_tropicalized_linear_SVM(Xtrain: np.ndarray, beta: float = 1):
+def fit_tropicalized_linear_SVM(Xtrain: np.ndarray, beta: float = 1) -> tuple[LinearSVC, np.ndarray]:
+  """Compute an approximating tropical hyperplane by taking the logarithm of a linear SVM"""
   xtrain, ytrain = map_to_exponential_space(Xtrain, beta)
   model = LinearSVC(dual=True, fit_intercept=False)
   clf = model.fit(xtrain.T, ytrain)
@@ -98,9 +100,9 @@ def fit_tropicalized_linear_SVM(Xtrain: np.ndarray, beta: float = 1):
   return model, w
 
 
-# Determine eigenpairs of Shapley operators
 def _krasnoselskii_mann(op: callable, N: int,
                         x0: np.ndarray, tol: float = 1e-6) -> tuple[np.ndarray, float]:
+  """Compute the eigenpair of a Shapley operator using Krasnoselskii-Mann iterations"""
   x, z = x0.copy(), np.zeros_like(x0)
   for _ in range(N):
     z = (x + op(x)) / 2
@@ -112,8 +114,8 @@ def _krasnoselskii_mann(op: callable, N: int,
   return x - x.mean(), 2 * np.max(z)
 
 
-# Separation using inner radius operator
-def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20, x0=None):
+def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20, x0=None) -> tuple[np.ndarray, float]:
+  """Compute the eigenpair of the multi-class inner radius operator"""
   if x0 is None:
     x0 = np.ones(Clist[0].shape[0])
   return _krasnoselskii_mann(_inrad_op(Clist), N, x0)
