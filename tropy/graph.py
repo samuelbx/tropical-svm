@@ -1,43 +1,26 @@
 import numpy as np
 from mpl_toolkits.mplot3d.art3d import Line3D, Poly3DCollection
 import matplotlib.pyplot as plt
+from .utils import get_reached_sectors, max_max2_idx
+from .veronese import hypersurface_nodes, newton_polynomial
 
 
-def plot_triedra(ax, center, size, color, linestyle="-") -> None:
-  line_data = [(c, c + s) for c, s in zip(center, size)]
-  line = Line3D(*line_data, color=color, linestyle=linestyle)
-  ax.add_line(line)
-
-
-def plot_point(ax,
-               x,
-               length,
-               color,
-               linestyle="-",
-               marker=None,
-               ignored_branch=None, maxplus=False) -> None:
+def plot_point(ax, x, length, color, linestyle="-", marker=None, ignored_branch=None, maxplus=False) -> None:
+  """Plot point of specified marker and associated tropical hyperplane"""
   for i in range(3):
     size = np.zeros(3)
     size[i] = length
     if i != ignored_branch:
-      plot_triedra(ax, x, ((-1) if maxplus else 1) * size, color, linestyle)
+      size *= -1 if maxplus else 1
+      line_data = [(c, c + s) for c, s in zip(x, size)]
+      line = Line3D(*line_data, color=color, linestyle=linestyle)
+      ax.add_line(line)
   if marker:
     ax.plot(x[0], x[1], x[2], color=color, marker=marker)
 
 
-# TODO: add parameter majoritary or strict
-def get_reached_sectors(C: np.ndarray, apex: np.ndarray) -> set[int]:
-  I = []
-  for point in C.T:
-    diff = point - apex
-    max = np.max(diff)
-    for i, v in enumerate(diff):
-      if v == max:
-        I.append(i)
-  return set(I)
-
-
 def get_ignored(Cplus: np.ndarray, Cminus: np.ndarray, apex: np.ndarray) -> int:
+  """For binary classification in 3D, get branches to ignore"""
   Iplus, Iminus = get_reached_sectors(Cplus, apex), get_reached_sectors(Cminus, apex)
   if len(Iplus) == 1 and len(Iminus) == 2:
     return next(iter(Iplus))
@@ -47,19 +30,8 @@ def get_ignored(Cplus: np.ndarray, Cminus: np.ndarray, apex: np.ndarray) -> int:
     return None
 
 
-def plot_class(
-    ax,
-    points: np.ndarray,
-    length: float,
-    color: str,
-    linestyle: str = "dotted",
-    marker: str = None,
-):
-  for col in points.T:
-    plot_point(ax, col, length, color, linestyle, marker)
-
-
 def plot_classes(ax, data_classes, L, features=None, show_lines=False):
+  """Plot multiple classes of points (maximum 3 for now)"""
   colors = ['#FF934F', '#2D3142', '#058ED9']
   markers = ['o', 'v', '+']
   linestyles = ['dotted', 'dashed', 'dashdot']
@@ -69,10 +41,12 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False):
     ax.set_zlabel(features[2])
   for i, clas in enumerate(data_classes):
     ls = "None" if not show_lines else linestyles[i]
-    plot_class(ax, clas, L, colors[i], linestyle=ls, marker=markers[i])
+    for col in clas.T:
+      plot_point(ax, col, L, colors[i], ls, markers[i])
 
 
 def plot_ball(ax, center, length):
+  """Plot tropical Hilbert ball of specified center and radius"""
   half_len = length / 2
   vertices = [
       [center[0] + i * half_len, center[1] + j * half_len, center[2] + k * half_len]
@@ -84,6 +58,7 @@ def plot_ball(ax, center, length):
 
 
 def init_ax(fig, config: int, L: float, mode_3d: bool = False):
+  """Initialize plot in the projective space R^3/(1,1,1)"""
   ax = fig.add_subplot(config, projection="3d", proj_type="ortho")
   ax.view_init(elev=28, azim=45)
   ax.set_xlim([-L, L])
@@ -97,9 +72,8 @@ def init_ax(fig, config: int, L: float, mode_3d: bool = False):
   return ax
 
 
-
 def plot3d_hyperplane_branch(ax, axis: int, y, constants: tuple[float], ignored_branch: int, branch_index: int):
-  # Create an hyperplane surface based on the given axis and constants.
+  """Create an hyperplane surface based on the given axis and constants"""
   if ignored_branch != branch_index:
     dim1, dim2 = np.meshgrid(y, y)
     if axis == 0:  # X
@@ -120,6 +94,7 @@ def plot3d_hyperplane_branch(ax, axis: int, y, constants: tuple[float], ignored_
 
 
 def plot_hyperplane(ax, x: np.ndarray, l: int, L: int, ignored_branch: int = None, mode_3d: bool = False) -> None:
+  """Plot a tropical hyperplane as a 2D projection or a 3D hypersurface"""
   l = np.abs(l)
   if l > 0:
     plot_ball(ax, x, l)
@@ -135,7 +110,61 @@ def plot_hyperplane(ax, x: np.ndarray, l: int, L: int, ignored_branch: int = Non
     plot_point(ax, x, -10 * L, "black", ignored_branch=ignored_branch)
 
 
+def draw_segments(ax, monomials, coeffs, nodes, i, lis):
+  node = nodes[i]
+  xpt, ypt, zpt = node[0]
+  neighboring_sectors = node[1]
+  for node_bis in (nodes[j] for j in range(len(nodes)) if j != i):
+    neighboring_bis = node_bis[1]
+    if any(sector in neighboring_bis for sector in neighboring_sectors):
+      apt, bpt, cpt = node_bis[0]
+      xmd, ymd, zmd = (xpt + apt) / 2, (ypt + bpt) / 2, (zpt + cpt) / 2
+      val = evaluate_3d(monomials, coeffs, (xmd, ymd, zmd))
+      idxes = max_max2_idx(val)
+      if np.isclose(val[idxes[0]], val[idxes[1]]):
+        ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color='black', linestyle='-')
+        lis[0] += 1
+
+
+def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L):
+  """Draws half rays out of some node"""
+  node = nodes[i]
+  xpt, ypt, zpt = node[0]
+  neighboring_sectors = node[1]
+  a = monomials[neighboring_sectors[idx1]][0] - monomials[neighboring_sectors[idx2]][0]
+  b = monomials[neighboring_sectors[idx1]][1] - monomials[neighboring_sectors[idx2]][1]
+  c = monomials[neighboring_sectors[idx1]][2] - monomials[neighboring_sectors[idx2]][2]
+
+  for sign in [-1, 1]:
+    aprime, bprime = sign * 10 * L * (b - c), -sign * 10 * L * (a - c)
+    cprime = -(aprime + bprime)
+    apt, bpt, cpt = xpt + aprime, ypt + bprime, zpt + cprime
+    val = evaluate_3d(monomials, coeffs, (apt, bpt, cpt))
+    idxes = max_max2_idx(val)
+    if np.isclose(val[idxes[0]], val[idxes[1]]):
+      ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color='black', linestyle='-')
+      lis[0] += 1
+
+
+def evaluate_3d(monomials, coeffs, point):
+    """Evaluates the polynomial at the given 3D point."""
+    return coeffs + np.sum(monomials * np.array(point), axis=1)
+
+
+def plot_polynomial_hypersurface_3d(ax, lattice_points, apex, L):
+  monomials, coeffs = newton_polynomial(lattice_points, apex, 3)
+  monomials = [np.array(elem) for elem in monomials]
+  nodes = hypersurface_nodes(monomials, coeffs, 3)
+  for i, node in enumerate(nodes):
+    plot_point(ax, node[0], 2*L, 'black', linestyle="None", marker='.', maxplus=True)
+    lis = [0]
+    draw_segments(ax, monomials, coeffs, nodes, i, lis)
+    for idx1, idx2 in [(0, 1), (0, 2), (1, 2)]:
+      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L)
+
+
 def set_title(ax, title: str, x: np.ndarray, l: float):
+  """Helper function to set the title of the graph"""
   ax.set_title(
     f"{title} \n (apex = {np.round(x, 2)}, {'margin' if l <= 0 else 'inrad(intersection)'} = {np.round(np.abs(l), 2)})"
   )
