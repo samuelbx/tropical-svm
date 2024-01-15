@@ -2,8 +2,8 @@ from itertools import combinations
 import numpy as np
 
 
-# Generates sorted integer values whose sum is smaller than size
 def lattice_values(d: int, size: int):
+  """Generate sorted integer values whose sum is smaller than size"""
   if size == 0:
     yield []
   if size == 1:
@@ -17,6 +17,7 @@ def lattice_values(d: int, size: int):
 
 # TODO: See why dilated simplex doesn't work well
 def simplex_lattice_points(d: int, size: int):
+  """Generate the lattice points of dilated simplex"""
   # for i in range(0, size+1):
   i = size
   for items in lattice_values(d, i):
@@ -24,7 +25,8 @@ def simplex_lattice_points(d: int, size: int):
       yield comb, items
 
 
-def newton_polynomial(lattice_points: list, apex: np.ndarray, d: int):
+def newton_polynomial(lattice_points: list, apex: np.ndarray, d: int) -> tuple[list[list[float]], list[float]]:
+  """Generate the Newton polynomial associated with some dilated simplex"""
   coefficients = (-apex).tolist()
   monomials = []
   for elem in lattice_points:
@@ -35,14 +37,13 @@ def newton_polynomial(lattice_points: list, apex: np.ndarray, d: int):
 
 
 def hypersurface_polymake_code(lattice_points: list, apex: np.ndarray, initial_dim: int) -> str:
+  """Generate the polymake code for visualizing some tropical polynomial"""
   lattice_list, coef_list = newton_polynomial(lattice_points, apex, initial_dim)
-  return f'$C = new Hypersurface<Max>(MONOMIALS=>{str(lattice_list)}, COEFFICIENTS=>{str(coef_list)});\n$C->VISUAL;'
+  return f'$C = new Hypersurface<Max>(MONOMIALS=>{str(lattice_list)}, COEFFICIENTS=>{str(coef_list)});'
 
 
-def hypersurface_nodes(lattice_points: list, apex: np.ndarray, d: int, tol: float = 1e-6) -> str:
-  monomials, coefficients = newton_polynomial(lattice_points, apex, d)
-  for i, elem in enumerate(monomials):
-    monomials[i] = np.array(elem)
+def hypersurface_nodes(monomials: list[np.ndarray], coefficients: list[float], d: int, tol: float = 1e-6) -> list[tuple[np.ndarray, int]]:
+  """Computes the nodes of a tropical polynomial's hypersurface"""
   results = []
   for comb in combinations(np.arange(len(coefficients)), d):
     M, b = np.zeros((d, d)), np.zeros(d)
@@ -50,26 +51,27 @@ def hypersurface_nodes(lattice_points: list, apex: np.ndarray, d: int, tol: floa
     for i in range(1, d):
       M[i] = monomials[comb[i]] - monomials[comb[0]]
       b[i] = - (coefficients[comb[i]] - coefficients[comb[0]])
-    try:
-      x = np.linalg.solve(M, b)
-      # Verify that x is effectively in a maximum sector
-      expected_max = np.sum(monomials[comb[0]] * x) + coefficients[comb[0]]
-      ignore = False
-      for i in range(0, len(coefficients)):
-        if i not in comb:
-          val = np.sum(monomials[i] * x) + coefficients[i]
-          if val > expected_max + tol:
-            ignore = True
-            break
-      if not ignore:
-        results.append(x)
-
-    except np.linalg.LinAlgError as e:
-      pass
+    if not np.isclose(np.linalg.det(M), 0):
+      try:
+        x = np.linalg.solve(M, b)
+        # Verify that x is effectively in a maximum sector
+        expected_max = np.sum(monomials[comb[0]] * x) + coefficients[comb[0]]
+        ignore = False
+        for i in range(0, len(coefficients)):
+          if i not in comb:
+            val = np.sum(monomials[i] * x) + coefficients[i]
+            if val > expected_max + tol:
+              ignore = True
+              break
+        if not ignore:
+          results.append((x, comb))
+      except np.linalg.LinAlgError:
+        pass
   return results
 
 
 def map_to_exponential_space(Xlist: np.ndarray, beta: float):
+  """Maps some point clouds using exp(beta*.) transformation, useful in tropicalization"""
   Xplus, Xminus = Xlist
   xplus, xminus = np.exp(beta * Xplus), np.exp(beta * Xminus)
   x = np.concatenate((xplus, xminus), axis=1)
