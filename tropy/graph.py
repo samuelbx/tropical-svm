@@ -1,4 +1,6 @@
+from typing import Union
 import numpy as np
+import seaborn as sns
 from mpl_toolkits.mplot3d.art3d import Line3D, Poly3DCollection
 import matplotlib.pyplot as plt
 from .utils import get_reached_sectors, max_max2_idx
@@ -32,9 +34,12 @@ def get_ignored(Cplus: np.ndarray, Cminus: np.ndarray, apex: np.ndarray) -> int:
 
 def plot_classes(ax, data_classes, L, features=None, show_lines=False):
   """Plot multiple classes of points (maximum 3 for now)"""
-  colors = ['#FF934F', '#2D3142', '#058ED9']
-  markers = ['o', 'v', '+']
-  linestyles = ['dotted', 'dashed', 'dashdot']
+  colors = ['#FF934F', '#2D3142', '#058ED9', '#cc2d35']
+  markers = ['o', 'v', '+', '*']
+  linestyles = ['dotted', 'dashed', 'dashdot', 'dotted']
+  min_array = np.array([np.inf, np.inf, np.inf])
+  max_array = np.array([-np.inf, -np.inf, -np.inf])
+
   if features is not None:
     ax.set_xlabel(features[0])
     ax.set_ylabel(features[1])
@@ -42,7 +47,20 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False):
   for i, clas in enumerate(data_classes):
     ls = "None" if not show_lines else linestyles[i]
     for col in clas.T:
+      min_array = np.minimum(min_array, col)
+      max_array = np.maximum(max_array, col)
       plot_point(ax, col, L, colors[i], ls, markers[i])
+  max_range = np.max(max_array - min_array)
+  mid_x = (max_array[0] + min_array[0]) / 2
+  mid_y = (max_array[1] + min_array[1]) / 2
+  mid_z = (max_array[2] + min_array[2]) / 2
+  mean_mid = (mid_x+mid_y+mid_z)/3
+  mid_x -= mean_mid
+  mid_y -= mean_mid
+  mid_z -= mean_mid
+  ax.set_xlim(mid_x - max_range / 2, mid_x + max_range / 2)
+  ax.set_ylim(mid_y - max_range / 2, mid_y + max_range / 2)
+  ax.set_zlim(mid_z - max_range / 2, mid_z + max_range / 2)
 
 
 def plot_ball(ax, center, length):
@@ -57,9 +75,14 @@ def plot_ball(ax, center, length):
   ax.add_collection3d(Poly3DCollection(faces, color="gray", alpha=0.1))
 
 
-def init_ax(fig, config: int, L: float, mode_3d: bool = False):
+def init_ax(fig, config: Union[int, list[int]], L: float, mode_3d: bool = False):
   """Initialize plot in the projective space R^3/(1,1,1)"""
-  ax = fig.add_subplot(config, projection="3d", proj_type="ortho")
+  sns.set_style("white")
+  sns.set_context("notebook")
+  if type(config) == list:
+    ax = fig.add_subplot(*config, projection="3d", proj_type="ortho")
+  else:
+    ax = fig.add_subplot(config, projection="3d", proj_type="ortho")
   ax.view_init(elev=28, azim=45)
   ax.set_xlim([-L, L])
   ax.set_ylim([-L, L])
@@ -67,6 +90,7 @@ def init_ax(fig, config: int, L: float, mode_3d: bool = False):
   ax.set_xlabel("X")
   ax.set_ylabel("Y")
   ax.set_zlabel("Z")
+  ax.set_axis_off()
   if not mode_3d:
     ax.disable_mouse_rotation()
   return ax

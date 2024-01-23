@@ -39,6 +39,7 @@ def apply_noise(C: np.ndarray, mu: int = 1, seed: int = 2024) -> np.ndarray:
   np.random.seed(seed)
   r, c = C.shape
   C += mu * np.random.randn(r, c)
+  return C
 
 
 def build_toy_dataset(n_points: int, n_features: int, n_positive_sectors: int, 
