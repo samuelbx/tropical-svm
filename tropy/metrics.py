@@ -15,8 +15,7 @@ def accuracy_multiple(pred: callable, Clist: list[np.ndarray]) -> float:
   return accuracy_score(true_labels, predicted_labels)
 
 
-def veronese_feature_names(feature_names: list[str],
-                           lattice_points: list[np.ndarray]):
+def veronese_feature_names(feature_names: list[str], lattice_points: list[np.ndarray]):
   ext_feature_names = []
   for comb, vals in lattice_points:
     subfeatures = []
@@ -27,9 +26,9 @@ def veronese_feature_names(feature_names: list[str],
   return ext_feature_names
 
 
-def print_features_per_class(class_names: list[str],
-                             feature_names: list[str],
-                             sector_indicator: list[int]):
+def print_features_per_class(class_names: list[str], feature_names: list[str],
+                             sector_indicator: list[int]) -> None:
+  """Heuristic that prints the estimate dominant features for each data class"""
   features = {cl: [] for cl in class_names}
   for id, feature in zip(sector_indicator, feature_names):
     if id != -1:
