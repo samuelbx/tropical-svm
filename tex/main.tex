@@ -1,4 +1,4 @@
-\documentclass[oneside,english]{amsart}
+\documentclass[oneside,english,a4paper]{amsart}
 \usepackage{bbold}
 \usepackage[T1]{fontenc}
 \usepackage{inputenc}
@@ -7,12 +7,13 @@
 \usepackage{amstext}
 \usepackage{amsthm}
 \usepackage{amsmath}
+\usepackage{pgfplots}
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{subcaption}
 \usepackage{wasysym}
-
+\usepackage{fullpage}
 
 \makeatletter
 \numberwithin{equation}{section}
@@ -44,8 +45,8 @@
 \providecommand{\corollaryname}{Corollary}
 
 \begin{document}
-\title{Tropical Support Vector Machines}
-\author{Samuel Boïté, Théo Molfessis \\ Supervised by Xavier Allamigeon, Stéphane Gaubert}
+\title{Tropical Support Vector Machines and mean payoff games}
+\author{Xavier Allamigeon, Stéphane Gaubert, Samuel Boïté, Théo Molfessis}
 \maketitle
 
 \begin{abstract}
@@ -54,370 +55,165 @@
 
 \section{Introduction}
 
-% Add an introduction that explains the relevance of the topic
+\subsection*{The tropical linear classification problem}
 
-The tropical semifield $\mathbb{R}_{\max}$ is the set of real numbers,
-completed by $-\infty$ and equipped with the addition $a\oplus b=\max(a,b)$
-and the multiplication $a\odot b=a+b$.
-\begin{defn}
-A \emph{tropical hyperplane of apex $a\in\mathbb{R}_{\text{max}}^{d}$
-}splits $\mathbb{R}_{\max}^{d}$ depending on where $(x-a)$ reaches
-its maximum coordinate: 
+% TODO: add an introduction to explain the relevance of the topic
+
+The tropical \emph{max-plus} semifield $\mathbb{R}_{\max}$ is the
+set of real numbers, completed by $-\infty$ and equipped with the
+addition $a\oplus b=\max(a,b)$ and the multiplication $a\odot b=a+b$.
+A \emph{tropical hyperplane} in the $d$-dimensional tropical vector
+space $\mathbb{R}_{\max}^{d}$ is a set of vectors of the form
 \[
-H_{a}:=\left\{ x\in\mathbb{R}_{\max}^{d},\quad(x-a)\,\,\text{reaches its max coordinate at least twice}\right\} .
+\mathcal{H}_{a}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\max_{1\le i\le d}a_{i}+x_{i}\,\text{is achieved at least twice}\right\}.
+\]
+Such a hyperplane is parametrized by the vector $a=(a_{1},\ldots,a_{d})\in\mathbb{R}_{\max}^{d}$,
+which is required to be non-identically $-\infty$. It hence partitions
+the space between $d$ different \emph{tropical sectors}, laying the
+ground for multi-class classification.
+
+In this paper, we address the following tropical analogue of support
+vector machines. Given $n\le d$ classes of $d$-dimensional data
+points $X^{1},\ldots,X^{p}$, we look for a maximum-margin separating
+tropical hyperplane to build a classifier. The notion of margin depends
+on the metric: the canonical choice in tropical geometry is the (additive
+version of) Hilbert's projective metric. Its restriction to $\mathbb{R}^{d}$
+is induced by the so-called \emph{Hilbert's seminorm} or \emph{Hopf
+oscillation}
+\[
+\lVert x\rVert_{H}:=\max_{i\in[d]}x_{i}-\min_{i\in[d]}x_{i}.
+\]
+It is a projective metric, in the sense that the distance between
+two points is zero if and only if these two points differ by an additive
+constant. When dealing with hard-margin support vector machines (SVMs),
+we also have to ensure every point lands in the appropriate sector.
+We define the \emph{tropical parametrized hyperplane} of configuration
+$\sigma=\left\{I^{1},\ldots,I^{n}\right\}$, where $I^{k}$ and $I^{\ell}$
+are disjoint for $k\ne\ell$, as:
+\[
+\mathcal{H}_{a}^{\sigma}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\exists k\ne\ell,\quad(x-a)\,\text{reaches its max coordinate in \ensuremath{I^{k}} and \ensuremath{I^{\ell}}}\right\}.
 \]
 
-It hence partitions the space between $d$ different \emph{tropical
-sectors}. A \emph{tropical halfspace} of configuration $I\subset[d]$
-is the union of tropical sectors specified in $I$.
-
-Let $n\in[d]$. We define the \emph{tropical parametrized hyperplane} of configuration
-$\sigma=\{I^{1},\ldots,I^{n}\}$, where $I^k \cap I^\ell = \emptyset$ for $k\ne l$, as:
-\[
-H_{a}^{\sigma}:=\left\{ x\in\mathbb{R}_{\max}^{d},\quad\exists k\ne\ell,\quad(x-a)\,\,\text{reaches its max coordinate in}\,I^{k}\,\text{and}\,I^{\ell}\right\} .
-\]
-When $n=2$, we talk about \emph{tropical signed hyperplanes}. Generally,
-a tropical parametrized hyperplane is the union of tropical signed
-hyperplanes defined by all pairs of sectors.
-\end{defn}
-
-\begin{defn}
-We define the \emph{tropical span} of a finite set of points $X=(x_{1},\ldots,x_{p})\in\mathbb{R}_{\max}^{d\times p}$
-as the set of tropical linear combinations of these points.
-\[
-\text{Span}(X):=\left\{ \lambda X:=\max_{i\in[p]}\left(x_{i}+\lambda_{i}\right),\quad\lambda\in\mathbb{R}^{p}\right\} .
-\]
-Given the tropical convexity of these, these spans are often called
-\emph{tropically convex hulls}, meaning the smallest tropically convex
-sets containing them. 
-\end{defn}
-
-\textbf{The tropical classification problem. }We want to separate
-$n\in[d]$ classes of $d$-dimensional data points $X^{1},\ldots,X^{n}$
-using a tropical parametrized hyperplane of configuration $\sigma$.
-In the binary setting, we note the classes $X^{\pm}$ consisting of
-the points with positive (resp. negative) labels. Separating them
-tropically amounts to separating their spans, noted $V^{1},\ldots,V^{n}$
-or $V^{\pm}$ in the binary setting.
-\begin{defn}
-For all $u\in\mathbb{R}_{\max}^{d}$, we define the \emph{tropical
-norm} of $u$ as the largest difference between two of its coordinates:
-\[
-\lVert u\rVert:=\max u-\min u.
-\]
-The \emph{tropical distance} between $u$ and $v$ in $\mathbb{R}_{\max}^{d}$
-is then deduced as: 
-\[
-d(u,v):=\lVert u-v\rVert.
-\]
-\end{defn}
-
-\begin{defn}
-$H_{a}^{\sigma}$ is said to \emph{separate point clouds $(X^{k})_{k\in[n]}$
-with a margin of at least} $\nu\ge0$ when for all $x^{k}\in X^{k}$,
-$k\in[n]$:
+Hence, $\mathcal{H}_{a}^{\sigma}$ is said to \emph{separate} point
+clouds $(X^{k})_{k\in[p]}$ with a margin $\nu$ when for every point
+$x^{k}$ of class $k$:
 \begin{enumerate}
-\item $x^{k}$ is on the correct side of the hyperplane $H_{u}^{\sigma}$,
-that is:
-\[
-\underset{i\in[d]}{\arg\max}\, x_{i}^{k}\in I^{k}.
-\]
-\item Distance from $H_{a}^{\sigma}$ to $x^{k}$ is at least $\nu$:
-\[
-d(H_{a}^{\sigma},x^{k})=\max(x^{k}-a)-\max_{\bigsqcup_{\ell \ne k} I^\ell}(x^{k}-a)\ge\nu.
-\]
+\item $x^{k}$ is on the right sector of the hyperplane, i.e its maximum
+coordinate is achieved in $I^{k}$
+\item $x^{k}$ is at distance at least $\nu$ from $\mathcal{H}_{a}^{\sigma}$:
+\begin{equation}
+d(\mathcal{H}_{a}^{\sigma},x^{k})=\max(x^{k}-a)-\max_{\sqcup_{\ell\ne k}I^{\ell}}(x^{k}-a)\ge\nu.
+\end{equation}
 \end{enumerate}
-When $\nu$ is maximal in the previous definition, we say that $H_{a}^{\sigma}$
-\emph{separates with a margin of} $\nu$. When $\nu$ is zero, we
-say that $H_{u}^{\sigma}$ \emph{separates} $(X^{k})_{k\in[n]}$. 
-\end{defn}
+In Figure \ref{MaxMarginHyperplane}, we separate two classes
+of $3$-dimensional points from a toy tropical dataset using a tropical
+hyperplane. Its margin is maximal and is represented by the Hilbert
+ball in gray. The figure is represented in the projective space $\mathbb{P}\left(\mathbb{R}_{\text{max}}^{3}\right)$,
+i.e. the quotient of the set of non-identically $-\infty$ vectors
+of $\mathbb{R}_{\text{max}}^{3}$ by the equivalence relation which
+identifies tropically proportional values.
 
+\begin{figure}
+\input{fig/tropical_svm.pgf}\label{MaxMarginHyperplane}
 
-\begin{figure}[!h]
-\includegraphics[scale=0.8]{fig/illustration.png} \caption{Tropical Binary Classification Example}
+\caption{Maximum-margin tropical parametrized hyperplane, binary setting}
 \end{figure}
 
 
-\section{Tropical Binary Classification}
+\subsection*{Results}
 
-For the moment, let's confine ourselves to binary classification.
+TBD
 
-\subsection{Tropical projections and Shapley operators}
+\section{Preliminaries on mean-field games}
 
-In this section, we see that Shapley operators are the appropriate
-framework for describing and tropically separating finite point clouds,
-in particular but not exclusively.
-\begin{defn}
-A \emph{Shapley operator} on $\mathbb{R}_{\max}$ is a map $T:\mathbb{R}_{\max}^{d}\longrightarrow\mathbb{R}_{\max}^{p}$
-such that $T$ is non-decreasing and that for all $x\in\mathbb{R}_{\max}^{n}$
-and $\lambda\in\mathbb{R}_{\max}$, $T(\lambda+x)=\lambda+T(x)$.
+In this section, we have a finite set of points $X=(x_{1},\ldots,x_{p})\in\mathbb{R}_{\text{max}}^{d\times p}$.
+We define the \emph{tropical span} of $X$ as the set of tropical
+linear combinations of these points:
+\[
+\text{Span}(X):=\left\{\max_{1\le i\le p}(x_{i}+\lambda_{i}),\quad\lambda\in\mathbb{R}^{p}\right\}.
+\]
+As this is also the smallest tropically convex set containing these
+points, separating several point clouds amounts to separating their
+tropical spans.
 
-$T$ is said to be \emph{non-expansive }if it is $1$-Lipschitz. 
-\end{defn}
-
-\begin{defn}
-A Shapley operator $T$ is said to be \emph{diagonal free} when $T_{i}(x)$
-is independent of $x_{i}$ for all $i\in[n]$. That is, when for all
-$i\in[n]$, and for all $x,y\in\mathbb{R}_{\max}$ such that $x_{j}=y_{j}$
-for all $j\neq i$, we have $T_{i}(x)=T_{i}(y)$. 
-\end{defn}
-
-\begin{defn}
-Let $V$ a tropically convex, compact and nonempty subset of $\mathbb{R}_{\max}^{d}$.
-We define the \emph{projection} of $x$ on $V$ as: 
+Given a tropically convex, compact and nonempty subset $\mathcal{V}$
+of $\mathbb{R}_{\max}^{d}$, we define the projection of any vector
+$x$ in $\mathbb{R}_{\max}^{d}$ by:
 \[
 P_{V}(x):=\max\{y\in V,\quad y\le x\}.
 \]
-When $V=\text{Span}(X)$ with $X$ in $\mathbb{R}_{\max}^{d\times p}$,
-we will write the projection as $P_{X}$.
-\end{defn}
+When $\mathcal{V}$ is the tropical span of $X$, we will also note
+this projection as $P_{X}$.
 
-\begin{prop}
-\label{prop:(Nondecreasing)}Let $X\in\mathbb{R}_{\max}^{d\times p}$.
-$P_{X}$ is nondecreasing and for $x\in\mathbb{R}_{\text{max}}^{d}$,
-$P_{X}(x)\le x$. Moreover, we know from Maclagan et al. \cite{Maclagan2015}
-that:
-\[
-\forall i\in[p],\quad P_{X}(x)=\max_{j\in[p]}\left\{ X_{ij}+\min_{k\in[d]}(-X_{kj}+x_{k})\right\} .
-\]
-\end{prop}
-
-\begin{rem}
-Tropical projections, and Shapley operators in general, are closely
-tied to mean payoff games: for instance, let's define $T$ as
-\[
-\forall i\in[n],\quad T_{i}(x)=\max_{j\in[p]}\left\{ A_{ji}+\min_{k\in[n]}(-B_{jk}+x_{k})\right\} .
-\]
-Here, $T_{i}(0)$ is the payoff, recieved by player MIN,
-of one round of a game with perfect information, where player
-MAX starts from their state $i$, transitions to their opponent MIN's
-state $j$ by receiving $A_{ji}$, who in turn chooses a MAX state
-$k$ by recieving $B_{jk}$.
-
-Therefore, $(T^{m}(0))_{i}$ is the \emph{value} of such a game after
-$m$ consecutive rounds, having started in the MIN state $i$. The\emph{
-escape rate }of the game defined by $T$ is defined by: 
-\[
-\chi_{T}:=\lim_{m\rightarrow+\infty}\frac{T^{m}(0)}{m}.
-\]
-It is well known that this limit does exist and coincides with the
-\emph{mean payoff} of the game \cite{Allamigeon2018}. Under certain
-conditions, $\chi_{T}$ is the unique eigenvalue of the Shapley operator
-$T$. 
-\end{rem}
-
-\begin{defn}
-Let $T$ be a non-expansive Shapley operator. We define
-\[
-\text{\ensuremath{\mathcal{S}(T)}}=\{x\in\mathbb{R}^{d},\quad x\le T(x)\}.
-\]
-\end{defn}
-
-\begin{prop}
-Let $P_{V}$ be the tropical projection on $V$. Then:
-\[
-\ensuremath{\mathcal{S}(P_{V})=V}.
-\]
-\end{prop}
-
-\begin{proof}
-As $P_{V}(x)\le x$ for any $x$, $x\le P_{V}(x)$ (i.e $x\in\mathcal{S}(T)$)
-is equivalent to $x=P(x)$ (i.e $x\in V$).
-\end{proof}
-\begin{rem}
-Operator $P$ can be slightly tweaked to make it \emph{diagonal-free}
-(DF), a good property that will be of interest to us in the future.
-In the modified game, the MAX player is prevented from replying to
-his opponent eye-for-an-eye:
-\[
-\left[P_{\text{DF}}(x)\right]_{i}:=\max_{j\in[p]}\left\{ X_{ij}+\min_{k\ne i}(-X_{kj}+x_{k})\right\} .
-\]
-Beware, this is not a projector anymore!
-\end{rem}
-
-\begin{prop}
-$P_{\text{DF}}$ is a diagonal-free Shapley map that equivalently
-describes $X$. 
-\end{prop}
-
-\begin{proof}
-$P_{\text{DF}}$ is a Shapley operator for the same reasons $P$ is,
-and its formula directly proves it is diagonal free. We then note
-that $P\leq P_{\text{DF}},$ therefore $\mathcal{S}(F)\subset\mathcal{S}(F_{\text{DF}}).$
-Let $x\in\mathcal{S}(P_{\text{DF}})$, and $i\in[n]$. There exists
-$j\in[p]$ such that
-\[
-x_{i}\leq-X_{ij}+\min_{k\ne i}(-X_{kj}+x_{k}).
-\]
-That inequality holds for $k=i$, hence $x_{i}\leq P_{i}(x)$ and
-finally $\mathcal{S}(P)=\mathcal{S}(P_{\text{DF}}).$
-\end{proof}
-
-\subsection{Separating finite overlapping data}
-
-Assuming that the data overlap, we want to find a way to transform
-them slightly to make them separable by a tropical hyperplane. This
-would give us a measure of their non-separability.
-
-\subsubsection{Measuring data overlap}
-
-We want a simple criteria for computing the size of the intersection
-between convex hulls.
-\begin{lem}
-Let $(T^{i})_{i\in[n]}$ be non-expansive Shapley operators. We have:
-\[
-\bigcap_{i\in[n]}\mathcal{S}(T^{i})=\mathcal{S}\left(\bigwedge_{i\in[n]}T^{i}\right),
-\]
-\end{lem}
-
-According to \cite{AKIAN2012}, when we have non-expansive Shapley
-operators, the notions of Collatz-Wielandt numbers, spectral radus
-and game value are identical . We can then state the following theorem: 
-\begin{thm}
-(Allamigeon, Gaubert et al. \cite{Allamigeon2018}) $V$ contains
-a Hilbert ball of positive radius if and only if the spectral radius
-of $F$, defined as 
-\[
-\rho(T)=\sup\{\mu\in\mathbb{R},\quad\exists z\in\mathbb{R}^{d},\quad T(z)=\mu+z\},
-\]
-is strictly positive. In this case, $\rho(F)$ is the inner radius
-$\text{inrad}(V^{+}\cap V^{-})$, i.e supremum of the radii of the
-Hilbert balls contained in it. 
-\end{thm}
-
-We can then apply the following Krasnoselskii-Mann algorithm to compute
-the eigenpair in pseudo-polynomial time. Given an initial point $a^{0}$,
-we iteratively compute: 
-\[
-\begin{cases}
-z^{k+1} & =\frac{a^{k}+T(a^{k})}{2}\\
-a^{k+1} & =z^{k+1}-\max_{i\in[d]}z_{i}^{k+1}\cdot\textbf{1}_{d}
-\end{cases}
-\]
-
-The following convergence theorem follows from \cite{Cominetti2013}:
-\begin{cor}
-As $T$ is a non-expansive Shapley operator, the Krasnoselskii-Mann
-algorithm converges in pseudo-polynomial time. 
-\end{cor}
-
-The eigenpair we search is $\left(a^{\infty},2\cdot\max_{i\in[d]}z_{i}^{\infty}\right)$.
-
-\subsubsection{Separating two classes of data}
-
-We place ourselves back in the binary classification setting. We have
-described the corresponding Shapley operators corresponding to our
-classes as diagonal-free maps. We now define a process for separating
-overlapping data. Assuming $V^{+}\cap V^{-}\ne\emptyset$, let $\left(a,\lambda\right)$
-be the eigenpair of $T:=T^{+}\wedge T^{-}$ approximated by the previously
-described iteration algorithm. 
-\begin{prop}
-We project all points of $X^{\pm}$ located at a distance less than
-$\lambda$ from $H_{a}$, onto $H_{a}$. Then the intersection
-of new convex hulls $W^{\pm}$ is of empty interior. 
-\end{prop}
-
-\begin{proof}
-Let's denote $X$ the cloud consisting of all points (regardless of
-sign), and for $x_{j}\in X$, we note $y_{j}$ its sign, $s_{j}$
-its sector and $d_{j}$ the second argmax of $(x_{j}-a)$. For each
-point $x_{j}=X_{\cdot j}\in X$ at distance less than $\lambda$ of
-$H_{a}$, the transformation consists in setting
-\[
-W_{kj}:=\begin{cases}
-X_{kj} & \text{if \ensuremath{k\ne s_{j}}}\\
-X_{s_{j}j}-d(x_{j},H_{a}) & \text{at \ensuremath{s_{j}}}
-\end{cases}
-\]
-so that $w_{j}$ is projected on the hyperplane. As $T^{\pm}$ is
-non-expansive and diagonal-free, let's remark that for $x^{\pm}\in V^{\pm}$:
-\[
-x_{i}^{\pm}\le T^{\pm}(x^{\pm})_{i}=\left(T^{\pm}(x^{\pm})-T^{\pm}(a)\right)_{i}+T^{\pm}(a)_{i},
-\]
-hence 
+We know from Maclagan et al. \cite{Maclagan2015} that tropical projections
+can be expressed as a mean payoff game: for $i\in[p]$ and $x\in\mathbb{R}_{\max}^{d}$,
 \begin{equation}
-x_{i}^{\pm}\le\max(x^{\pm}-a)_{\ne i}+T^{\pm}(a)_{i}.\label{eq31}
+P_{X}(x)_{i}=\max_{j\in[p]}\left\{X_{ij}+\min_{k\in[d]}(-X_{kj}+x_{k})\right\}.\label{eq:projector}
 \end{equation}
-Let $i\in[d]$. If $x_{j}\in X$ is not in the $i$-th sector, then
-for $k$ different from the sector of $x_{j}$, by definition:
+
+Here, we recognize the payoff a zero-sum deterministic game with perfect
+information. There are two players, ``Max'' and ``Min'' (the maximizer
+and the minimizer), who alternate their actions. Starting on node
+$i$, Player Max chooses to move to node $j$, and recieves $X_{ij}$
+from Player Min. Similarily, Player Min in turn chooses a node $k$
+and has to pay $-X_{kj}$ to Player Max.
+
+We now recall some tools from Perron-Frobenius theory, in relation
+with mean payoff games. We refer the reader to \cite{AKIAN2012} for more
+information.
+
+We call \emph{Shapley operator} a map $T:\mathbb{R}_{\max}^{d}\rightarrow\mathbb{R}_{\max}^{d}$
+that is order preserving, continuous, and such that $T(\alpha+x)=\alpha+T(x)$
+for all $\alpha\in\mathbb{R}_{\max}$ and $x\in\mathbb{R}_{\max}^{d}$.
+Observe that the tropical projection defined by \ref{eq:projector}
+is a Shapley operator. Given a Shapley operator $T$, we also define
 \[
-(w_{j}-a)_{k}\le(x_{j}-a)_{d_{j}}\le(w_{j}-a)_{s_{j}},
+\mathcal{S}(T):=\left\{x\in\mathbb{R}_{\max}^{d},\quad x\le T(x)\right\}.
 \]
-hence
+More specifically, any tropically convex set $\mathcal{V}$ is equal
+to $\mathcal{S}(P_{\mathcal{V}})$. Indeed, as for any $x\in\mathbb{R}_{\text{max}}^{d}$,
+$P_{\mathcal{V}}(x)\le x$, having $x\in\mathcal{S}(P_{\mathcal{V}})$
+is sufficient to have $x=P_{\mathcal{V}}(x)$, meaning $x$ is in
+$\mathcal{V}$.
+
+\section{Hard-margin binary SVM}
+
+In this section, we suppose that a separating tropical hyperplane
+exists, and we want to maximize the margin. We also place ourselves
+in the binary case, where we seek to separate convex hulls $\mathcal{V}^{+}$
+and $\mathcal{V}^{-}$. We assume we have two Shapley operators $T^{+}$
+and $T^{-}$ such that $\mathcal{S}(T^{\pm})=\mathcal{V}^{\pm}$,
+which is for instance the case when separating finite point clouds:
+corresponding operators are projections $P_{X^{\pm}}$. We define:
 \[
-W_{ij}-\max_{k\ne i}\left(W_{kj}-a_{k}\right)\le a_{i}.
+T=\min(T^{+},T^{-}),
 \]
-Otherwise, $x_{j}$ is in the $i$-th sector and:
+which is also a Shapley. We denote by $\perp$ the vector of $\mathbb{R}_{\max}^{d}$
+identically equal to $-\infty$. The \emph{spectral radius} of $T$
+is, by definition:
 \[
-\max_{k\ne i}\left(W_{kj}-a_{k}\right)=X_{d_{j}j}-a_{d_{j}},
+\rho(T)=\sup\left\{\lambda\in\mathbb{R}_{\max},\quad\exists u\in\mathbb{R}_{\max}^{d}\backslash\{\perp\},\quad T(u)=\lambda+u\right\}.
 \]
-thus
+
+Observe that $\mathcal{S}(T)$ is equal to $\mathcal{S}(T^{+})\cap\mathcal{S}(T^{-})$,
+i.e. the intersection of the convex hulls we are seeking to separate.
+From Allamigeon, Gaubert et al. \cite{Allamigeon2018}, we know that $\mathcal{V}^{+}$
+and $\mathcal{V^{-}}$ being disjoint is equivalent to $\rho(T)\le0$.
+
+Given $a$ the corresponding eigenvector, we define the sectors:
 \[
-W_{ij}-\max_{\ne i}\left(w_{j}-a\right)=\left(w_{j}-a\right)_{s_{j}}-\left(x_{j}-a\right)_{d_{j}}+a_{s_{j}}\ge a_{s_{j}}=a_{i},
+I^{\pm}:=\left\{i\in[d],\quad T^{\pm}(a)_{i}>\lambda+a_{i}\right\},
 \]
-with equality iff $d(x_{j},H_{a})\leq\lambda$.
-
-Suppose by symmetry that $T(a)_{i}=T^{+}(a)_{i}=\lambda+a_{i}.$ We
-also have $T^{-}(a)_{i}\ge\lambda+a_{i}$. Then, using the proof of
-Theorem 22 in \cite{Akian2021TropicalLR}, we know that there exists
-$j^{+},j^{-}\in[p]$ such that $x_{j^{+}}\in X^+$ and $x_{j^{-}}\in X^-$ are in sector $i$,
-with $x_{j^{+}}$ being at distance $\lambda$ from $H_{a}$ and $x_{j^{-}}$
-at distance greater than $\lambda$. Therefore, $W_{ij^+}-\max_{\ne i}\left(w_{j^+}-a\right)=a_{i}$
-and $W_{ij^-}-\max_{\ne i}\left(w_{j^-}-a\right)\geq a_{i}$. Moreover, for any $j$ such that $x_{j}\in X^+$ is in sector
-$i$, eq. \ref{eq31} gives $d(x_{j},H_{a})\leq\lambda$.
-
-Let $Q^{\pm}$ be the \emph{diagonal-free} projections over transformed
-point clouds, and 
-
-$Q=Q^{+}\wedge Q^{-}.$ We've just shown that 
-$Q(a)_{i}=Q^{+}(a)_{i}=a_{i}$,
-and finally $Q(a)=a$.
-
-
-\end{proof}
-\newpage
-\begin{example}
-
-Here is what the transformation yields with a toy inseparable dataset:
-
-\begin{figure}[!h]
-\includegraphics[scale=0.4]{fig/inseparable} \caption{Separating convex hulls}
-\end{figure}
-\end{example}
-
-\begin{rem}
-In order to strictly separate the sets, we would have to deal with
-the branching points of null interior. 
-\end{rem}
-
-In pseudo-polynomial time, we are thus able to compute a distance
-of our point clouds to separability. It gives a bound on the distance
-under which some points have to be moved to separate hulls.
-
-\subsection{Optimal hard-margin in the separable case}
-
-Assuming that data is now separable, we prove that the previous method
-can be extended to give us separating hyperplanes with maximal margin. 
-\begin{rem}
-When $V^{+}$ and $V^{-}$ are disjoint, the spectral radius $\lambda$
-of $T$ is strictly negative. From \cite{AKIAN2021}, we may see $-\lambda$
-as the eigenvalue an operator $T^{\text{dual}}$ in dual space, as
-$T$ is itself a finitely-generated Shapley operator. This would give
-us a complementary inner radius interpretation, and makes $H_{a}$
-a great candidate in the separable case. 
-\end{rem}
-
-Let $(a,\lambda)$ the eigenpair of $T$ approximated by previous
-algorithm, verifying $T(a)=\lambda+a$. Let's define the sectors:
-\[
-I^{\pm}:=\{i\in[d],\quad T^{\pm}(a)_{i}>\lambda+a_{i}\},
-\]
-and the corresponding configuration $\sigma=\{I^{\pm}\text{\}}.$
+and the corresponding configuration $\sigma=\{I^{+},I^{-}\}$.
 \begin{prop}
-$H_{a}^{\sigma}$, given the sectors defined above, separates $V^{+}$
-and $V^{-}$ with a margin of $-\lambda$. Moreover, this margin is
-optimal in the case where $T^{\pm}$ are of the form $T^{\pm}(x)=P_{V^{\pm}}(x)=\sup_{v\in V^{\pm}}\left(v_{i}+\min(-v+x)\right),$
-which is in particular the case when separating finite point clouds. 
+Hyperplane $\mathcal{H}_{a}^{\sigma}$, given the sectors defined
+above, separates $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$ with a
+margin of $-\rho(T)$. Moreover, this margin is optimal when $T^{\pm}$
+are of the form
+\[
+\sup_{v\in\mathcal{V}^{\pm}}\left(v_{i}+\min(-v+x)\right),
+\]
+which is in particular the case when separating finite point clouds.
 \end{prop}
 
 \begin{proof}
@@ -431,11 +227,9 @@ x_{i}^{\pm}\le\max(x^{\pm}-a)+T^{\pm}(a)_{i}.\label{eq41}
 \end{equation}
 For instance, let $i\in[d]\setminus I^{+}$. Then $T^{+}(a)_{i}=\lambda+a_{i}$,
 so for $x^{+}\in V^{+}$, using equation \ref{eq41}:
-
 \[
 x_{i}^{+}-a_{i}\le\max(x^{+}-a)+\lambda.
 \]
-
 In particular, $x_{i}^{+}-a_{i}<\max(x^{+}-a)$ and any element of
 $V^{+}$ can't belong to any of sectors in $[d]\setminus I^{+}$ with
 respect to $H_{a}$, from which the sectors $I^{\pm}$ are well-defined.
@@ -461,13 +255,112 @@ Maximizing over all $i\in[d]\setminus I^{+}$ yields that $v$ is
 at most at distance $-\lambda+\varepsilon$ of $H_{a}^{I}$, hence
 the optimality.
 \end{proof}
-\begin{example}
-Here is what the algorithm gives with a toy separable dataset:
+%
+To build a practical algorithm, we still need to compute the spectral
+radius of $T$. It amounts to solving mean-payoff games, and we can
+for instance apply the following Krasnoselskii-Mann iteration scheme,
+given any initial point $a^{0}$:
+\[
+\begin{cases}
+z^{k+1} & =\frac{1}{2}\left(a^{k}+T(a^{k})\right)\\
+a^{k+1} & =z^{k+1}-\max_{i\in[d]}z_{i}^{k+1}
+\end{cases}
+\]
+The eigenpair we search is $(a^{\infty},2\cdot\max_{i\in[d]}z_{i}^{\infty})$.
+Example results of this algorithm on a toy dataset are shown in Figure
+\ref{MaxMarginHyperplane}.
 
-\begin{figure}[!h]
-\includegraphics[scale=0.45]{fig/separable} \caption{Optimal-margin separable hyperplane}
-\end{figure}
-\end{example}
+\section{Geometric approach for soft-margin SVM}
+
+We seek to separate convex hulls $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$.
+Assuming that the data overlap, we want to build a measure of their
+non-separability. Using the operator $T$ we previously defined, we
+know from Allamigeon, Gaubert et al. \cite{Allamigeon2018} that $\rho(T)$ is the
+(positive) inner radius of $\mathcal{S}(T)$, i.e. the supremum of
+the radii of the Hilbert balls contained in the intersection between
+$\mathcal{V}^{+}$ and $\mathcal{V}^{-}$. The next Proposition shows
+us that this measure can be interpreted geometrically, in the case
+where $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$ are generated by point
+clouds $X^{+}$ and $X^{-}$:
+\begin{prop}
+By moving some points from $X^{+}$ and $X^{-}$ by a distance of
+at most $\rho(T)$, we can nullify the interior of the intersection
+of the tropical spans.
+
+More specifically, we note $a\in\mathbb{R}_{\max}^{d}$ the eigenvector
+corresponding to $\rho(T)$. We project all points of $X^{+}$ and
+$X^{-}$ whose distance to $\mathcal{H}_{a}$ is less than $\rho(T)$,
+onto $\mathcal{H}_{a}$. Then the intersection of new convex hulls
+is of empty interior.
+\end{prop}
+
+\begin{proof}
+Let's denote $X$ the cloud consisting of all points (regardless of
+sign), and for $x_{j}\in X$, we note $y_{j}$ its sign, $s_{j}$
+its sector and $d_{j}$ the second argmax of $(x_{j}-a)$. For each
+point $x_{j}=X_{\cdot j}\in X$ at distance less than $\lambda$ of
+$H_{a}$, the transformation consists in setting 
+\[
+W_{kj}:=\begin{cases}
+X_{kj} & \text{if \ensuremath{k\ne s_{j}}}\\
+X_{s_{j}j}-d(x_{j},H_{a}) & \text{at \ensuremath{s_{j}}}
+\end{cases}
+\]
+so that $w_{j}$ is projected on the hyperplane. As $T^{\pm}$ is
+non-expansive and diagonal-free, let's remark that for $x^{\pm}\in V^{\pm}$:
+\[
+x_{i}^{\pm}\le T^{\pm}(x^{\pm})_{i}=\left(T^{\pm}(x^{\pm})-T^{\pm}(a)\right)_{i}+T^{\pm}(a)_{i},
+\]
+hence
+\begin{equation}
+x_{i}^{\pm}\le\max(x^{\pm}-a)_{\ne i}+T^{\pm}(a)_{i}.\label{eq31}
+\end{equation}
+Let $i\in[d]$. If $x_{j}\in X$ is not in the $i$-th sector, then
+for $k$ different from the sector of $x_{j}$, by definition: 
+\[
+(w_{j}-a)_{k}\le(x_{j}-a)_{d_{j}}\le(w_{j}-a)_{s_{j}},
+\]
+hence 
+\[
+W_{ij}-\max_{k\ne i}\left(W_{kj}-a_{k}\right)\le a_{i}.
+\]
+Otherwise, $x_{j}$ is in the $i$-th sector and: 
+\[
+\max_{k\ne i}\left(W_{kj}-a_{k}\right)=X_{d_{j}j}-a_{d_{j}},
+\]
+thus 
+\[
+W_{ij}-\max_{\ne i}\left(w_{j}-a\right)=\left(w_{j}-a\right)_{s_{j}}-\left(x_{j}-a\right)_{d_{j}}+a_{s_{j}}\ge a_{s_{j}}=a_{i},
+\]
+with equality iff $d(x_{j},H_{a})\leq\lambda$.
+
+Suppose by symmetry that $T(a)_{i}=T^{+}(a)_{i}=\lambda+a_{i}.$ We
+also have $T^{-}(a)_{i}\ge\lambda+a_{i}$. Then, using the proof of
+Theorem 22 in \cite{Akian2021TropicalLR}, we know that there exists
+$j^{+},j^{-}\in[p]$ such that $x_{j^{+}}\in X^{+}$ and $x_{j^{-}}\in X^{-}$
+are in sector $i$, with $x_{j^{+}}$ being at distance $\lambda$
+from $H_{a}$ and $x_{j^{-}}$ at distance greater than $\lambda$.
+Therefore, $W_{ij^{+}}-\max_{\ne i}\left(w_{j^{+}}-a\right)=a_{i}$
+and $W_{ij^{-}}-\max_{\ne i}\left(w_{j^{-}}-a\right)\geq a_{i}$.
+Moreover, for any $j$ such that $x_{j}\in X^{+}$ is in sector $i$,
+eq. \ref{eq31} gives $d(x_{j},H_{a})\leq\lambda$.
+
+Let $Q^{\pm}$ be the \emph{diagonal-free} projections over transformed
+point clouds, and
+
+$Q=Q^{+}\wedge Q^{-}.$ We've just shown that $Q(a)_{i}=Q^{+}(a)_{i}=a_{i}$,
+and finally $Q(a)=a$.
+\end{proof}
+%
+In pseudo-polynomial time, we are thus able to compute a distance
+of our point clouds to separability. It gives a bound on the distance
+under which some points have to be moved to separate hulls.
+
+As $a$ is the center of the inner ball of $\mathcal{V}^{+}\cap\mathcal{V}^{-}$,
+we also have a purely geometric heuristic for determining a separating
+hyperplane in the non-separable case: we simply take the hyperplane
+$\mathcal{H}_{a}$ and then assign the sectors based on majoritary
+population, for instance.
 
 
 \section{Topics Being Explored}
@@ -627,34 +520,27 @@ time.
 
 \begin{figure}
     \centering
-    \begin{subfigure}{0.8\textwidth}
-        \centering
-        \includegraphics[width=0.7\linewidth]{fig/veronese_A1.png}
-        \caption{$\mathcal{A}_1$ doesn't separate blue class well}
-        \label{fig:veronese_A1}
-    \end{subfigure}
-    \\ % Creates a new line for the next subfigures
-    
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{fig/veronese_A2.png}
-        \caption{$\mathcal{A}_2$ is way better}
-        \label{fig:veronese_A2}
-    \end{subfigure}
-    \hfill % Adds horizontal space between the subfigures
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{fig/veronese_A3.png}
-        \caption{$\mathcal{A}_3$ overfits data}
-        \label{fig:veronese_A3}
-    \end{subfigure}
+    \resizebox{0.7\textwidth}{!}{\input{fig/A_1.pgf}}
+    \caption{$\mathcal{A}_1$ doesn't separate blue class well}
+    \label{fig:veronese_A1}
+\end{figure}
 
-    \caption{Decision boundaries for $s\in\{1,2,3\}$}
-    \label{fig:decision_boundaries}
+\begin{figure}
+    \centering
+    \resizebox{0.7\textwidth}{!}{\input{fig/A_2.pgf}}
+    \caption{$\mathcal{A}_2$ is better}
+    \label{fig:veronese_A2}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \resizebox{0.7\textwidth}{!}{\input{fig/A_3.pgf}}
+    \caption{$\mathcal{A}_3$ overfits data}
+    \label{fig:veronese_A3}
 \end{figure}
 
 \begin{example}
-In Figure \ref{fig:decision_boundaries}, we visualize the decision boundaries of the Iris classifier depending on scale parameter $s$. We remove the last feature of this dataset to have visualizable, 3-dimensional data.
+In Figures \ref{fig:veronese_A1}, \ref{fig:veronese_A2} and \ref{fig:veronese_A3}, we visualize the decision boundaries of the Iris classifier depending on scale parameter $s$. We remove the last feature of this dataset to have visualizable, 3-dimensional data.
 
 For the last two figures, the tropical polynomial represented was rendered with Polymake, and the overlay with the data points was done by hand in an approximate - but very representative - manner.
 \end{example}
