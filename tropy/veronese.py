@@ -15,12 +15,9 @@ def lattice_values(d: int, size: int):
         yield cur
 
 
-# TODO: See why dilated simplex doesn't work well
 def simplex_lattice_points(d: int, size: int):
   """Generate the lattice points of dilated simplex"""
-  #for i in range(1, size+1):
-  i = size
-  for items in lattice_values(d, i):
+  for items in lattice_values(d, size):
     for comb in combinations(np.arange(d), len(items)):
       yield comb, items
 
