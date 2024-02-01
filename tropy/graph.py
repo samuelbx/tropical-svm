@@ -4,7 +4,7 @@ import seaborn as sns
 from mpl_toolkits.mplot3d.art3d import Line3D, Poly3DCollection
 import matplotlib.pyplot as plt
 from .utils import get_reached_sectors, max_max2_idx
-from .veronese import hypersurface_nodes, newton_polynomial
+from .veronese import hypersurface_nodes
 
 
 def plot_point(ax, x, length, color, linestyle="-", marker=None, ignored_branch=None, maxplus=False) -> None:
@@ -75,10 +75,10 @@ def plot_ball(ax, center, length):
   ax.add_collection3d(Poly3DCollection(faces, color="gray", alpha=0.1))
 
 
-def init_ax(fig, config: Union[int, list[int]], L: float, mode_3d: bool = False):
+def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = False):
   """Initialize plot in the projective space R^3/(1,1,1)"""
   sns.set_style("white")
-  sns.set_context("notebook")
+  sns.set_context("paper")
   if type(config) == list:
     ax = fig.add_subplot(*config, projection="3d", proj_type="ortho")
   else:
@@ -134,7 +134,7 @@ def plot_hyperplane(ax, x: np.ndarray, l: int, L: int, ignored_branch: int = Non
     plot_point(ax, x, -10 * L, "black", ignored_branch=ignored_branch)
 
 
-def draw_segments(ax, monomials, coeffs, nodes, i, lis):
+def draw_segments(ax, monomials, coeffs, nodes, i, lis, sector_indicator=None):
   node = nodes[i]
   xpt, ypt, zpt = node[0]
   neighboring_sectors = node[1]
@@ -146,18 +146,21 @@ def draw_segments(ax, monomials, coeffs, nodes, i, lis):
       val = evaluate_3d(monomials, coeffs, (xmd, ymd, zmd))
       idxes = max_max2_idx(val)
       if np.isclose(val[idxes[0]], val[idxes[1]]):
-        ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color='black', linestyle='-')
+        linestyle, color = '-', 'black'
+        if sector_indicator is not None and sector_indicator[idxes[0]] == sector_indicator[idxes[1]]:
+          linestyle, color = 'dotted', 'lightgray'
+        ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color=color, linestyle=linestyle)
         lis[0] += 1
 
 
-def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L):
+def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L, sector_indicator=None):
   """Draws half rays out of some node"""
   node = nodes[i]
   xpt, ypt, zpt = node[0]
   neighboring_sectors = node[1]
-  a = monomials[neighboring_sectors[idx1]][0] - monomials[neighboring_sectors[idx2]][0]
-  b = monomials[neighboring_sectors[idx1]][1] - monomials[neighboring_sectors[idx2]][1]
-  c = monomials[neighboring_sectors[idx1]][2] - monomials[neighboring_sectors[idx2]][2]
+  a = monomials[neighboring_sectors[idx1], 0] - monomials[neighboring_sectors[idx2], 0]
+  b = monomials[neighboring_sectors[idx1], 1] - monomials[neighboring_sectors[idx2], 1]
+  c = monomials[neighboring_sectors[idx1], 2] - monomials[neighboring_sectors[idx2], 2]
 
   for sign in [-1, 1]:
     aprime, bprime = sign * 10 * L * (b - c), -sign * 10 * L * (a - c)
@@ -166,25 +169,26 @@ def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L):
     val = evaluate_3d(monomials, coeffs, (apt, bpt, cpt))
     idxes = max_max2_idx(val)
     if np.isclose(val[idxes[0]], val[idxes[1]]):
-      ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color='black', linestyle='-')
+      linestyle, color = '-', 'black'
+      if sector_indicator is not None and sector_indicator[idxes[0]] == sector_indicator[idxes[1]]:
+        linestyle, color = 'dotted', 'lightgray'
+      ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color=color, linestyle=linestyle)
       lis[0] += 1
 
 
-def evaluate_3d(monomials, coeffs, point):
-    """Evaluates the polynomial at the given 3D point."""
-    return coeffs + np.sum(monomials * np.array(point), axis=1)
+def evaluate_3d(monomials: np.ndarray, coeffs: np.ndarray, point: tuple[float]) -> np.ndarray:
+  """Evaluates the polynomial at the given 3D point."""
+  return coeffs + np.sum(monomials * np.array(point), axis=1)
 
 
-def plot_polynomial_hypersurface_3d(ax, lattice_points, apex, L):
-  monomials, coeffs = newton_polynomial(lattice_points, apex, 3)
-  monomials = [np.array(elem) for elem in monomials]
+def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=None):
   nodes = hypersurface_nodes(monomials, coeffs, 3)
   for i, node in enumerate(nodes):
     plot_point(ax, node[0], 2*L, 'black', linestyle="None", marker='.', maxplus=True)
     lis = [0]
-    draw_segments(ax, monomials, coeffs, nodes, i, lis)
+    draw_segments(ax, monomials, coeffs, nodes, i, lis, sector_indicator=sector_indicator)
     for idx1, idx2 in [(0, 1), (0, 2), (1, 2)]:
-      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L)
+      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L, sector_indicator=sector_indicator)
 
 
 def set_title(ax, title: str, x: np.ndarray, l: float):
