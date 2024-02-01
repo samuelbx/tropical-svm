@@ -1,79 +1,91 @@
+import csv
 import numpy as np
+import pandas as pd
 from .ops import proj, veronese
 from .utils import count_points_sectors
-from .veronese import map_to_exponential_space, simplex_lattice_points
+from .veronese import map_to_exponential_space, simplex_lattice_points, newton_polynomial
 from itertools import combinations
 from sklearn.svm import LinearSVC
+from sklearn.metrics import accuracy_score
 
 
-class TropicalSVM():
+class TropicalSVC():
   
-  _predictor = None
+  _monomials, _coeffs = None, None
 
-  def fit(self, data_classes: list[np.ndarray], veronese_size: int = 1, one_vs_all: bool = False) -> None:
+  def fit(self, data_classes: list[np.ndarray], poly_degree: int = 1, tropical_data: bool = False, log_linear_beta: bool = None) -> None:
     """Fit the model according to the given training data.
     data_classes: list of classes (2D numpy arrays whose columns are the data points)
-    veronese_size: complexity parameter of the model
-    one_vs_all: whether to perform 1-vs-all or all-vs-all classification
+    poly_degree: complexity parameter of the model
+    tropical_data: whether the data is intrinsically tropical or not (default: False)
+    log_linear_beta: option to use "linear hyperplane on logarithmic paper" trick
     """
-    d = data_classes[0].shape[0]
-    self.veronese_coefficients = list(simplex_lattice_points(d, veronese_size))
-    aug_data_classes = veronese(self.veronese_coefficients, data_classes)
-    self.apex, self.eigval = _inrad_eigenpair(aug_data_classes, N=50)
-
-    if not one_vs_all:
-      # TODO: Set apex coordinate to inf for unreached sectors
-      Counts = np.array([count_points_sectors(C, self.apex) for C in aug_data_classes])
-      # zero_mask = np.all(Counts == 0, axis=0)
-      # self.apex[zero_mask] = np.inf
-      sector_indicator = np.argmax(Counts, axis=0)
-      # sector_indicator[zero_mask] = -1
-
-      def _predict(point: np.ndarray) -> int:
-        sector = np.argmax(point - self.apex)
-        return sector_indicator[sector]
-
-      self.predictor, self.sector_indicator = _predict, sector_indicator
+    # Map d-dimensional data into subspace H: x1+...+x^{d+1}=0 of R^{d+1}
+    data_classes_copy = data_classes.copy()
+    if not tropical_data:
+      for i, data in enumerate(data_classes_copy):
+        data_classes_copy[i] = np.vstack((-np.sum(data, axis=0), data))
+    d = data_classes_copy[0].shape[0]
+    self._tropical_data, self._log_linear_beta, self._poly_degree = tropical_data, log_linear_beta, d
+    self._data_classes = data_classes_copy # TODO: remove
     
+    # Compute coefficients from d-dimensional simplex
+    monomials_idxes = list(simplex_lattice_points(d, poly_degree))
+    aug_data_classes = veronese(monomials_idxes, data_classes_copy)
+    self._veronese_coefficients = monomials_idxes
+
+    # Handle log-linear mode
+    if log_linear_beta:
+      assert len(aug_data_classes) == 2
+      self._log_lin_model, w = fit_tropicalized_linear_SVM(aug_data_classes, log_linear_beta)
+      self._apex = np.sign(w) * np.log(np.sign(w) * w)/log_linear_beta
     else:
-      # Useful for testing purposes, might be removed in the final version
-      apices = _apply_inrad_onevsall(aug_data_classes, x0=self.apex)
-      sector_indicators = np.zeros((len(aug_data_classes), aug_data_classes[0].shape[0]))
-      for i, apex in enumerate(apices):
-        Counts = np.array([count_points_sectors(C, apex) for C in aug_data_classes])
-        sector_indicators[i] = np.where(np.argmax(Counts, axis=0) == i, 1, 0)
+      # Compute apex
+      self._apex, self._eigval = _inrad_eigenpair(aug_data_classes, N=15)
 
-      # HACK: Random prediction based on population ratios 
-      def _predict(x):
-        predictions = np.zeros(len(apices))
-        for i, apex in enumerate(apices):
-          sector = np.argmax(x - apex)
-          predictions[i] = sector_indicators[i][sector] * aug_data_classes[i].shape[1]
-        if predictions.sum() != 0:
-          predictions /= predictions.sum()
-          choic = np.random.choice(len(predictions), p=predictions)
-          return choic
-        else:
-          return -1
+    # Assign secotrs based on majoritary population
+    Counts = np.zeros((len(aug_data_classes), self._apex.shape[0]))
+    for i, C in enumerate(aug_data_classes):
+      Counts[i] = count_points_sectors(C, self._apex)
+    zero_mask = np.all(Counts == 0, axis=0)
+    # TODO: self.apex[zero_mask] = np.inf
+    sector_indicator = np.argmax(Counts, axis=0)
+    sector_indicator[zero_mask] = -1
+    self._sector_indicator = sector_indicator
+    
+    # Save model weights
+    self._monomials, self._coeffs = newton_polynomial(monomials_idxes, self._apex, self._poly_degree)
 
-    self._predictor = _predict
-
-  def predict(self, data_points: np.ndarray) -> list[int]:
+  def predict(self, data: np.ndarray) -> list[int]:
     """Predict the labels of some data points (as a 2D matrix whose columns are the points)"""
-    assert self._predictor is not None, "Model must be trained before prediction"
-    aug_data_points = veronese(self.veronese_coefficients, [data_points])[0]
-    return [self._predictor(row) for row in aug_data_points.T]
+    assert self._monomials is not None, "Model must be trained before prediction"
+    data_copy = data.copy()
+    if not self._tropical_data:
+      data_copy = np.vstack((-np.sum(data_copy, axis=0), data_copy))
+    evaluation = self._monomials @ data_copy + self._coeffs[:, np.newaxis]
+    return self._sector_indicator[np.argmax(evaluation, axis=0)]
+  
+  def accuracy(self, data_classes: np.ndarray) -> float:
+    true_labels = []
+    predicted_labels = []
+    for label, points in enumerate(data_classes):
+      true_labels.extend([label] * points.shape[1])
+      predicted_labels.extend(self.predict(points))
+    return accuracy_score(true_labels, predicted_labels)
 
-
-def _apply_inrad_onevsall(Clist: list[np.ndarray],  N: int = 50,  x0: np.ndarray = None) -> list[np.ndarray]:
-  """Compute the overlaps between each class & their complementary for one-vs-all classification"""
-  apices = []
-  if x0 is None:
-    x0 = np.ones(Clist[0].shape[0])
-  for i, C in enumerate(Clist):
-    Cminus = np.concatenate([Clist[j] for j in range(len(Clist)) if j != i], axis=1)
-    apices.append(_inrad_eigenpair([Cminus, C], N, x0.copy())[0])
-  return apices
+  def export_weights(self, file) -> None:
+    assert self._monomials is not None, "Model must be trained before prediction"
+    data_matrix = np.column_stack((self._monomials, self._coeffs, self._sector_indicator))
+    valid_rows = data_matrix[self._sector_indicator != -1]
+    with open(file, 'w', newline='') as csvfile:
+      csvwriter = csv.writer(csvfile)
+      csvwriter.writerows(valid_rows)
+  
+  def load_weights(self, file) -> None:
+    weights = pd.read_csv(file).to_numpy()
+    self._monomials = weights[:, :-2]
+    self._coeffs = weights[:, -2]
+    self._sector_indicator = weights[:, -1]
 
 
 def _inrad_op(Clist: list[np.ndarray]) -> callable:
@@ -91,9 +103,9 @@ def _inrad_op(Clist: list[np.ndarray]) -> callable:
   return op
 
 
-def fit_tropicalized_linear_SVM(Xtrain: np.ndarray, beta: float = 1) -> tuple[LinearSVC, np.ndarray]:
+def fit_tropicalized_linear_SVM(data_classes: np.ndarray, beta: float = 1) -> tuple[LinearSVC, np.ndarray]:
   """Compute an approximating tropical hyperplane by taking the logarithm of a linear SVM"""
-  xtrain, ytrain = map_to_exponential_space(Xtrain, beta)
+  xtrain, ytrain = map_to_exponential_space(data_classes, beta)
   model = LinearSVC(dual=True, fit_intercept=False)
   clf = model.fit(xtrain.T, ytrain)
   w = clf.coef_[0]
