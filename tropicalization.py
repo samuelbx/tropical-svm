@@ -1,5 +1,4 @@
-from tropy.svm import TropicalSVM, fit_tropicalized_linear_SVM
-from tropy.metrics import accuracy_multiple
+from tropy.svm import TropicalSVC, fit_tropicalized_linear_SVM
 from tropy.utils import build_toy_dataset
 from tropy.veronese import map_to_exponential_space
 from tropy.graph import init_ax, plot_hyperplane, plot_classes, set_title, get_ignored
@@ -54,10 +53,10 @@ if __name__ == '__main__':
   Xtrain, Xtest = [Xplus_train, Xminus_train], [Xplus_test, Xminus_test]
 
   # Tropical support vector machine
-  model = TropicalSVM()
-  model.fit(Xtrain)
-  apex, l = model.apex, model.eigval
-  tropical_accuracy = accuracy_multiple(model.predict, Xtest)
+  model = TropicalSVC()
+  model.fit(Xtrain, tropical_data=True)
+  apex, l = model._apex, model._eigval
+  tropical_accuracy = model.accuracy(Xtest)
 
   # Classic "tropicalized" approximation using exponential kernel
   classic_accuracies, decision_frontiers, classic_apices = [], [], []
@@ -98,7 +97,7 @@ if __name__ == '__main__':
     set_title(ax0, "Test points and classifiers", apex, l)
     plt.show()
 
-  fig = plt.figure()
+  """fig = plt.figure()
   ax0 = fig.add_subplot(121)
   ax0.set_title("Accuracy: tropicalization vs. native tropical")
   ax0.set_xlabel("beta")
@@ -110,4 +109,4 @@ if __name__ == '__main__':
   ax1.set_title("Distance between tropicalized and native tropical apex")
   lis = [np.max(classic_apices[i] - apex) - np.min(classic_apices[i] - apex) for i in range(len(classic_apices))]
   plt.plot(Beta, lis)
-  plt.show()
+  plt.show()"""
