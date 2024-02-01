@@ -14,11 +14,10 @@ def max_max2_idx(a: np.ndarray) -> np.ndarray:
 def count_points_sectors(C: np.ndarray, apex: np.ndarray) -> np.ndarray:
   """Count the number of data points in each sector wrt some apex"""
   assert C.ndim == 2, apex.ndim == 1
+  differences = C - apex[:, np.newaxis]
+  max_indices = np.argmax(differences, axis=0)
   I = np.zeros(C.shape[0])
-  for col in C.T:
-    max_i, max2_i = max_max2_idx(col - apex)
-    if max_i != max2_i:
-      I[max_i] += 1
+  np.add.at(I, max_indices, 1)
   return I
 
 
@@ -54,6 +53,6 @@ def build_toy_dataset(n_points: int, n_features: int, n_positive_sectors: int,
   Cplus = C[:, positive_mask]
   Cminus = C[:, negative_mask]
   if noise:
-    apply_noise(Cplus, seed)
-    apply_noise(Cminus, seed)
+    apply_noise(Cplus, seed=seed)
+    apply_noise(Cminus, seed=seed)
   return Cplus, Cminus

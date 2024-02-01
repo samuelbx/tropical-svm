@@ -2,10 +2,7 @@ import numpy as np
 from .utils import min_min2_idx, max_max2_idx
 
 
-def proj(C: np.ndarray,
-         x: np.ndarray,
-         DF: bool = False,
-         min_plus: bool = False) -> np.ndarray:
+def proj(C: np.ndarray, x: np.ndarray, DF: bool = False, min_plus: bool = False) -> np.ndarray:
   """Project x over convex hull of C (optionally diagonally-free)"""
   assert C.ndim == 2 and x.ndim == 1
   d, p = C.shape
@@ -18,9 +15,7 @@ def proj(C: np.ndarray,
   return np.max(C + Caug[choices, np.arange(p)], axis=1)
 
 
-def proj_hyperplane(apex: np.ndarray,
-                    x: np.ndarray,
-                    min_plus: bool = False) -> np.ndarray:
+def proj_hyperplane(apex: np.ndarray, x: np.ndarray, min_plus: bool = False) -> np.ndarray:
   """Project x over hyperplane(apex)"""
   assert apex.ndim == 1, x.ndim == 1
   diff = x - apex

@@ -2,6 +2,9 @@ from itertools import combinations
 import numpy as np
 
 
+# TODO: use scipy.sparse for inference
+
+
 def lattice_values(d: int, size: int):
   """Generate sorted integer values whose sum is smaller than size"""
   if size == 0:
@@ -16,27 +19,24 @@ def lattice_values(d: int, size: int):
 
 
 def simplex_lattice_points(d: int, size: int):
-  """Generate the lattice points of dilated simplex"""
+  """Generate the lattice base points of dilated simplex"""
   for items in lattice_values(d, size):
     for comb in combinations(np.arange(d), len(items)):
       yield comb, items
 
 
-def newton_polynomial(lattice_points: list, apex: np.ndarray, d: int) -> tuple[list[list[float]], list[float]]:
+def newton_polynomial(lattice_points: list, apex: np.ndarray, d: int) -> tuple[np.ndarray, np.ndarray]:
   """Generate the Newton polynomial associated with some dilated simplex"""
-  coefficients = (-apex).tolist()
-  monomials = []
-  for elem in lattice_points:
-    monomials.append([0]*d)
+  monomials = np.zeros((len(lattice_points), d))
+  for i, elem in enumerate(lattice_points):
     for k, v in zip(elem[0], elem[1]):
-      monomials[-1][k] = v
-  return monomials, coefficients
+      monomials[i, k] = v
+  return monomials, -apex
 
 
-def hypersurface_polymake_code(lattice_points: list, apex: np.ndarray, initial_dim: int) -> str:
+def hypersurface_polymake_code(monomials: np.ndarray, coeffs: np.ndarray) -> str:
   """Generate the polymake code for visualizing some tropical polynomial"""
-  lattice_list, coef_list = newton_polynomial(lattice_points, apex, initial_dim)
-  return f'$C = new Hypersurface<Max>(MONOMIALS=>{str(lattice_list)}, COEFFICIENTS=>{str(coef_list)});'
+  return f'$C = new Hypersurface<Max>(MONOMIALS=>{str(monomials.astype(int).tolist())}, COEFFICIENTS=>{str(coeffs.tolist())});'
 
 
 def hypersurface_nodes(monomials: list[np.ndarray], coefficients: list[float], d: int, tol: float = 1e-6) -> list[tuple[np.ndarray, int]]:
