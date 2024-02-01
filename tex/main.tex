@@ -45,7 +45,7 @@
 \providecommand{\corollaryname}{Corollary}
 
 \begin{document}
-\title{Tropical Support Vector Machines and mean payoff games}
+\title{Tropical Piecewise Linear Classifiers and mean payoff games}
 \author{Xavier Allamigeon, Stéphane Gaubert, Samuel Boïté, Théo Molfessis}
 \maketitle
 
@@ -65,15 +65,15 @@ addition $a\oplus b=\max(a,b)$ and the multiplication $a\odot b=a+b$.
 A \emph{tropical hyperplane} in the $d$-dimensional tropical vector
 space $\mathbb{R}_{\max}^{d}$ is a set of vectors of the form
 \[
-\mathcal{H}_{a}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\max_{1\le i\le d}a_{i}+x_{i}\,\text{is achieved at least twice}\right\}.
+\mathcal{H}_{a}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\max_{1\le i\le d}(a_{i}+x_{i})\,\text{is achieved at least twice}\right\}.
 \]
 Such a hyperplane is parametrized by the vector $a=(a_{1},\ldots,a_{d})\in\mathbb{R}_{\max}^{d}$,
 which is required to be non-identically $-\infty$. It hence partitions
 the space between $d$ different \emph{tropical sectors}, laying the
-ground for multi-class classification.
+ground for multi-class classification. By definition, it is invariant by translation along the constant vector $(1,\ldots, 1)$.
 
 In this paper, we address the following tropical analogue of support
-vector machines. Given $n\le d$ classes of $d$-dimensional data
+vector machines. Given $n\in\{1,\ldots, d\}$ classes of $d$-dimensional data
 points $X^{1},\ldots,X^{p}$, we look for a maximum-margin separating
 tropical hyperplane to build a classifier. The notion of margin depends
 on the metric: the canonical choice in tropical geometry is the (additive
@@ -81,17 +81,17 @@ version of) Hilbert's projective metric. Its restriction to $\mathbb{R}^{d}$
 is induced by the so-called \emph{Hilbert's seminorm} or \emph{Hopf
 oscillation}
 \[
-\lVert x\rVert_{H}:=\max_{i\in[d]}x_{i}-\min_{i\in[d]}x_{i}.
+\lVert x\rVert_{H}:=\max_{1\le i\le d}x_{i}-\min_{1\le i\le d}x_{i}.
 \]
 It is a projective metric, in the sense that the distance between
 two points is zero if and only if these two points differ by an additive
 constant. When dealing with hard-margin support vector machines (SVMs),
-we also have to ensure every point lands in the appropriate sector.
+we also have to ensure that every point lands in the right sector.
 We define the \emph{tropical parametrized hyperplane} of configuration
 $\sigma=\left\{I^{1},\ldots,I^{n}\right\}$, where $I^{k}$ and $I^{\ell}$
 are disjoint for $k\ne\ell$, as:
 \[
-\mathcal{H}_{a}^{\sigma}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\exists k\ne\ell,\quad(x-a)\,\text{reaches its max coordinate in \ensuremath{I^{k}} and \ensuremath{I^{\ell}}}\right\}.
+\mathcal{H}_{a}^{\sigma}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\exists k\ne\ell,\quad (x-a)\,\text{reaches its max coordinate in \ensuremath{I^{k}} and \ensuremath{I^{\ell}}}\right\}.
 \]
 
 Hence, $\mathcal{H}_{a}^{\sigma}$ is said to \emph{separate} point
@@ -101,11 +101,11 @@ $x^{k}$ of class $k$:
 \item $x^{k}$ is on the right sector of the hyperplane, i.e its maximum
 coordinate is achieved in $I^{k}$
 \item $x^{k}$ is at distance at least $\nu$ from $\mathcal{H}_{a}^{\sigma}$:
-\begin{equation}
-d(\mathcal{H}_{a}^{\sigma},x^{k})=\max(x^{k}-a)-\max_{\sqcup_{\ell\ne k}I^{\ell}}(x^{k}-a)\ge\nu.
-\end{equation}
+\begin{equation*}
+d_H(\mathcal{H}_{a}^{\sigma},x^{k})=\max(x^{k}-a)-\max_{\sqcup_{\ell\ne k}I^{\ell}}(x^{k}-a)\ge\nu.
+\end{equation*}
 \end{enumerate}
-In Figure \ref{MaxMarginHyperplane}, we separate two classes
+In Figure \ref{fig:MaxMargin}, we separate two classes
 of $3$-dimensional points from a toy tropical dataset using a tropical
 hyperplane. Its margin is maximal and is represented by the Hilbert
 ball in gray. The figure is represented in the projective space $\mathbb{P}\left(\mathbb{R}_{\text{max}}^{3}\right)$,
@@ -113,9 +113,11 @@ i.e. the quotient of the set of non-identically $-\infty$ vectors
 of $\mathbb{R}_{\text{max}}^{3}$ by the equivalence relation which
 identifies tropically proportional values.
 
-\begin{figure}
-\input{fig/tropical_svm.pgf}\label{MaxMarginHyperplane}
+Since our separator is translation-invariant by the constant vector, in order to separate any $d$-dimensional dataset, we plunge it into the $x_1+\cdots+x_{d+1}=0$ subspace of $\mathbb{R}_{\max}^{d+1}$. This amounts to artificially adding a new coordinate to each point, equal to the opposite of the sum of the initial coordinates. If we're dealing with an intrinsically tropical dataset, for which this translation invariance makes sense, it is better to stay in the original space, that is to classify directly on the projective space.
 
+\begin{figure}
+\input{figures/bintoy-separated_1.pgf}
+\label{fig:MaxMargin}
 \caption{Maximum-margin tropical parametrized hyperplane, binary setting}
 \end{figure}
 
@@ -124,7 +126,9 @@ identifies tropically proportional values.
 
 TBD
 
-\section{Preliminaries on mean-field games}
+\section{Tropical Support Vector Machines}\label{Sec2}
+
+\subsection{Preliminaries on mean payoff games}
 
 In this section, we have a finite set of points $X=(x_{1},\ldots,x_{p})\in\mathbb{R}_{\text{max}}^{d\times p}$.
 We define the \emph{tropical span} of $X$ as the set of tropical
@@ -134,37 +138,34 @@ linear combinations of these points:
 \]
 As this is also the smallest tropically convex set containing these
 points, separating several point clouds amounts to separating their
-tropical spans.
-
-Given a tropically convex, compact and nonempty subset $\mathcal{V}$
+tropical spans. Given a tropically convex, compact and nonempty subset $\mathcal{V}$
 of $\mathbb{R}_{\max}^{d}$, we define the projection of any vector
 $x$ in $\mathbb{R}_{\max}^{d}$ by:
 \[
-P_{V}(x):=\max\{y\in V,\quad y\le x\}.
+P_{\mathcal{V}}(x):=\max\{y\in \mathcal{V},\quad y\le x\}.
 \]
 When $\mathcal{V}$ is the tropical span of $X$, we will also note
-this projection as $P_{X}$.
-
-We know from Maclagan et al. \cite{Maclagan2015} that tropical projections
+this projection as $P_{X}$. We know from Maclagan et al. \cite{Maclagan2015} that tropical projections
 can be expressed as a mean payoff game: for $i\in[p]$ and $x\in\mathbb{R}_{\max}^{d}$,
 \begin{equation}
-P_{X}(x)_{i}=\max_{j\in[p]}\left\{X_{ij}+\min_{k\in[d]}(-X_{kj}+x_{k})\right\}.\label{eq:projector}
+P_{X}(x)_{i}=\max_{j\in[p]}\left\{X_{ij}+\min_{1\le k \le d}(-X_{kj}+x_{k})\right\}.\label{eq:projector}
 \end{equation}
 
-Here, we recognize the payoff a zero-sum deterministic game with perfect
+Here, we recognize the payoff of a zero-sum deterministic game with perfect
 information. There are two players, ``Max'' and ``Min'' (the maximizer
 and the minimizer), who alternate their actions. Starting on node
-$i$, Player Max chooses to move to node $j$, and recieves $X_{ij}$
+$i$, Player Max chooses to move to node $j$, and receives $X_{ij}$
 from Player Min. Similarily, Player Min in turn chooses a node $k$
 and has to pay $-X_{kj}$ to Player Max.
 
 We now recall some tools from Perron-Frobenius theory, in relation
 with mean payoff games. We refer the reader to \cite{AKIAN2012} for more
-information.
-
-We call \emph{Shapley operator} a map $T:\mathbb{R}_{\max}^{d}\rightarrow\mathbb{R}_{\max}^{d}$
+information. We call \emph{Shapley operator} a map $T:\mathbb{R}_{\max}^{d}\rightarrow\mathbb{R}_{\max}^{d}$
 that is order preserving, continuous, and such that $T(\alpha+x)=\alpha+T(x)$
-for all $\alpha\in\mathbb{R}_{\max}$ and $x\in\mathbb{R}_{\max}^{d}$.
+for all $\alpha\in\mathbb{R}_{\max}$ and $x\in\mathbb{R}_{\max}^{d}$. $T$ is said to be \emph{diagonal free} when $T_{i}(x)$
+is independent of $x_{i}$ for all $i\in\{1,\ldots, n\}$, i.e. when for all $x,y\in\mathbb{R}_{\max}$ such that $x_{j}=y_{j}$
+for all $j\neq i$, we have $T_{i}(x)=T_{i}(y)$. 
+
 Observe that the tropical projection defined by \ref{eq:projector}
 is a Shapley operator. Given a Shapley operator $T$, we also define
 \[
@@ -173,20 +174,27 @@ is a Shapley operator. Given a Shapley operator $T$, we also define
 More specifically, any tropically convex set $\mathcal{V}$ is equal
 to $\mathcal{S}(P_{\mathcal{V}})$. Indeed, as for any $x\in\mathbb{R}_{\text{max}}^{d}$,
 $P_{\mathcal{V}}(x)\le x$, having $x\in\mathcal{S}(P_{\mathcal{V}})$
-is sufficient to have $x=P_{\mathcal{V}}(x)$, meaning $x$ is in
+implies $x=P_{\mathcal{V}}(x)$, meaning $x$ is in
 $\mathcal{V}$.
 
-\section{Hard-margin binary SVM}
 
-In this section, we suppose that a separating tropical hyperplane
-exists, and we want to maximize the margin. We also place ourselves
-in the binary case, where we seek to separate convex hulls $\mathcal{V}^{+}$
+Operator $P$ can be slightly tweaked to make it \emph{diagonal-free} -- but the resulting operator isn't a projector anymore.
+In the modified game, the opponent is prevented from replying eye-for-an-eye:
+\[
+\left[P^{\text{DF}}_X(x)\right]_{i}:=\max_{j\in[p]}\left\{ X_{ij}+\min_{k\ne i}(-X_{kj}+x_{k})\right\} .
+\]
+
+Noticeably, $\mathcal{S}(P_X^\text{DF}) = \mathcal{S}(P_X)$.
+
+\subsection{Hard-margin binary SVM}
+
+In this section, we introduce a practical criterion for the existence of a separating tropical hyperplane, and if it exists, we construct one with optimal margin. We also place ourselves in the binary setting, where we seek to two separate convex hulls $\mathcal{V}^{+}$
 and $\mathcal{V}^{-}$. We assume we have two Shapley operators $T^{+}$
 and $T^{-}$ such that $\mathcal{S}(T^{\pm})=\mathcal{V}^{\pm}$,
 which is for instance the case when separating finite point clouds:
-corresponding operators are projections $P_{X^{\pm}}$. We define:
+corresponding operators are projections $P_{\mathcal{V}^{\pm}}$. We define:
 \[
-T=\min(T^{+},T^{-}),
+T=\inf(T^{+},T^{-}),
 \]
 which is also a Shapley. We denote by $\perp$ the vector of $\mathbb{R}_{\max}^{d}$
 identically equal to $-\infty$. The \emph{spectral radius} of $T$
@@ -200,10 +208,13 @@ i.e. the intersection of the convex hulls we are seeking to separate.
 From Allamigeon, Gaubert et al. \cite{Allamigeon2018}, we know that $\mathcal{V}^{+}$
 and $\mathcal{V^{-}}$ being disjoint is equivalent to $\rho(T)\le0$.
 
-Given $a$ the corresponding eigenvector, we define the sectors:
+Given $a$ the eigenvector corresponding to $\rho(T)$, we define the sectors:
 \[
-I^{\pm}:=\left\{i\in[d],\quad T^{\pm}(a)_{i}>\lambda+a_{i}\right\},
+I^{\pm}:=\left\{i\in\{1,\ldots, d\},\quad T^{\pm}(a)_{i}>\rho(T)+a_{i}\right\},
 \]
+
+TODO : RÉGLER QUESTION DE INF SUR LES SECTEURS ET ENVOI DE L'APEX A +INF
+
 and the corresponding configuration $\sigma=\{I^{+},I^{-}\}$.
 \begin{prop}
 Hyperplane $\mathcal{H}_{a}^{\sigma}$, given the sectors defined
@@ -217,7 +228,7 @@ which is in particular the case when separating finite point clouds.
 \end{prop}
 
 \begin{proof}
-As $T^{\pm}$ is non-expansive, let's first remark that for $x^{\pm}\in V^{\pm}$:
+As $T^{\pm}$ is non-expansive, for $x^{\pm}\in V^{\pm}$:
 \[
 x_{i}^{\pm}\le T^{\pm}(x^{\pm})_{i}=\left(T^{\pm}(x^{\pm})-T^{\pm}(a)\right)_{i}+T^{\pm}(a)_{i},
 \]
@@ -225,34 +236,33 @@ hence
 \begin{equation}
 x_{i}^{\pm}\le\max(x^{\pm}-a)+T^{\pm}(a)_{i}.\label{eq41}
 \end{equation}
-For instance, let $i\in[d]\setminus I^{+}$. Then $T^{+}(a)_{i}=\lambda+a_{i}$,
-so for $x^{+}\in V^{+}$, using equation \ref{eq41}:
+For instance, let $i\in I^{-}$. Then $T^{+}(a)_{i}=\rho(T)+a_{i}$,
+so for $x^{+}\in \mathcal{V}^{+}$, using equation \ref{eq41}:
 \[
-x_{i}^{+}-a_{i}\le\max(x^{+}-a)+\lambda.
+x_{i}^{+}-a_{i}\le\max(x^{+}-a)+\rho(T).
 \]
 In particular, $x_{i}^{+}-a_{i}<\max(x^{+}-a)$ and any element of
-$V^{+}$ can't belong to any of sectors in $[d]\setminus I^{+}$ with
-respect to $H_{a}$, from which the sectors $I^{\pm}$ are well-defined.
+$\mathcal{V}^{+}$ cannot belong to any of sectors in $I^{-}$ with
+respect to $\mathcal{H}_{a}$, from which the sectors $I^{\pm}$ are well-defined.
 Finally, 
 \[
-d(H_{a}^{I^{+}},x^{+})=\max(x^{+}-a)-\max(x^{+}-a)_{[d]\setminus I^{+}}\ge-\lambda,
+d_H(\mathcal{H}_{a}^{I^{+}},x^{+})=\max(x^{+}-a)-\max(x^{+}-a)_{I^{-}}\ge-\rho(T),
 \]
-and the margin comes from the fact that this applies to any element
-of $V^{+}$.
+hence the margin.
 
-Let's finally prove that the margin is maximal in the case where $T^{\pm}$
-are of the form $T^{\pm}(x)=P_{V^{\pm}}(x)=\sup_{v\in V^{\pm}}\left(v_{i}+\min(-v+x)\right).$
-Let $i\in[d]\setminus I^{+}$. Then, for $\varepsilon>0$, we can
-find $v\in V^{+}$ such that 
+Let's finally prove that the margin is optimal in the case where $T^{\pm}$
+are of the aforementioned form.
+Let $i\in I^{-}$. Then, for $\varepsilon>0$, we can
+find $v\in \mathcal{V}^{+}$ such that 
 \[
 T^{+}(a)_{i}-\varepsilon\le v_{i}-\max(v-a)\le T^{+}(a)_{i},
 \]
 giving us 
 \[
-\lambda-\varepsilon\le v_{i}-a_{i}-\max(v-a)\le\lambda.
+\rho(T)-\varepsilon\le v_{i}-a_{i}-\max(v-a)\le\rho(T).
 \]
-Maximizing over all $i\in[d]\setminus I^{+}$ yields that $v$ is
-at most at distance $-\lambda+\varepsilon$ of $H_{a}^{I}$, hence
+Maximizing over all $i\in I^{-}$ gives that $v$ is
+at most at distance $-\rho(T)+\varepsilon$ of $\mathcal{H}_{a}^{\sigma}$, hence
 the optimality.
 \end{proof}
 %
@@ -263,20 +273,21 @@ given any initial point $a^{0}$:
 \[
 \begin{cases}
 z^{k+1} & =\frac{1}{2}\left(a^{k}+T(a^{k})\right)\\
-a^{k+1} & =z^{k+1}-\max_{i\in[d]}z_{i}^{k+1}
+a^{k+1} & =z^{k+1}-\max_{1\le i\le d}z_{i}^{k+1}
 \end{cases}
 \]
-The eigenpair we search is $(a^{\infty},2\cdot\max_{i\in[d]}z_{i}^{\infty})$.
+The eigenpair we search is $(a^{\infty},2\cdot\max_{1\le i\le d}z_{i}^{\infty})$.
 Example results of this algorithm on a toy dataset are shown in Figure
 \ref{MaxMarginHyperplane}.
 
-\section{Geometric approach for soft-margin SVM}
+TODO : TALK ABOUT EFFICIENCY
+
+\subsection{Geometric approach for soft-margin SVM}
 
 We seek to separate convex hulls $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$.
-Assuming that the data overlap, we want to build a measure of their
-non-separability. Using the operator $T$ we previously defined, we
-know from Allamigeon, Gaubert et al. \cite{Allamigeon2018} that $\rho(T)$ is the
-(positive) inner radius of $\mathcal{S}(T)$, i.e. the supremum of
+Assuming that the data overlap, we want to have a sense of their
+non-separability. Using the operator $T$ we previously defined,  $\rho(T)$ is the
+(positive) inner radius of $\mathcal{S}(T)$ . \cite{Allamigeon2018} , i.e. the supremum of
 the radii of the Hilbert balls contained in the intersection between
 $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$. The next Proposition shows
 us that this measure can be interpreted geometrically, in the case
@@ -296,14 +307,14 @@ is of empty interior.
 
 \begin{proof}
 Let's denote $X$ the cloud consisting of all points (regardless of
-sign), and for $x_{j}\in X$, we note $y_{j}$ its sign, $s_{j}$
+sign), and for $x_{j}\in X$, we note $s_{j}$
 its sector and $d_{j}$ the second argmax of $(x_{j}-a)$. For each
-point $x_{j}=X_{\cdot j}\in X$ at distance less than $\lambda$ of
-$H_{a}$, the transformation consists in setting 
+point $x_{j}=X_{\cdot j}\in X$ at distance less than $\rho(T)$ of
+$\mathcal{H}_{a}$, the transformation consists in setting 
 \[
 W_{kj}:=\begin{cases}
 X_{kj} & \text{if \ensuremath{k\ne s_{j}}}\\
-X_{s_{j}j}-d(x_{j},H_{a}) & \text{at \ensuremath{s_{j}}}
+X_{s_{j}j}-d_H(x_{j},\mathcal{H}_{a}) & \text{at \ensuremath{s_{j}}}
 \end{cases}
 \]
 so that $w_{j}$ is projected on the hyperplane. As $T^{\pm}$ is
@@ -315,7 +326,7 @@ hence
 \begin{equation}
 x_{i}^{\pm}\le\max(x^{\pm}-a)_{\ne i}+T^{\pm}(a)_{i}.\label{eq31}
 \end{equation}
-Let $i\in[d]$. If $x_{j}\in X$ is not in the $i$-th sector, then
+Let $1\le i\le d$. If $x_{j}\in X$ is not in the $i$-th sector, then
 for $k$ different from the sector of $x_{j}$, by definition: 
 \[
 (w_{j}-a)_{k}\le(x_{j}-a)_{d_{j}}\le(w_{j}-a)_{s_{j}},
@@ -332,219 +343,259 @@ thus
 \[
 W_{ij}-\max_{\ne i}\left(w_{j}-a\right)=\left(w_{j}-a\right)_{s_{j}}-\left(x_{j}-a\right)_{d_{j}}+a_{s_{j}}\ge a_{s_{j}}=a_{i},
 \]
-with equality iff $d(x_{j},H_{a})\leq\lambda$.
+with equality iff $d_H(x_{j},\mathcal{H}_{a})\leq\rho(T)$.
 
-Suppose by symmetry that $T(a)_{i}=T^{+}(a)_{i}=\lambda+a_{i}.$ We
-also have $T^{-}(a)_{i}\ge\lambda+a_{i}$. Then, using the proof of
+Suppose by symmetry that $T(a)_{i}=T^{+}(a)_{i}=\rho(T)+a_{i}.$ We
+also have $T^{-}(a)_{i}\ge\rho(T)+a_{i}$. Then, using the proof of
 Theorem 22 in \cite{Akian2021TropicalLR}, we know that there exists
 $j^{+},j^{-}\in[p]$ such that $x_{j^{+}}\in X^{+}$ and $x_{j^{-}}\in X^{-}$
-are in sector $i$, with $x_{j^{+}}$ being at distance $\lambda$
-from $H_{a}$ and $x_{j^{-}}$ at distance greater than $\lambda$.
+are in sector $i$, with $x_{j^{+}}$ being at distance $\rho(T)$
+from $\mathcal{H}_{a}$ and $x_{j^{-}}$ at distance greater than $\rho(T)$.
 Therefore, $W_{ij^{+}}-\max_{\ne i}\left(w_{j^{+}}-a\right)=a_{i}$
 and $W_{ij^{-}}-\max_{\ne i}\left(w_{j^{-}}-a\right)\geq a_{i}$.
 Moreover, for any $j$ such that $x_{j}\in X^{+}$ is in sector $i$,
-eq. \ref{eq31} gives $d(x_{j},H_{a})\leq\lambda$.
+eq. \ref{eq31} gives $d_H(x_{j},\mathcal{H}_{a})\leq\rho(T)$.
 
 Let $Q^{\pm}$ be the \emph{diagonal-free} projections over transformed
-point clouds, and
-
-$Q=Q^{+}\wedge Q^{-}.$ We've just shown that $Q(a)_{i}=Q^{+}(a)_{i}=a_{i}$,
+point clouds, and $Q=\inf(Q^{+}, Q^{-}).$ We've just shown that $Q(a)_{i}=Q^{+}(a)_{i}=a_{i}$,
 and finally $Q(a)=a$.
 \end{proof}
 %
-In pseudo-polynomial time, we are thus able to compute a distance
-of our point clouds to separability. It gives a bound on the distance
-under which some points have to be moved to separate hulls.
+Thus, the spectral radius can be interpreted as a bound on the distance
+under which some points have to be moved separate the interiors of convex hulls.
 
 As $a$ is the center of the inner ball of $\mathcal{V}^{+}\cap\mathcal{V}^{-}$,
-we also have a purely geometric heuristic for determining a separating
+we also have a purely geometric heuristic for determining a
 hyperplane in the non-separable case: we simply take the hyperplane
-$\mathcal{H}_{a}$ and then assign the sectors based on majoritary
+$\mathcal{H}_{a}$ and then assign the sectors based on dominant
 population, for instance.
 
 
-\section{Topics Being Explored}
-
-\subsection{Hard-Margin Multi-Classification}
+\subsection{Hard-margin multiclass classification}
 
 In this section, we consider convex hulls of point clouds of $n$
-classes, noted $V^{k}$ for $k\in[n]$, and described by Shapley operators
-$T^{k}$. We give a sufficient condition for these classes to be tropically
-separable in their whole, meaning that there exists a tropical signed
-hyperplane such that each $V^{k}$ belong to sectors of $I^{k}\subset[d]$
-with $I^{k}\cap I^{l}=\emptyset$ for $k\ne l\in[n].$ We then adapt
+classes, noted $\mathcal{V}^{k}$ for $1\le k \le n$, and described by Shapley operators
+$T^{k}$. We give a simple criteria for these classes to be tropically separable in their whole, meaning that there exists a tropical signed
+hyperplane such that each $\mathcal{V}^{k}$ belong to sectors of $I^{k}\subset\{1,\ldots, d\}$
+with $I^{k}\cap I^{l}=\emptyset$ for $k\ne l\in\{1, \ldots, n\}.$ We then adapt
 the previous results to this case.
 
-We now consider the Shapley operator :
-
+We now consider the Shapley operator
 \[
-T:=\bigvee_{1\le k<l\le n}T^{k}\wedge T^{l}
+T:=\sup_{1\le k<l\le n}\inf(T^{k}, T^{l}).
 \]
 
-We remark that in the case $n=2$, $T$ is the same as previously
+Morally, we can think of the union of 2 to 2 intersections of data classes, although the sup operator does not strictly speaking correspond to a union. We also remark that when $n=2$, $T$ is the same as previously
 defined.
 
-Let $(a,\lambda)$ the eigenpair of $T$ approximated by the Kranoselskii-Mann
-algorithm, verifying $T(a)=\lambda+a$. Let's define the sectors:
+Let $(a,\rho(T))$ the eigenpair of $T$ approximated by the Kranoselskii-Mann
+algorithm, verifying $T(a)=\rho(T)+a$. We define the sectors:
 \[
-I^{k}:=\{i\in[d],\quad T^{k}(a)_{i}>\lambda+a_{i}\}.
+I^{k}:=\{1\le i\le d,\quad T^{k}(a)_{i}>\rho(T)+a_{i}\}.
 \]
 
 Given the definition of $T$, it is clear that $I^{k}\cap I^{l}=\emptyset$
-for $k\ne l\in[n],$ and we have the following result :
+for $1\le k\ne l\le n,$ and we have the following result :
 \begin{prop}
-If $\lambda<0$, the tropical parametrized hyperplane $H_{a}^{\sigma}$,
-given the configuration $\sigma=\{I^{k}\}_{k\in[n]}$, separates $V^{k}$
-and $V^{l}$ for all $k\ne l\in[n]$ with a margin of $-\lambda$.
+If $\rho(T)<0$, the tropical parametrized hyperplane $\mathcal{H}_{a}^{\sigma}$,
+given the configuration $\sigma=\{I^{k}\}_{1\le k\le n}$, separates $\mathcal{V}^{k}$
+and $\mathcal{V}^{l}$ for all $1 \le k\ne l \le n$ with a margin of $-\rho(T)$.
 Moreover, this margin is optimal in the case where all $T^{k}$ are
 of the form
 \[
-T^{k}(x)=P_{V^{k}}(x)=\sup_{v\in V^{k}}\left(v_{i}+\min(-v+x)\right),
+T^{k}(x)=P_{\mathcal{V}^{k}}(x)=\sup_{v\in \mathcal{V}^{k}}\left(v_{i}+\min(-v+x)\right),
 \]
  which is in particular the case when separating finite point clouds. 
 \end{prop}
 
 \begin{proof}
-Let $k\in[n]$ and $i\in[d]\setminus I_{k}$. Using the same reasoning
+Let $k\in\{1,\ldots, n\}$ and $i\in\bigsqcup_{\ell\ne k}I^{\ell}$. Using the same reasoning
 as in the proof of Proposition $19$, we obtain that for all $x^{k}\in V^{k}$,
 \[
-d(H_{a}^{\sigma},x^{k})=\max(x^{k}-a)-\max(x^{k}-a)_{[d]\setminus I_{k}}\ge-\lambda,
+d_H(\mathcal{H}_{a}^{\sigma},x^{k})=\max(x^{k}-a)-\max(x^{k}-a)_{\sqcup_{\ell\ne k}I^{\ell}}\ge-\lambda,
 \]
 hence the margin. Let's now prove the optimality in the case where
-all $T^{k}$ are of the form $T^{k}(x)=P_{V^{k}}(x)=\sup_{v\in V^{k}}\left(v_{i}+\min(-v+x)\right).$
-For all $i\in[d]$, there are two distinct classes $k\ne l\in[n]$
-such that $T^{k}(a)_{i}\wedge T^{l}(a)_{i}=\lambda+a_{i}$. As $I^{k}\cap I^{l}=\emptyset$,
-we can suppose by symmetry that $i\in[d]\setminus I_{k}.$ Then using
-the same argument as in the proof of optimality in Proposition $19$,
+all $T^{k}$ are of the aforementioned form. For all $1\le i\le d$, there are two distinct classes $k\ne l$
+such that $\inf(T^{k}(a)_{i}, T^{l}(a)_{i})=\rho(T)+a_{i}$. As $I^{k}\cap I^{l}=\emptyset$,
+we can suppose by symmetry that $i\in\bigsqcup_{\ell\ne k}I^{\ell}.$ Then using
+the same argument as in the proof of optimality in Proposition \ref{TODO:CITE},
 we know that for all $\varepsilon>0$ there is a point $v^{k}\in V^{k}$
-such that $\max(v^{k}-a)-(v_{i}^{k}-a_{i})\le-\lambda+\varepsilon$,
+such that $\max(v^{k}-a)-(v_{i}^{k}-a_{i})\le-\rho(T)+\varepsilon$,
 which means that 
 \[
-d(H_{a}^{\sigma},x^{k})=\max(x^{k}-a)-\max(x^{k}-a)_{[d]\setminus I_{k}}\le-\lambda+\varepsilon.
+d_H(\mathcal{H}_{a}^{\sigma},x^{k})=\max(x^{k}-a)-\max(x^{k}-a)_{\sqcup_{\ell\ne k}I^{\ell}}\le-\lambda+\varepsilon.
 \]
 
-As this holds for every sector $i\in[d]$, we have proven the optimality. 
+As this holds for every sector $i\in\{1,\ldots, d\}$, we have proven the optimality. 
 \end{proof}
 
-\subsection{Adding Features: Tropically Polynomial Decision Boundaries}
+\section{Tropical Polynomials as Piecewise Linear Classifiers}
 
-In the classical setting, the kernel trick consists in mapping the
-training points in a higher-dimensional space in which we expect the
-data to become easily linearly separable. In this paragraph, we adapt
-this idea to integer combinations of features in the tropical setting.
+In this section, we extend our previous approach to piecewise linear
+fitting, using tropical polynomials. 
+
+A \emph{tropical polynomial} \emph{function} over $\mathbb{R}_{\max}^{d}$
+is defined by
+\[
+f(x)=\bigoplus_{\alpha\in\mathbb{Z}^{d}}f_{\alpha}x^{\alpha}=\max_{\alpha\in\mathbb{Z}^{d}}\left(f_{\alpha}+\langle x,\alpha\rangle\right),
+\]
+where $f_{\alpha}=-\infty$ except for finitely many values of $\alpha$,
+and with $\langle x,\alpha\rangle=\sum_{i}x_{i}\cdot\alpha_{i}$ under
+the convention $(-\infty)\cdot0=0$.
+
+The \emph{tropical hypersurface} $V(f)$ is the set of points from
+$\mathbb{R}_{\max}^{d}$ where the maximum in $f$ is attained twice.
+Tropical hypersurfaces are piecewise linear and divide $\mathbb{R}_{\max}^{d}$
+between sectors corresponding to the maximal monomial: they can perform
+more complex classification.
 
 If $\mathcal{A}\subset\mathbb{Z}^{d}$ is a set of vectors, we define
-the \emph{veronese embedding} of $x$ as 
+the \emph{Veronese embedding} of $x$ as:
 \[
-\text{ver}(x):=\left(\langle x,\alpha\rangle\right)_{\alpha\in\mathcal{A}}\in\mathbb{R}^{\mathcal{A}},
+\text{ver}_{\mathcal{A}}(x):=\left(\langle x,\alpha\rangle\right)_{\alpha\in\mathcal{A}}\in\mathbb{R}_{\max}^{\mathcal{A}},
 \]
 allowing us to map our point space into a larger space, made up of
-various integer combinations of features. 
-
-To take a fairly exhaustive example, let's consider the integer combinations defined by the integer points of the dilated simplex. Noting $s\in\mathbb{N}$ a scale parameter, and $\Delta_{d}$ the $d$-dimensional simplex, we define 
+various integer combinations of features. To take a fairly exhaustive
+subset of monomials, we consider the integer combinations defined
+by the integer points of the dilated simplex. Noting $s\in\mathbb{N}^{*}$
+a scale parameter, we define
 \[
-\mathcal{A}_{s}:=(s\Delta_{d})\cap\mathbb{Z}^{d}.
+\mathcal{A}_{s}:=\left\{x\in\mathbb{N}^{d},\quad x_{1}+\cdots+x_{d}=s\right\},
+\]
+which grows polynomially with $s$. The Veronese embedding defined
+by $\mathcal{A}_{s}$ is invertible and if $\mathcal{H}$ is a tropical
+hyperplane in $\mathbb{R}_{\max}^{\mathcal{A}}$, $\text{ver}_{\mathcal{A}_{s}}^{-1}(\mathcal{H})$
+is a tropical polynomial hypersurface in the initial space (proof
+/ quote?). Hence, $\text{ver}_{\mathcal{A}_{s}}$ is a feature map
+enabling us to perform piecewise linear classification in $\mathbb{R}_{\max}^{d}$. This brings us close to the framework of neural networks with piecewise linear activations, e.g. relaxed linear units \cite{zhang2018tropical}. We remark that $\mathcal{A}_1$ corresponds to tropical hyperplanes: we are generalizing the approach developed in Section \ref{sec2}.
+
+\begin{prop}
+Margin theorem: TBD
+\end{prop}
+\begin{proof}
+We want to link the Hilbert norm between initial space and Veronese-augmented
+space $\mathbb{R}^{\mathcal{A}}$, using linear transfromation $V$.
+We note $\mathcal{H}^{\mathcal{A}}$ the hypersurface in augmented
+space, $\mathcal{H}:=V^{-1}(\mathcal{H}^{\mathcal{A}})$ the corresponding
+tropical hypersurface, $Y\in\mathbb{R}_{\max}^{d}$ from the initial
+space, and $y:=VY$. Using the linearity of $V$, controlling the
+link between the norms from one side amounts to showing 
+\[
+\lVert Y\rVert_{H}\ge C\lVert VY\rVert_{H},
+\]
+Using the lemma 
+\[
+\lVert Y\rVert_{H}=2\inf_{\alpha\in\mathbb{R}}\lVert Y+\alpha e\rVert_{\infty},
+\]
+we only need to show that 
+\[
+\lVert Y\rVert_{\infty}\ge C\lVert VY\rVert_{\infty}.
+\]
+for some constant $C$. Indeed, for $\alpha=0$, it amounts to $\lVert VY\rVert_{H}\le2\lVert VY\rVert_{\infty}$,
+hence $\lVert Y\rVert_{\infty}\ge\frac{C}{2}\lVert VY\rVert_{H}$.
+Then, if $C$ is independent from $Y$, then we also have $\lVert Y+\alpha e\rVert_{\infty}\ge C\lVert VY+\frac{\alpha}{s}Ve\rVert_{\infty}=C\left\lVert V\left(Y+\frac{\alpha}{s}e\right)\right\rVert_{\infty}$,
+as $Ve_{n}=se_{n}$ because $\sum\alpha_{i}=s$. Then for all $\alpha$,
+\[
+\lVert Y+\alpha e\rVert_{\infty}\ge\frac{C}{2}\lVert V(Y+\alpha e)\rVert_{H}=\frac{C}{2}\lVert VY+s\alpha e\lVert_{H}=\frac{C}{2}\lVert VY\lVert_{H}.
+\]
+Taking the infimum yields $\frac{1}{2}\lVert Y\rVert_{H}\ge\frac{C}{2}\lVert VY\rVert_{H},$
+hence
+\[
+\lVert Y\rVert_{H}\ge C\lVert VY\rVert_{H}.
 \]
 
-\begin{prop}
-Applying the previous method to point clouds $\text{ver}(C_{i})$
-for each class $i$ yields a classifier whose decision boundaries,
-when seen in the initial vector space, are tropical polynomials. (cite
-?)
-\end{prop}
+Let's find constant $C$. By definition,
+\[
+\lVert VY\rVert_{\infty} =\sup_{k}\left|\sum_{j}V_{kj}Y_{j}\right|
+ \le\sup_{k}\sum_{j}V_{kj}\cdot\lVert Y\rVert_{\infty}\\
+ =s\lVert Y\rVert_{\infty},
+\]
+because $Ve_{n}=se_{n}$, so we define $C=1/s$.
 
-\begin{prop}
-\emph{(Zhang et al. \cite{zhang2018tropical})} Feedforward neural networks with rectified linear units have decision boundaries that are, modulo trivialities, nothing more than tropical rational maps, i.e differences of tropical polynomials. 
-\end{prop}
+Reciprocally, we only need to show that 
+\[
+\lVert Y\rVert_{\infty}\le C'\lVert VY\rVert_{\infty}
+\]
+using some constant $C'$. Denoting $y=VY$, we have $V^{T}y=V^{T}VY$,
+where $V^{T}V$ is definite positive. Hence, $Y=(V^{T}V)^{-1}V^{T}y$,
+and
+\[
+\lVert Y\rVert_{\infty}=\lVert(V^{T}V)^{-1}V^{T}y\rVert_{\infty}\le\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}\lVert VY\rVert_{\infty}
+\]
+hence we define $C'=\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}$.
 
-Thus, the Veronese embedding method brings us closer to the behaviour of dense neural networks.
+\paragraph{Exploration.}
 
-\begin{example}
-We test the relevance of our Veronese embedding method on two classic data sets.
+$V$ is a $\ell_{s,d}\times n$ matrix, where $\ell_{s,d}$ is the cardinal
+of $\mathcal{A}^{s}$ and satisfies the equation
+\[
+\ell_{s,d}=\ell_{s,d-1}+\ell_{s-1,d},
+\]
+because when taking a point from $\mathcal{A}^{s}$, either the first
+coordinate is equal to $0$ and there are $\ell_{s,d-1}$ possibilities
+for the rest, either the first coordinate is nonzero, so that removing
+$1$ to it and getting a point of $\mathcal{A}^{s-1}$ is a bijective
+transformation. $\ell_{n,n}=\binom{2n}{n}-\binom{2(n-1)}{n-1}$ corresponds
+to OEIS \#A051924.
 
-The \emph{Iris flower} dataset includes measurements of sepal length, sepal width, petal length, and petal width, across three species of Iris (Iris setosa, Iris virginica, and Iris versicolor). The \emph{Wine quality and type dataset} comprises physicochemical tests (like alcohol content, acidity,
-sugar level, etc.) and sensory information (quality score) for various samples of red and white wines.
+Rows of $V$ are points from the external face of the dilated simplex.
+As the latter is invariant by permutating axes, we have
+\[
+V^{T}V=(V_{\cdot i}^{T}V_{\cdot j})_{ij}=\begin{pmatrix}\alpha+\beta &  & \beta\\
+ & \ddots\\
+\beta &  & \alpha+\beta
+\end{pmatrix}=\alpha I+\beta H,
+\]
+where $\alpha+\beta=\lVert V_{\cdot1}\rVert^{2}$, $\beta=\langle V_{\cdot1},V_{\cdot2}\rangle$
+and $H=\begin{pmatrix}1 & \cdots & 1\\
+\vdots & \ddots & \vdots\\
+1 & \cdots & 1
+\end{pmatrix}=ee^{T}$. Given the lemma 6.8 from the MAP557 course, we have
+\[
+(V^{T}V)^{-1}=\alpha^{-1}I-\frac{\beta}{\alpha^{2}(1+n\alpha^{-1}\beta)}H.
+\]
+And:
+\[\alpha+\beta=\lVert V_{\cdot1}\rVert^{2}=\sum_{k=0}^{s}k^{2}\ell_{s-k,d-1}\]
+\[\alpha=\sum_{k=0}^{s}\sum_{j=0}^{s-k}\ell_{s-j-k,d-2}\cdot k(k-j)\]
+\[\beta=\langle V_{\cdot1},V_{\cdot2}\rangle=\sum_{k=0}^{s}\sum_{j=0}^{s-k}\ell_{s-j-k,d-2}\cdot kj\]
 
-After applying our algorithm, we assign the sectors to the majority population.
+Lastly, as $V^{T}H=s\mathcal{H}_{\ell_{s,d}\times n}:=sH'$,
+\[
+\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}=\left\lVert\alpha^{-1}V^{T}-\frac{\beta s}{\alpha^{2}(1+n\alpha^{-1}\beta)}H'\right\rVert_{\text{op},\infty},
+\]
+which (for the moment) seems very hard to control or compute!
+
+\paragraph{Remarks}
+\begin{itemize}
+\item $V^{T}V$ is not diagonally dominant, $V$ neither
+\item $\lambda$ (eigenvalue from inner radius) grows linearly with $d$
+\item Setting $s$ beforehand, $\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}$
+seems to converge in $d$ to some reasonable value in $\propto1-e^{-d}$
+(to give an idea)
+\item Setting $d$ beforehand, $\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}$
+grows with $s$ in $\ln s$ (to give an idea: converges or not?)
+\item $\ell_{n,n} \sim \frac{3\cdot 4^{n}}{4 \sqrt{\pi n}}$ 
+\item en gros de gros $\ell_{s,d} \sim \frac{3\cdot 2^{s+d}}{4 \sqrt{\pi}(sd)^{1/4}}$ 
+\end{itemize}
+\end{proof}
+
+In Figures \ref{fig:iris} and \ref{fig:toy}, we visualize the decision boundaries of the piecewise linear classifier depending on scale parameter $s$. Dotted lines in light gray represent merged sectors after assignment. In Figure \ref{fig:iris}, we selected $3$ features from the Iris In Figure \ref{fig:toy}, we developed a toy 2D dataset with $4$ different classes. $s=3$ seems to better classify our toy data classes, whereas $s=4$ seems more prone to overfitting. $s$ is a hyperparameter describing the complexity of our piecewise linear models.
 
 \begin{figure}[!h]
-\begin{tabular}{|c|c|c|c|}
-\hline 
-Dataset  & Groups  & $d$  & $p$\tabularnewline
-\hline 
-\hline 
-Iris  & Setosa, Virginica, Versicolor  & 4  & 150\tabularnewline
-\hline 
-Wine  & Red (bad), Red (good), White (bad), White (good)  & 10  & 6500\tabularnewline
-\hline 
-\end{tabular}
-
-\caption{Datasets description}
+    \centering
+    \resizebox{0.7\textwidth}{!}{\input{fig/A_bis__iris_3.pgf}}
+    \caption{Projected Iris dataset, $s=3$}
+    \label{fig:iris}
 \end{figure}
 
 \begin{figure}[!h]
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-\hline 
-\multirow{2}{*}{Dataset} & \multicolumn{2}{c|}{$\mathcal{A}_{1}$} & \multicolumn{2}{c|}{$\mathcal{A}_{2}$} & \multicolumn{2}{c|}{$\mathcal{A}_{3}$} & \multicolumn{2}{c|}{$\mathcal{A}_{4}$}\tabularnewline
-\cline{2-9} \cline{3-9} \cline{4-9} \cline{5-9} \cline{6-9} \cline{7-9} \cline{8-9} \cline{9-9} 
- & \emph{1v1}  & \emph{1vR}  & \emph{1v1}  & \emph{1vR}  & \emph{1v1}  & \emph{1vR}  & \emph{1v1}  & \emph{1vR} \tabularnewline
-\hline 
-Iris  & 70\%  & 87\%  & 93\%  & 93\%  & 90\%  & 87\%  & 87\%  & 87\%\tabularnewline
-\hline 
-Wine  & 67\%  & 56\%  & 72\%  & 74\%  & 78\%  & 85\%  & 87\%  & 92\%\tabularnewline
-\hline 
-\end{tabular}
-
-\caption{Accuracies for one-vs-one and one-vs-rest classifiers}
-\end{figure}
-
-In the table, the dots indicate overfitting, or that the dimension
-has become too large for the calculations to succeed. The addition
-of complexity by this kernel method seems particularly effective for
-the wine dataset.
-
-\end{example}
-
-\begin{rem}
-The sets $A_{s}$ grow exponentially with the dimension and polynomially
-with $s$, and encode the complexity of the mimicked neural network.
-$s$ will therefore be a relevant hyperparameter of overfitting or
-underfitting.
-
-We note that irrelevant features are driven out of the decision process
-by a correspondingly large coordinate in the apex, preventing this
-feature from ever being maximal. This could guide us towards heuristics
-to remove superfluous features, combat overfitting and reduce training
-time.
-\end{rem}
-
-\begin{figure}
     \centering
-    \resizebox{0.7\textwidth}{!}{\input{fig/A_1.pgf}}
-    \caption{$\mathcal{A}_1$ doesn't separate blue class well}
-    \label{fig:veronese_A1}
+    \resizebox{\textwidth}{!}{\input{fig/A_bis__toy_4.pgf}}
+    \caption{Toy dataset, $s = 1\ldots 4$}
+    \label{fig:toy}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \resizebox{0.7\textwidth}{!}{\input{fig/A_2.pgf}}
-    \caption{$\mathcal{A}_2$ is better}
-    \label{fig:veronese_A2}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \resizebox{0.7\textwidth}{!}{\input{fig/A_3.pgf}}
-    \caption{$\mathcal{A}_3$ overfits data}
-    \label{fig:veronese_A3}
-\end{figure}
-
-\begin{example}
-In Figures \ref{fig:veronese_A1}, \ref{fig:veronese_A2} and \ref{fig:veronese_A3}, we visualize the decision boundaries of the Iris classifier depending on scale parameter $s$. We remove the last feature of this dataset to have visualizable, 3-dimensional data.
-
-For the last two figures, the tropical polynomial represented was rendered with Polymake, and the overlay with the data points was done by hand in an approximate - but very representative - manner.
-\end{example}
-
+\newpage
 \subsection{Linear Hyperplanes Look Tropical on Log Paper}
 
 Let $X_{ij}$ be our point clouds, and for $\beta>0$, let's define
@@ -596,7 +647,8 @@ Let $\beta>0$ and $I\subset[d]$. We have:
 \]
 hence the result by taking the logarithm and dividing by $\beta$. 
 \end{proof}
-\begin{prop}
+\begin{prop} 
+
 Defining $H^{\text{trop}}$ as the hyperplane of apex $(-W_{i})_{i\in[d]}$,
 signed using $I^{+}:=\{i\in[d],\quad\sigma_{i}>0\}$ and $I^{-}:=[d]\backslash I^{+}$,
 we have: 
@@ -614,7 +666,7 @@ substracting the first to second inequality yields:
 \[
 -\beta^{-1}\log d\le\max_{i\in I^{+}}(W_{i}+X_{ij})-\max_{i\in I^{-}}(W_{i}+X_{ij})\le\beta^{-1}\log d.
 \]
-hence $d(X,H^{\text{trop}})\le\beta^{-1}\log d$.
+hence $d_H(X,H^{\text{trop}})\le\beta^{-1}\log d$.
 
 Reciprocally, let $Y\in H^{\text{trop}}$ and $X=Y+\delta\mathbf{1}_{I^{+}}$,
 with $\delta$ to be defined later. To have $Y\in H^{\beta}$, we
@@ -624,7 +676,7 @@ w^{\beta}\cdot y=0,
 \]
 which amounts to 
 \[
-\sum_{i\in[d]}\sigma_{i}e^{\beta W_{i}}e^{\beta X_{i}}=0.
+\sum_{i=1}^d\sigma_{i}e^{\beta W_{i}}e^{\beta X_{i}}=0.
 \]
 By separating the positive and negative terms, and taking the logarithm,
 we get 
@@ -635,7 +687,7 @@ which similarily yields
 \[
 \delta\le\left|\beta^{-1}\log\left(\sum_{i\in I^{+}}e^{\beta(W_{i}+X_{ij})}\right)-\beta^{-1}\log\left(\sum_{i\in I^{-}}e^{\beta(W_{i}+X_{ij})}\right)\right|\le\beta^{-1}\log d,
 \]
-hence $d(Y,H^{\beta})\le\beta^{-1}\log d$. 
+hence $d_H(Y,H^{\beta})\le\beta^{-1}\log d$. 
 \end{proof}
 \begin{rem}
 We note $L$ the order of magnitude of our data points, and $B$ a
@@ -658,7 +710,7 @@ vectors. Thus they belong to the polytope $P^{\beta}$ where
 P^{\beta}:=\left\{ w\in\mathbb{R}^{d},\quad w^{T}x_{j_{+}}^{\beta}\ge1\text{ and }w^{T}x_{j_{-}}^{\beta}\le-1,\forall j_{+},j_{-}\in J^{+},J^{-}\right\} .
 \]
 
-We hope that $L_{\sigma}(P^{\beta}):=\left\{ (\beta^{-1}\log(\sigma_{i}w_{i}))_{i\in[d]}\right\} $
+We hope that $L_{\sigma}(P^{\beta}):=\left\{ (\beta^{-1}\log(\sigma_{i}w_{i}))_{1\le i\le d}\right\} $
 converges towards the corresponding limiting tropical polytope $P_{\sigma}^{\text{trop}}:=P_{\sigma,+}^{\text{trop}}\cap P_{\sigma,-}^{\text{trop}}$,
 where 
 \[
@@ -693,23 +745,6 @@ W^{\infty}:=\lim_{\beta\rightarrow+\infty}\beta^{-1}\log w^{\beta}\in\underset{W
 \]
 \end{thm}
 
-
-\subsubsection{Computing limiting margin (experimental)}
-
-In the classical setting, the margin is $\lVert w\rVert^{-1}$, described
-by the vector $w/\lVert w\rVert^{2}$. Conjecturing that this vector,
-when mapped back to the initial space, gives a meaningful approximation
-of the margin (prove it), we can compute the norm of this limiting
-vector. For $\beta>0$: 
-\begin{align*}
-\beta^{-1}\log\left(\frac{w^{\beta}}{\lVert w^{\beta}\rVert^{2}}\right) & =\beta^{-1}\log w^{\beta}-2\log\lVert e^{\beta W^{\beta}}\rVert^{\beta^{-1}}.
-\end{align*}
-Where the term $\log\lVert e^{\beta W^{\beta}}\rVert^{\beta^{-1}}\rightarrow\max\left|w^{\beta}\right|$,
-and $\beta^{-1}\log w^{\beta}\rightarrow W^{\infty}$. Hence: 
-\[
-\left\lVert \beta^{-1}\log\left(\frac{w^{\beta}}{\lVert w^{\beta}\rVert^{2}}\right)\right\rVert \longrightarrow\max W^{\infty}-\min W^{\infty}
-\]
-would give a good approximation of the limiting margin.
 
 \newpage{} \bibliographystyle{plain}
 \bibliography{ea}
