@@ -1,18 +1,4 @@
 import numpy as np
-from sklearn.metrics import accuracy_score
-
-
-# TODO: Make one main function to have model profile & accuracies & etc
-
-
-# TODO: Make cleaner, no sklearn
-def accuracy_multiple(pred: callable, Clist: list[np.ndarray]) -> float:
-  true_labels = []
-  predicted_labels = []
-  for label, points in enumerate(Clist):
-    true_labels.extend([label] * points.shape[1])
-    predicted_labels.extend(pred(points))
-  return accuracy_score(true_labels, predicted_labels)
 
 
 def veronese_feature_names(feature_names: list[str], lattice_points: list[np.ndarray]):
