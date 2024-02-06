@@ -1,0 +1,229 @@
+\documentclass[oneside,english,a4paper]{amsart}
+\usepackage{bbold}
+\usepackage[T1]{fontenc}
+\usepackage{inputenc}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{amstext}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{wasysym}
+\usepackage{fullpage}
+
+\makeatletter
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\theoremstyle{plain}
+\newtheorem{thm}{\protect\theoremname}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{\protect\definitionname}
+\theoremstyle{plain}
+\newtheorem{prop}[thm]{\protect\propositionname}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{\protect\remarkname}
+\theoremstyle{plain}
+\newtheorem{lem}[thm]{\protect\lemmaname}
+\theoremstyle{definition}
+\newtheorem{example}[thm]{\protect\examplename}
+\newtheorem{cor}[thm]{\protect\corollaryname}
+\theoremstyle{definition}
+
+\makeatother
+
+\usepackage{babel}
+\providecommand{\definitionname}{Definition}
+\providecommand{\lemmaname}{Lemma}
+\providecommand{\propositionname}{Proposition}
+\providecommand{\remarkname}{Remark}
+\providecommand{\theoremname}{Theorem}
+\providecommand{\examplename}{Example}
+\providecommand{\corollaryname}{Corollary}
+
+\begin{document}
+\title{Tropical Piecewise Linear Classifiers and mean payoff games}
+\author{Xavier Allamigeon, Stéphane Gaubert, Samuel Boïté, Théo Molfessis}
+\maketitle
+
+
+\begin{prop}
+Margin theorem: TBD
+\end{prop}
+\begin{proof}
+We want to link the Hilbert norm between initial space and Veronese-augmented
+space $\mathbb{R}^{\mathcal{A}}$, using linear transfromation $V$.
+We note $\mathcal{H}^{\mathcal{A}}$ the hypersurface in augmented
+space, $\mathcal{H}:=V^{-1}(\mathcal{H}^{\mathcal{A}})$ the corresponding
+tropical hypersurface, $Y\in\mathbb{R}_{\max}^{d}$ from the initial
+space, and $y:=VY$. Using the linearity of $V$, controlling the
+link between the norms from one side amounts to showing 
+\[
+\lVert Y\rVert_{H}\ge C\lVert VY\rVert_{H},
+\]
+Using the lemma 
+\[
+\lVert Y\rVert_{H}=2\inf_{\alpha\in\mathbb{R}}\lVert Y+\alpha e\rVert_{\infty},
+\]
+we only need to show that 
+\[
+\lVert Y\rVert_{\infty}\ge C\lVert VY\rVert_{\infty}.
+\]
+for some constant $C$. Indeed, for $\alpha=0$, it amounts to $\lVert VY\rVert_{H}\le2\lVert VY\rVert_{\infty}$,
+hence $\lVert Y\rVert_{\infty}\ge\frac{C}{2}\lVert VY\rVert_{H}$.
+Then, if $C$ is independent from $Y$, then we also have $\lVert Y+\alpha e\rVert_{\infty}\ge C\lVert VY+\frac{\alpha}{s}Ve\rVert_{\infty}=C\left\lVert V\left(Y+\frac{\alpha}{s}e\right)\right\rVert_{\infty}$,
+as $Ve_{n}=se_{n}$ because $\sum\alpha_{i}=s$. Then for all $\alpha$,
+\[
+\lVert Y+\alpha e\rVert_{\infty}\ge\frac{C}{2}\lVert V(Y+\alpha e)\rVert_{H}=\frac{C}{2}\lVert VY+s\alpha e\lVert_{H}=\frac{C}{2}\lVert VY\lVert_{H}.
+\]
+Taking the infimum yields $\frac{1}{2}\lVert Y\rVert_{H}\ge\frac{C}{2}\lVert VY\rVert_{H},$
+hence
+\[
+\lVert Y\rVert_{H}\ge C\lVert VY\rVert_{H}.
+\]
+
+Let's find constant $C$. By definition,
+\[
+\lVert VY\rVert_{\infty} =\sup_{k}\left|\sum_{j}V_{kj}Y_{j}\right|
+ \le\sup_{k}\sum_{j}V_{kj}\cdot\lVert Y\rVert_{\infty}\\
+ =s\lVert Y\rVert_{\infty},
+\]
+because $Ve_{n}=se_{n}$, so we define $C=1/s$.
+
+Reciprocally, we only need to show that 
+\[
+\lVert Y\rVert_{\infty}\le C'\lVert VY\rVert_{\infty}
+\]
+using some constant $C'$. Denoting $y=VY$, we have $V^{T}y=V^{T}VY$,
+where $V^{T}V$ is definite positive. Hence, $Y=(V^{T}V)^{-1}V^{T}y$,
+and
+\[
+\lVert Y\rVert_{\infty}=\lVert(V^{T}V)^{-1}V^{T}y\rVert_{\infty}\le\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}\lVert VY\rVert_{\infty}
+\]
+hence we define $C'=\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}$.
+
+
+\paragraph{Controlling $C'$.}
+
+$V$ is a $\ell_{s,d}\times n$ matrix, where $\ell_{s,d}$ is the
+cardinal of $\mathcal{A}^{s}$, i.e. the number of homogenous polynomials
+of degree $d$ with $n$ variables:
+\[
+\ell_{s,d}=\binom{s+d-1}{d-1}.
+\]
+
+Rows of $V$ are points from the external face of the dilated simplex.
+As the latter is invariant by permutating axes, we have
+\[
+V^{T}V=(V_{\cdot i}^{T}V_{\cdot j})_{ij}=\begin{pmatrix}\alpha+\beta &  & \beta\\
+ & \ddots\\
+\beta &  & \alpha+\beta
+\end{pmatrix}=\alpha I_{d\times d}+\beta\mathbf{1}_{d\times d},
+\]
+
+where $\alpha+\beta=\lVert V_{\cdot1}\rVert^{2}$, $\beta=\langle V_{\cdot1},V_{\cdot2}\rangle$
+and $\mathbf{1}_{d\times d}=\begin{pmatrix}1 & \cdots & 1\\
+\vdots & \ddots & \vdots\\
+1 & \cdots & 1
+\end{pmatrix}$. We find that:
+\[
+\alpha=\binom{s+d}{s-1}\qquad\text{and}\qquad\beta=\binom{s+d-1}{s-2},
+\]
+and as $\mathbf{1}_{d\times d}$ is of rank $1$, $V^{T}V$ is easy
+to invert, and
+\[
+(V^{T}V)^{-1}=\alpha^{-1}\left(I-\beta\alpha^{-1}(1+d\beta\alpha^{-1})^{-1}\mathbf{1}_{d\times d}\right),
+\]
+As $\mathbf{1}_{d\times d}V^{T}=s\mathbf{1}_{d\times\ell_{s,d}}$,
+\[
+M:=(V^{T}V)^{-1}V^{T}=\alpha^{-1}\left(I-B\mathbf{1}_{d\times\ell_{s,d}}\right),
+\]
+where
+\[
+B=s\cdot\beta\alpha^{-1}(1+d\beta\alpha^{-1})^{-1}=\frac{s-1}{d+1}.
+\]
+is a $d\times\ell_{s,d}$ matrix whose lines are permutations of each
+other. Hence, their $L^{1}$ norms are equal and:
+\[
+\lVert M\rVert_{\text{op,\ensuremath{\infty}}}=\alpha^{-1}\sum_{i=1}^{d}\left|V_{i1}-B\right|=\alpha^{-1}\sum_{k=0}^{s}\ell_{s-k,d-1}\left|k-B\right|.
+\]
+Splitting this sum with respect to the sign of $k-B$ yields, noting
+$b=\lfloor B\rfloor$:
+\begin{align*}
+\lVert M\rVert_{\text{op,\ensuremath{\infty}}} & =\alpha^{-1}\left(\sum_{k=0}^{b}\ell_{s-k,d-1}(B-k)+\sum_{k=b+1}^{s}\ell_{s-k,d-1}(k-B)\right)\\
+ & \le\alpha^{-1}\left(\sum_{k=0}^{b}\binom{s-k+d-2}{d-2}B+\sum_{k=b+1}^{s}\binom{s-k+d-2}{d-2}(s-B)\right)
+\end{align*}
+
+Choosing $p+1$ items among $q+1$ ones amounts to first choosing
+the maximum, and then the $n$ remaining elements below it. Hence
+\[
+\sum_{k=p}^{q}\binom{k}{p}=\binom{q+1}{p+1},
+\]
+and 
+\[
+\sum_{b+1\le k\le s}\binom{s-k+d-2}{d-2}=\binom{s-b+d-2}{d-1},
+\]
+and similarly
+\[
+\sum_{0\le k\le b}\binom{s-k+d-2}{d-2}=\ell_{s,d}-\binom{s+d-b-2}{d-1}.
+\]
+Hence
+\[
+\lVert M\rVert_{\text{op},\infty}\le\alpha^{-1}\left[B\ell_{s,d}+(s-2B)\binom{s-b+d-2}{d-1}\right],
+\]
+but
+\[
+B\alpha^{-1}\ell_{s,d}=\frac{(s-1)d}{s(s+d)},\qquad s-2B=\frac{s(d-1)+2}{d+1},
+\]
+and
+\begin{align*}
+\frac{\binom{s-b+d-2}{d-1}}{\binom{s+d}{d+1}} & =d(d+1)\frac{(s-b+d-2)(s-b+d-3)\cdots(s-b)}{(s+d)(s+d-1)\cdots(s+1)s}\\
+ & =\frac{d(d+1)}{(s+d-1)(s+d)}\frac{s-b}{s}\frac{s+1-b}{s+1}\cdots\frac{s+d-2-b}{s+d-2}\\
+ & \le\frac{d(d+1)}{(s+d-1)(s+d)},
+\end{align*}
+as $b\le s$. Finally, for $s\ge2$:
+\begin{align*}
+\lVert(V^{T}V)^{-1}V^{T}\rVert_{\infty,\text{op}} & \le\frac{(s-1)d}{s(s+d)}+\frac{d(s(d-1)+2)}{(s+d-1)(s+d)}\\
+ & \le\frac{d}{s+d}+\frac{sd^{2}}{(s+d)^{2}}
+\end{align*}
+
+As the order of magnitude of Veronese-augmented data has been multiplied
+by a factor of $s$, the new margin empirically grows linearly with
+$s$, and the margin in the initial space will be divided by a factor
+between $1$ and $\frac{sd}{s+d}+\left(\frac{sd}{s+d}\right)^{2}$.
+For the margin to be tight, i.e. the upper term to be near 1, we need
+to have $s\gg d$ or $d\gg s$.
+
+When $s$ is very large, the sum grows in
+\begin{align*}
+\frac{d(d+1)}{s},
+\end{align*}
+and when $d$ is very large, the sum converges towards $1+s$.
+
+Alternatively, there exists $X$ of coefficients $\pm1$ such that:
+\begin{align*}
+\lVert M\rVert_{\text{op,\ensuremath{\infty}}} & =\left\lVert MX\right\rVert_{1}\le\sqrt{\ell_{s,d}}\left\lVert MX\right\rVert _{2}\le\sqrt{\ell_{s,d}\lambda_{\text{max}}(M^{T}M)}\lVert X\rVert_{2}\le\ell_{s,d}\sqrt{\lambda_{\text{max}}(M^{T}M)}
+\end{align*}
+where 
+\begin{align*}
+M^{T}M & =\alpha^{-2}\left(I_{\ell_{s,d}\times d}-B\mathbf{1}_{\ell_{s,d}\times d}\right)\left(I_{d\times\ell_{s,d}}-B\mathbf{1}_{d\times\ell_{s,d}}\right)\\
+ & =\alpha^{-2}\left(I_{\ell_{s,d}\times\ell_{s,d}}+B\left(dB-2\right)\mathbf{1}_{\ell_{s,d}\times\ell_{s,d}}\right)
+\end{align*}
+hence
+\[
+\ell_{s,d}\sqrt{\lambda_{\text{max}}(M^{T}M)}=\alpha^{-1}\ell_{s,d}\left[1+\max\left(0,B(dB-2)\right)\right]^{1/2}.
+\]
+
+We have $dB-2\ge0$ whenever $(s-1)d\ge2(d+1)$, i.e. $s\ge4$, as
+$d\ge2$. Hence:
+\begin{align*}
+\lVert M\rVert_{\text{op,\ensuremath{\infty}}} & \le\frac{d(d+1)}{s(s+d)}\sqrt{1+\frac{s-1}{(d+1)^{2}}\max\left(0,d(s-3)-2\right)}
+\end{align*}
+We get the same equivalent when $s$ is large but when $d$ is large,
+the right hand side is equivalent to $\frac{d}{s}$, which is worse
+than previously.
+\end{proof}
+\end{document}
