@@ -32,7 +32,7 @@ def get_ignored(Cplus: np.ndarray, Cminus: np.ndarray, apex: np.ndarray) -> int:
     return None
 
 
-def plot_classes(ax, data_classes, L, features=None, show_lines=False):
+def plot_classes(ax, data_classes, L, features=None, show_lines=False, show_balls=0):
   """Plot multiple classes of points (maximum 3 for now)"""
   colors = ['#FF934F', '#2D3142', '#058ED9', '#cc2d35']
   markers = ['o', 'v', '+', '*']
@@ -44,6 +44,12 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False):
     ax.set_xlabel(features[0])
     ax.set_ylabel(features[1])
     ax.set_zlabel(features[2])
+
+  if show_balls > 0:
+    for i, clas in enumerate(data_classes):
+      for col in clas.T:
+        plot_ball(ax, col, show_balls, colors[i], alpha=.05)
+  
   for i, clas in enumerate(data_classes):
     ls = "None" if not show_lines else linestyles[i]
     for col in clas.T:
@@ -63,7 +69,7 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False):
   ax.set_zlim(mid_z - max_range / 2, mid_z + max_range / 2)
 
 
-def plot_ball(ax, center, length):
+def plot_ball(ax, center, length, color="gray", alpha=.1):
   """Plot tropical Hilbert ball of specified center and radius"""
   half_len = length / 2
   vertices = [
@@ -72,7 +78,7 @@ def plot_ball(ax, center, length):
   ]
   edges = [[0, 1, 3, 2], [4, 5, 7, 6], [0, 1, 5, 4], [2, 3, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]]
   faces = [[vertices[i] for i in edge] for edge in edges]
-  ax.add_collection3d(Poly3DCollection(faces, color="gray", alpha=0.1))
+  ax.add_collection3d(Poly3DCollection(faces, color=color, alpha=alpha, linewidths=0))
 
 
 def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = False):
