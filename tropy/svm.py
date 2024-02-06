@@ -48,13 +48,17 @@ class TropicalSVC():
     for i, C in enumerate(aug_data_classes):
       Counts[i] = count_points_sectors(C, self._apex)
     zero_mask = np.all(Counts == 0, axis=0)
-    # TODO: self.apex[zero_mask] = np.inf
     sector_indicator = np.argmax(Counts, axis=0)
     sector_indicator[zero_mask] = -1
     self._sector_indicator = sector_indicator
     
     # Save model weights
     self._monomials, self._coeffs = newton_polynomial(monomials_idxes, self._apex, self._poly_degree)
+
+    # Only keep active monomials
+    self._monomials = self._monomials[zero_mask == False]
+    self._coeffs = self._coeffs[zero_mask == False]
+    self._sector_indicator = self._sector_indicator[zero_mask == False]
 
   def predict(self, data: np.ndarray) -> list[int]:
     """Predict the labels of some data points (as a 2D matrix whose columns are the points)"""
