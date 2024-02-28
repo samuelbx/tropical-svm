@@ -56,6 +56,7 @@ tropy is only able of plotting tropical polynomials for 3-dimensional data, but 
 
 To fit a classifier based on a cubic tropical polynomial, for instance:
 ```python
+from tropy.svm import TropicalSVC
 model = TropicalSVC()
 model.fit(Xtrain, poly_degree = 3)
 ```
