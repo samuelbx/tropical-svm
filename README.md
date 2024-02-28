@@ -2,7 +2,7 @@
 
 tropy is a Python library for efficiently fitting piecewise linear models using tropical geometry and mean payoff games. It is distributed under the MIT License.
 
-![Read the (draft) paper behind this library.]([https://github.com/samuelbx/tropical-svm/blob/804c7568897497a8f34afbefe351c2f3f43e0be9/tex/Report_WIP.pdf](https://raw.githubusercontent.com/samuelbx/tropical-svm/main/tex/Report_WIP.pdf))
+![Read the (draft) paper behind this library.](https://raw.githubusercontent.com/samuelbx/tropical-svm/main/tex/Report_WIP.pdf)
 
 ## Installation
 
