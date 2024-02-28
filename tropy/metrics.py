@@ -14,7 +14,6 @@ def veronese_feature_names(feature_names: list[str], lattice_points: list[np.nda
 
 def print_features_per_class(class_names: list[str], feature_names: list[str],
                              sector_indicator: list[int]) -> None:
-  """Heuristic that prints the estimate dominant features for each data class"""
   features = {cl: [] for cl in class_names}
   for id, feature in zip(sector_indicator, feature_names):
     if id != -1:

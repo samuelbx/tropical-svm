@@ -3,7 +3,7 @@ import numpy as np
 import seaborn as sns
 from mpl_toolkits.mplot3d.art3d import Line3D, Poly3DCollection
 import matplotlib.pyplot as plt
-from .utils import get_reached_sectors, max_max2_idx
+from .utils import max_max2_idx
 from .veronese import hypersurface_nodes
 
 
@@ -21,18 +21,7 @@ def plot_point(ax, x, length, color, linestyle="-", marker=None, ignored_branch=
     ax.plot(x[0], x[1], x[2], color=color, marker=marker)
 
 
-def get_ignored(Cplus: np.ndarray, Cminus: np.ndarray, apex: np.ndarray) -> int:
-  """For binary classification in 3D, get branches to ignore"""
-  Iplus, Iminus = get_reached_sectors(Cplus, apex), get_reached_sectors(Cminus, apex)
-  if len(Iplus) == 1 and len(Iminus) == 2:
-    return next(iter(Iplus))
-  elif len(Iminus) == 1 and len(Iplus) == 2:
-    return next(iter(Iminus))
-  else:
-    return None
-
-
-def plot_classes(ax, data_classes, L, features=None, show_lines=False, show_balls=0):
+def plot_classes(ax, data_classes, L, features=None, show_lines=False, balls_radius: float =None):
   """Plot multiple classes of points (maximum 3 for now)"""
   colors = ['#FF934F', '#2D3142', '#058ED9', '#cc2d35']
   markers = ['o', 'v', '+', '*']
@@ -45,10 +34,10 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False, show_ball
     ax.set_ylabel(features[1])
     ax.set_zlabel(features[2])
 
-  if show_balls > 0:
+  if balls_radius is not None:
     for i, clas in enumerate(data_classes):
       for col in clas.T:
-        plot_ball(ax, col, show_balls, colors[i], alpha=.05)
+        plot_ball(ax, col, balls_radius, colors[i], alpha=.05)
   
   for i, clas in enumerate(data_classes):
     ls = "None" if not show_lines else linestyles[i]
@@ -56,17 +45,15 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False, show_ball
       min_array = np.minimum(min_array, col)
       max_array = np.maximum(max_array, col)
       plot_point(ax, col, L, colors[i], ls, markers[i])
+    
+  # Automatic size for graph
   max_range = np.max(max_array - min_array)
-  mid_x = (max_array[0] + min_array[0]) / 2
-  mid_y = (max_array[1] + min_array[1]) / 2
-  mid_z = (max_array[2] + min_array[2]) / 2
-  mean_mid = (mid_x+mid_y+mid_z)/3
-  mid_x -= mean_mid
-  mid_y -= mean_mid
-  mid_z -= mean_mid
-  ax.set_xlim(mid_x - max_range / 2, mid_x + max_range / 2)
-  ax.set_ylim(mid_y - max_range / 2, mid_y + max_range / 2)
-  ax.set_zlim(mid_z - max_range / 2, mid_z + max_range / 2)
+  mid_x = (max_array[0] + min_array[0])
+  mid_y = (max_array[1] + min_array[1])
+  mid_z = (max_array[2] + min_array[2])
+  ax.set_xlim((mid_x - max_range) / 2, (mid_x + max_range) / 2)
+  ax.set_ylim((mid_y - max_range) / 2, (mid_y + max_range) / 2)
+  ax.set_zlim((mid_z - max_range) / 2, (mid_z + max_range) / 2)
 
 
 def plot_ball(ax, center, length, color="gray", alpha=.1):
@@ -83,7 +70,6 @@ def plot_ball(ax, center, length, color="gray", alpha=.1):
 
 def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = False):
   """Initialize plot in the projective space R^3/(1,1,1)"""
-  sns.set_style("white")
   sns.set_context("paper")
   if type(config) == list:
     ax = fig.add_subplot(*config, projection="3d", proj_type="ortho")
@@ -102,45 +88,15 @@ def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = F
   return ax
 
 
-def plot3d_hyperplane_branch(ax, axis: int, y, constants: tuple[float], ignored_branch: int, branch_index: int):
-  """Create an hyperplane surface based on the given axis and constants"""
-  if ignored_branch != branch_index:
-    dim1, dim2 = np.meshgrid(y, y)
-    if axis == 0:  # X
-      dim3 = np.where(dim2 - constants[2] >= dim1 - constants[0], constants[1] + dim2 - constants[2], np.nan)
-    elif axis == 1:  # Y
-      dim3 = np.where(dim1 - constants[0] >= dim2 - constants[1], constants[2] + dim1 - constants[0], np.nan)
-    else:  # Z
-      dim3 = np.where(dim2 - constants[1] >= dim1 - constants[2], constants[0] + dim2 - constants[1], np.nan)
-    
-    if axis == 0:
-      return ax.plot_surface(dim1, dim3, dim2, color='black', alpha=0.3)
-    elif axis == 1:
-      return ax.plot_surface(dim3, dim1, dim2, color='black', alpha=0.3)
-    else:
-      return ax.plot_surface(dim1, dim2, dim3, color='black', alpha=0.3)
-  
-  return None
-
-
-def plot_hyperplane(ax, x: np.ndarray, l: int, L: int, ignored_branch: int = None, mode_3d: bool = False) -> None:
-  """Plot a tropical hyperplane as a 2D projection or a 3D hypersurface"""
+def plot_hyperplane_3d(ax, x: np.ndarray, l: int, L: int, sector_indicator: np.ndarray = None) -> None:
+  """Plot a tropical hyperplane as a 2D projection of a 3D hypersurface"""
   l = np.abs(l)
   if l > 0:
     plot_ball(ax, x, l)
-
-  if mode_3d:
-    y = np.linspace(-L, L, 1000)
-    a, b, c = x
-    surfaces = []
-    for i in range(3):
-      surfaces.append(plot3d_hyperplane_branch(ax, i, y, (a, b, c), ignored_branch, i))
-    return surfaces
-  else:
-    plot_point(ax, x, -10 * L, "black", ignored_branch=ignored_branch)
+  plot_polynomial_hypersurface_3d(ax, np.eye(x.shape[0]), -x, L, sector_indicator)
 
 
-def draw_segments(ax, monomials, coeffs, nodes, i, lis, sector_indicator=None):
+def draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=None, simplified_mode=False):
   node = nodes[i]
   xpt, ypt, zpt = node[0]
   neighboring_sectors = node[1]
@@ -153,13 +109,15 @@ def draw_segments(ax, monomials, coeffs, nodes, i, lis, sector_indicator=None):
       idxes = max_max2_idx(val)
       if np.isclose(val[idxes[0]], val[idxes[1]]):
         linestyle, color = '-', 'black'
-        if sector_indicator is not None and sector_indicator[idxes[0]] == sector_indicator[idxes[1]]:
+        contiguous_sectors = sector_indicator is not None and sector_indicator[idxes[0]] == sector_indicator[idxes[1]]
+        if contiguous_sectors:
           linestyle, color = 'dotted', 'lightgray'
+          if simplified_mode:
+            break
         ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color=color, linestyle=linestyle)
-        lis[0] += 1
 
 
-def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L, sector_indicator=None):
+def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=None, simplified_mode=False):
   """Draws half rays out of some node"""
   node = nodes[i]
   xpt, ypt, zpt = node[0]
@@ -176,10 +134,12 @@ def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L, sector_indica
     idxes = max_max2_idx(val)
     if np.isclose(val[idxes[0]], val[idxes[1]]):
       linestyle, color = '-', 'black'
-      if sector_indicator is not None and sector_indicator[idxes[0]] == sector_indicator[idxes[1]]:
+      contiguous_sectors = sector_indicator is not None and sector_indicator[idxes[0]] == sector_indicator[idxes[1]]
+      if contiguous_sectors:
         linestyle, color = 'dotted', 'lightgray'
+        if simplified_mode:
+          break
       ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color=color, linestyle=linestyle)
-      lis[0] += 1
 
 
 def evaluate_3d(monomials: np.ndarray, coeffs: np.ndarray, point: tuple[float]) -> np.ndarray:
@@ -187,36 +147,11 @@ def evaluate_3d(monomials: np.ndarray, coeffs: np.ndarray, point: tuple[float]) 
   return coeffs + np.sum(monomials * np.array(point), axis=1)
 
 
-def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=None):
+def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=None, simplified_mode=False):
   nodes = hypersurface_nodes(monomials, coeffs, 3)
   for i, node in enumerate(nodes):
-    plot_point(ax, node[0], 2*L, 'black', linestyle="None", marker='.', maxplus=True)
-    lis = [0]
-    draw_segments(ax, monomials, coeffs, nodes, i, lis, sector_indicator=sector_indicator)
+    if not simplified_mode:
+      plot_point(ax, node[0], 2*L, 'black', linestyle="None", marker='.', maxplus=True)
+    draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=sector_indicator, simplified_mode=simplified_mode)
     for idx1, idx2 in [(0, 1), (0, 2), (1, 2)]:
-      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, lis, L, sector_indicator=sector_indicator)
-
-
-def set_title(ax, title: str, x: np.ndarray, l: float):
-  """Helper function to set the title of the graph"""
-  ax.set_title(
-    f"{title} \n (apex = {np.round(x, 2)}, {'margin' if l <= 0 else 'inrad(intersection)'} = {np.round(np.abs(l), 2)})"
-  )
-
-
-# TODO: Make better & handle multi-class
-def plot_confusion_matrix(conf_matrix: np.ndarray) -> None:
-  plt.figure(figsize=(6, 6))
-  plt.imshow(conf_matrix, cmap='Blues', interpolation='None', vmin=0)
-  plt.colorbar()
-  plt.xticks([0, 1], ['Predicted Positive', 'Predicted Negative'])
-  plt.yticks([0, 1], ['Actual Positive', 'Actual Negative'])
-
-  for i in range(2):
-    for j in range(2):
-      plt.text(j, i, str(conf_matrix[i, j]), ha='center', va='center', color='Black')
-
-  plt.title('Confusion Matrix')
-  plt.xlabel('Predicted label')
-  plt.ylabel('True label')
-  plt.show()
+      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=sector_indicator, simplified_mode=simplified_mode)

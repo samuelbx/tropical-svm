@@ -2,9 +2,6 @@ from itertools import combinations
 import numpy as np
 
 
-# TODO: use scipy.sparse for inference
-
-
 def lattice_values(d: int, size: int):
   """Generate sorted integer values whose sum is smaller than size"""
   if size == 0:

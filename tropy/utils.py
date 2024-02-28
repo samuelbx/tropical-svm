@@ -21,18 +21,6 @@ def count_points_sectors(C: np.ndarray, apex: np.ndarray) -> np.ndarray:
   return I
 
 
-def get_reached_sectors(C: np.ndarray, apex: np.ndarray) -> set[int]:
-  """List of sectors reached by point class wrt apex"""
-  I = []
-  for point in C.T:
-    diff = point - apex
-    max = np.max(diff)
-    for i, v in enumerate(diff):
-      if v == max:
-        I.append(i)
-  return set(I)
-
-
 def apply_noise(C: np.ndarray, mu: int = 1, seed: int = 2024) -> np.ndarray:
   """Apply Gaussian noise of amplitude mu to data"""
   np.random.seed(seed)
@@ -41,9 +29,9 @@ def apply_noise(C: np.ndarray, mu: int = 1, seed: int = 2024) -> np.ndarray:
   return C
 
 
-def build_toy_dataset(n_points: int, n_features: int, n_positive_sectors: int, 
+def build_toy_tropical_data(n_points: int, n_features: int, n_positive_sectors: int, 
                       noise: bool = False, L: int = 10, seed: int = 2024) -> tuple[np.ndarray, np.ndarray]:
-  """Build a toy separable dataset"""
+  """Build a toy tropically separable dataset"""
   assert n_positive_sectors <= n_features
   np.random.seed(seed)
   C = np.random.uniform(-L, L, (n_features, n_points))
