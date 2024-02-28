@@ -44,10 +44,10 @@ optional arguments:
 
 | Command | Result |
 |--|--|
-| `./playground.py moons 3` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/moons_3.svg" width="30%"> |
-| `./playground.py circular --feature-selection 5` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/circular_1.svg" width="30%"> |
-| `./playground.py bintoy-separated 1 --beta 10` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/bintoy-separated_1.svg" width="30%"> |
-| `./playground.py toy-reverse 3` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/toy-reverse_3.svg" width="30%"> |
+| `./playground.py moons 3` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/moons_3.svg" width="40%"> |
+| `./playground.py circular --feature-selection 5` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/circular_1.svg" width="40%"> |
+| `./playground.py bintoy-separated 1 --beta 10` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/bintoy-separated_1.svg" width="40%"> |
+| `./playground.py toy-reverse 3` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/toy-reverse_3.svg" width="40%"> |
 
 
 ### Fitting custom datasets
