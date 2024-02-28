@@ -10,7 +10,7 @@ If you already have a working installation of NumPy, the easiest way is to clone
 
 ### Dependencies
 
-tropy was tested on Python 3.9 and NumPy 1.25. Graphing capabilities require Matplotlib. Tropy still relies on Pandas (for saving weights), scikit-learn (for computing accuracies) and tqdm, even though these dependencies could easily be removed.
+tropy was tested on Python 3.9 and NumPy 1.25. Graphing capabilities require Matplotlib. tropy still relies on Pandas (for saving weights), scikit-learn (for computing accuracies) and tqdm, even though these dependencies could easily be removed.
 
 ## Quickstart
 
