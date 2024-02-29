@@ -12,7 +12,7 @@ from sklearn.datasets import make_moons
 
 
 def toy_gaussian(center: list) -> np.ndarray:
-  return apply_noise(np.array([center] * 10, dtype=float).T, mu=0.1, seed=None)
+  return apply_noise(np.array([center] * 10, dtype=float).T, mu=0.1, seed=42)
 
 
 def generate_toy_data(dataset: str) -> tuple[list[np.ndarray], bool]:
@@ -86,7 +86,7 @@ def main(args):
   model.fit(data_classes, degree, native_tropical_data=native_tropical, log_linear_beta=log_linear_beta, feature_selection=feature_selection)
 
   fig = plt.figure(figsize=(9,9) if not save else (6, 6))
-  ax = init_ax(fig, 111, L=10, mode_3d=True)
+  ax = init_ax(fig, 111, L=10, mode_3d=False)
   if log_linear_beta is not None:
     method = f'linear SVM on log paper, $\\beta = {log_linear_beta}$'
   else:
@@ -98,10 +98,10 @@ def main(args):
   if not save:
     ax.set_title(f'{features}, using {method}', fontsize='small', loc='left')
   plot_classes(ax, model._data_classes, L=10)
-  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L=10, sector_indicator=model._sector_indicator, simplified_mode=simplified, margin=model.margin())
+  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L=10, sector_indicator=model._sector_indicator, simplified_mode=simplified, margin=(model.margin() if log_linear_beta is None else 0))
 
   if save:
-    plt.savefig(f'{dataset}_{degree}.pgf')
+    plt.savefig(f'{dataset}_{degree}.svg')
 
   plt.show()
 
