@@ -19,7 +19,7 @@ tropy was tested on Python 3.9 and NumPy 1.25. Graphing capabilities require Mat
 The easiest way to play with tropy and to reproduce graphs made in the paper is to use script `playground.py`. It allows to fit tropical polynomials on provided 3D datasets and to graph the results.
 
 ```
-usage: playground.py [-h] [-s] [--beta BETA] [--simplified]
+usage: playground.py [-h] [-s [file_path]] [--beta BETA] [--simplified]
                      [--feature-selection no_features]
                      {iris,iris-binary,moons,toy,toy-centers,toy-reverse,toy-centers-reverse,bintoy,bintoy-separated,bintoy-mixed,circular}
                      [degree]
@@ -31,8 +31,9 @@ positional arguments:
   degree                Degree of tropical polynomial
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -s, --save            Save the figure (.PGF)
+  -h, --help            Show this help message and exit
+  -s [file_path], --save [file_path]
+                        Save the figure (.PGF)
   --beta BETA           If specified, Beta value for using 'linear SVM on log paper' trick
   --simplified          Provide a simplified view of the hypersurface, with the decision boundary only
   --feature-selection no_features
