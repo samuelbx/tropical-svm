@@ -2,7 +2,7 @@
 
 import argparse
 import sys
-from tropy.graph import init_ax, plot_classes, plot_polynomial_hypersurface_3d, plot_ball
+from tropy.graph import init_ax, plot_classes, plot_polynomial_hypersurface_3d
 from tropy.svm import TropicalSVC
 from tropy.utils import apply_noise, build_toy_tropical_data
 import matplotlib.pyplot as plt
@@ -77,7 +77,6 @@ def main(args):
   degree = args.degree
   dataset = args.dataset
   log_linear_beta = args.beta
-  show_ball = args.show_ball
   simplified = args.simplified
   feature_selection = args.feature_selection
 
@@ -87,7 +86,7 @@ def main(args):
   model.fit(data_classes, degree, native_tropical_data=native_tropical, log_linear_beta=log_linear_beta, feature_selection=feature_selection)
 
   fig = plt.figure(figsize=(9,9) if not save else (6, 6))
-  ax = init_ax(fig, 111, L=10)
+  ax = init_ax(fig, 111, L=10, mode_3d=True)
   if log_linear_beta is not None:
     method = f'linear SVM on log paper, $\\beta = {log_linear_beta}$'
   else:
@@ -96,13 +95,10 @@ def main(args):
     features = f'(experimental) feature selection, {feature_selection} points per class'
   else:
     features = f'$deg = {degree}$'
-  if show_ball and degree == 1 and model._eigval < 0:
-    plot_ball(ax, model._apex, np.abs(model._eigval))
   if not save:
     ax.set_title(f'{features}, using {method}', fontsize='small', loc='left')
-  balls_radius = (None if (degree==1 or show_ball == False or model._eigval >= 0) else np.abs(model._eigval)/degree)
-  plot_classes(ax, model._data_classes, L=10, balls_radius=balls_radius)
-  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L=10, sector_indicator=model._sector_indicator, simplified_mode=simplified)
+  plot_classes(ax, model._data_classes, L=10)
+  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L=10, sector_indicator=model._sector_indicator, simplified_mode=simplified, margin=model.margin())
 
   if save:
     plt.savefig(f'{dataset}_{degree}.pgf')
@@ -116,7 +112,6 @@ if __name__ == '__main__':
   parser.add_argument("degree", nargs='?', type=int, default=1, help="Degree of tropical polynomial")
   parser.add_argument("-s", "--save", action="store_true", help="Save the figure (.PGF)")
   parser.add_argument("--beta", type=float, default=None, help="If specified, Beta value for using 'linear SVM on log paper' trick")
-  parser.add_argument("--show-ball", action="store_true", help="Show the Hilbert ball corresponding to inner radius or margin")
   parser.add_argument("--simplified", action="store_true", help="Provide a simplified view of the hypersurface, with the decision boundary only")
   parser.add_argument("--feature-selection", type=int, help="Experimental: heuristic to generate more relevant monomials based on data. Specify the number of points to sample per class if wanted. Bypasses degree option.")
 

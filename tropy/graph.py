@@ -21,7 +21,7 @@ def plot_point(ax, x, length, color, linestyle="-", marker=None, ignored_branch=
     ax.plot(x[0], x[1], x[2], color=color, marker=marker)
 
 
-def plot_classes(ax, data_classes, L, features=None, show_lines=False, balls_radius: float =None):
+def plot_classes(ax, data_classes, L, features=None, show_lines=False):
   """Plot multiple classes of points (maximum 3 for now)"""
   colors = ['#FF934F', '#2D3142', '#058ED9', '#cc2d35']
   markers = ['o', 'v', '+', '*']
@@ -33,11 +33,6 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False, balls_rad
     ax.set_xlabel(features[0])
     ax.set_ylabel(features[1])
     ax.set_zlabel(features[2])
-
-  if balls_radius is not None:
-    for i, clas in enumerate(data_classes):
-      for col in clas.T:
-        plot_ball(ax, col, balls_radius, colors[i], alpha=.05)
   
   for i, clas in enumerate(data_classes):
     ls = "None" if not show_lines else linestyles[i]
@@ -51,30 +46,18 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False, balls_rad
   mid_x = (max_array[0] + min_array[0])
   mid_y = (max_array[1] + min_array[1])
   mid_z = (max_array[2] + min_array[2])
-  ax.set_xlim((mid_x - max_range) / 2, (mid_x + max_range) / 2)
-  ax.set_ylim((mid_y - max_range) / 2, (mid_y + max_range) / 2)
-  ax.set_zlim((mid_z - max_range) / 2, (mid_z + max_range) / 2)
-
-
-def plot_ball(ax, center, length, color="gray", alpha=.1):
-  """Plot tropical Hilbert ball of specified center and radius"""
-  half_len = length / 2
-  vertices = [
-      [center[0] + i * half_len, center[1] + j * half_len, center[2] + k * half_len]
-      for i in [-1, 1] for j in [-1, 1] for k in [-1, 1]
-  ]
-  edges = [[0, 1, 3, 2], [4, 5, 7, 6], [0, 1, 5, 4], [2, 3, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]]
-  faces = [[vertices[i] for i in edge] for edge in edges]
-  ax.add_collection3d(Poly3DCollection(faces, color=color, alpha=alpha, linewidths=0))
+  ax.set_xlim((mid_x - max_range) / 2.5, (mid_x + max_range) / 2.5)
+  ax.set_ylim((mid_y - max_range) / 2.5, (mid_y + max_range) / 2.5)
+  ax.set_zlim((mid_z - max_range) / 2.5, (mid_z + max_range) / 2.5)
 
 
 def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = False):
   """Initialize plot in the projective space R^3/(1,1,1)"""
   sns.set_context("paper")
   if type(config) == list:
-    ax = fig.add_subplot(*config, projection="3d", proj_type="ortho")
+    ax = fig.add_subplot(*config, projection="3d", proj_type="ortho", computed_zorder=False)
   else:
-    ax = fig.add_subplot(config, projection="3d", proj_type="ortho")
+    ax = fig.add_subplot(config, projection="3d", proj_type="ortho", computed_zorder=False)
   ax.view_init(elev=28, azim=45)
   ax.set_xlim([-L, L])
   ax.set_ylim([-L, L])
@@ -88,15 +71,12 @@ def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = F
   return ax
 
 
-def plot_hyperplane_3d(ax, x: np.ndarray, l: int, L: int, sector_indicator: np.ndarray = None) -> None:
+def plot_hyperplane_3d(ax, x: np.ndarray, margin: float, L: int, sector_indicator: np.ndarray = None) -> None:
   """Plot a tropical hyperplane as a 2D projection of a 3D hypersurface"""
-  l = np.abs(l)
-  if l > 0:
-    plot_ball(ax, x, l)
-  plot_polynomial_hypersurface_3d(ax, np.eye(x.shape[0]), -x, L, sector_indicator)
+  plot_polynomial_hypersurface_3d(ax, np.eye(x.shape[0]), -x, L, sector_indicator, margin = margin)
 
 
-def draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=None, simplified_mode=False):
+def draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=None, simplified_mode=False, margin=None):
   node = nodes[i]
   xpt, ypt, zpt = node[0]
   neighboring_sectors = node[1]
@@ -115,9 +95,11 @@ def draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=None, simpli
           if simplified_mode:
             break
         ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color=color, linestyle=linestyle)
+        if margin is not None and not contiguous_sectors:
+          draw_margin(ax, np.array([xpt, ypt, zpt]), np.array([apt, bpt, cpt]), margin)
 
 
-def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=None, simplified_mode=False):
+def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=None, simplified_mode=False, margin=None):
   """Draws half rays out of some node"""
   node = nodes[i]
   xpt, ypt, zpt = node[0]
@@ -127,7 +109,7 @@ def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=N
   c = monomials[neighboring_sectors[idx1], 2] - monomials[neighboring_sectors[idx2], 2]
 
   for sign in [-1, 1]:
-    aprime, bprime = sign * 10 * L * (b - c), -sign * 10 * L * (a - c)
+    aprime, bprime = sign * L * (b - c), -sign * L * (a - c)
     cprime = -(aprime + bprime)
     apt, bpt, cpt = xpt + aprime, ypt + bprime, zpt + cprime
     val = evaluate_3d(monomials, coeffs, (apt, bpt, cpt))
@@ -140,6 +122,8 @@ def draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=N
         if simplified_mode:
           break
       ax.plot([xpt, apt], [ypt, bpt], [zpt, cpt], color=color, linestyle=linestyle)
+      if margin is not None and not contiguous_sectors:
+        draw_margin(ax, np.array([xpt, ypt, zpt]), np.array([apt, bpt, cpt]), margin)
 
 
 def evaluate_3d(monomials: np.ndarray, coeffs: np.ndarray, point: tuple[float]) -> np.ndarray:
@@ -147,11 +131,68 @@ def evaluate_3d(monomials: np.ndarray, coeffs: np.ndarray, point: tuple[float]) 
   return coeffs + np.sum(monomials * np.array(point), axis=1)
 
 
-def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=None, simplified_mode=False):
+def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=None, simplified_mode=False, margin=0):
   nodes = hypersurface_nodes(monomials, coeffs, 3)
   for i, node in enumerate(nodes):
     if not simplified_mode:
       plot_point(ax, node[0], 2*L, 'black', linestyle="None", marker='.', maxplus=True)
-    draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=sector_indicator, simplified_mode=simplified_mode)
+    draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=sector_indicator, simplified_mode=simplified_mode, margin=margin)
     for idx1, idx2 in [(0, 1), (0, 2), (1, 2)]:
-      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=sector_indicator, simplified_mode=simplified_mode)
+      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=sector_indicator, simplified_mode=simplified_mode, margin=margin)
+
+
+def draw_margin(ax, start, end, margin, color="#FFE4C9", alpha=1):
+  if np.isclose(margin, 0):
+    return
+
+  def cube_vertices(center, size):
+      vertices = np.array([
+          [-size, -size, -size],
+          [+size, -size, -size],
+          [+size, +size, -size],
+          [-size, +size, -size],
+          [-size, -size, +size],
+          [+size, -size, +size],
+          [+size, +size, +size],
+          [-size, +size, +size]
+      ])
+      return vertices + center
+
+  vertices1 = cube_vertices(start, margin/2)
+  vertices2 = cube_vertices(end, margin/2)
+
+  faces = [
+      [vertices1[0], vertices1[1], vertices1[2], vertices1[3]],
+      [vertices1[4], vertices1[5], vertices1[6], vertices1[7]],
+      [vertices1[0], vertices1[1], vertices1[5], vertices1[4]],
+      [vertices1[2], vertices1[3], vertices1[7], vertices1[6]],
+      [vertices1[1], vertices1[2], vertices1[6], vertices1[5]],
+      [vertices1[0], vertices1[3], vertices1[7], vertices1[4]],
+      [vertices2[0], vertices2[1], vertices2[2], vertices2[3]],
+      [vertices2[4], vertices2[5], vertices2[6], vertices2[7]],
+      [vertices2[0], vertices2[1], vertices2[5], vertices2[4]],
+      [vertices2[2], vertices2[3], vertices2[7], vertices2[6]],
+      [vertices2[1], vertices2[2], vertices2[6], vertices2[5]],
+      [vertices2[0], vertices2[3], vertices2[7], vertices2[4]],
+  ]
+
+  faces_join = [
+    [vertices1[0], vertices1[1], vertices2[1], vertices2[0]],
+    [vertices1[1], vertices1[2], vertices2[2], vertices2[1]],
+    [vertices1[2], vertices1[3], vertices2[3], vertices2[2]],
+    [vertices1[3], vertices1[0], vertices2[0], vertices2[3]],
+    [vertices1[4], vertices1[5], vertices2[5], vertices2[4]],
+    [vertices1[5], vertices1[6], vertices2[6], vertices2[5]],
+    [vertices1[6], vertices1[7], vertices2[7], vertices2[6]],
+    [vertices1[7], vertices1[4], vertices2[4], vertices2[7]],
+    [vertices1[0], vertices1[4], vertices2[4], vertices2[3]],
+    [vertices1[1], vertices1[5], vertices2[5], vertices2[2]],
+    [vertices1[2], vertices1[6], vertices2[6], vertices2[1]],
+    [vertices1[3], vertices1[7], vertices2[7], vertices2[0]],
+]
+
+  poly1 = Poly3DCollection(faces, color=color, alpha=alpha, linewidths=0)
+  poly2 = Poly3DCollection(faces_join, color=color, alpha=alpha, linewidths=0)
+
+  ax.add_collection3d(poly1)
+  ax.add_collection3d(poly2)

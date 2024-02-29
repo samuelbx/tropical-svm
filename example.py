@@ -14,7 +14,7 @@ if __name__ == "__main__":
   Cminus[1, :] += 10
 
   # Fitting tropical SVM
-  model, model2 = TropicalSVC(), TropicalSVC()
+  model = TropicalSVC()
   model.fit([Cplus, Cminus], native_tropical_data=True)
 
   # Graphing (possible because toy data is 3D)
