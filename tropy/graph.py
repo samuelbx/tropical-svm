@@ -21,8 +21,8 @@ def plot_point(ax, x, length, color, linestyle="-", marker=None, ignored_branch=
     ax.plot(x[0], x[1], x[2], color=color, marker=marker)
 
 
-def plot_classes(ax, data_classes, L, features=None, show_lines=False):
-  """Plot multiple classes of points (maximum 3 for now)"""
+def plot_classes(ax, data_classes, L = 0, features=None, show_lines=False) -> float:
+  """Plot multiple classes of points (maximum 3 for now) and return plot characteristic size"""
   colors = ['#FF934F', '#2D3142', '#058ED9', '#cc2d35']
   markers = ['o', 'v', '+', '*']
   linestyles = ['dotted', 'dashed', 'dashdot', 'dotted']
@@ -37,8 +37,8 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False):
   for i, clas in enumerate(data_classes):
     ls = "None" if not show_lines else linestyles[i]
     for col in clas.T:
-      min_array = np.minimum(min_array, col)
-      max_array = np.maximum(max_array, col)
+      min_array = np.minimum(min_array, col - col.mean())
+      max_array = np.maximum(max_array, col - col.mean())
       plot_point(ax, col, L, colors[i], ls, markers[i])
     
   # Automatic size for graph
@@ -46,9 +46,11 @@ def plot_classes(ax, data_classes, L, features=None, show_lines=False):
   mid_x = (max_array[0] + min_array[0])
   mid_y = (max_array[1] + min_array[1])
   mid_z = (max_array[2] + min_array[2])
-  ax.set_xlim((mid_x - max_range) / 2.5, (mid_x + max_range) / 2.5)
-  ax.set_ylim((mid_y - max_range) / 2.5, (mid_y + max_range) / 2.5)
-  ax.set_zlim((mid_z - max_range) / 2.5, (mid_z + max_range) / 2.5)
+  ax.set_xlim((mid_x - max_range) / 2.3, (mid_x + max_range) / 2.3)
+  ax.set_ylim((mid_y - max_range) / 2.3, (mid_y + max_range) / 2.3)
+  ax.set_zlim((mid_z - max_range) / 2.3, (mid_z + max_range) / 2.3)
+
+  return max_range
 
 
 def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = False):

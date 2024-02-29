@@ -144,7 +144,7 @@ Since our separator is translation-invariant by the constant vector, in order to
         \centering
         \resizebox{0.5\textwidth}{!}{%
         \centering
-    \clipbox{0.35\width{} 0.25\height{} 0.25\width{} 0.25\height{}}{\input{figures/bintoy-separated_1.pgf}}
+    \clipbox{0.2\width{} 0.2\height{} 0.2\width{} 0.2\height{}}{\input{figures/bintoy-separated_1.pgf}}
 }
         \caption{Maximum-margin tropical hyperplane}
         \label{fig:MaxMargin}
@@ -155,7 +155,7 @@ Since our separator is translation-invariant by the constant vector, in order to
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.25\height{}}{\input{figures/moon_3.pgf}}
+            \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/moon_3.pgf}}
         }
         \caption{Moons dataset from Scikit-learn}
         \label{fig:moon}
@@ -163,22 +163,22 @@ Since our separator is translation-invariant by the constant vector, in order to
 
     \bigskip
     \centering
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}{0.5\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.25\width{} 0.3\height{} 0.25\width{} 0.3\height{}}{\input{figures/circular_3.pgf}}
+            \clipbox{0.1\width{} 0.2\height{} 0.1\width{} 0.2\height{}}{\input{figures/circular_3.pgf}}
         }
-        \caption{Toy binary dataset, cubic}
+        \caption{Circles dataset, cubic}
         \label{fig:circular}
     \end{subfigure}
-    \hfill
+    \hspace{2cm}
     \centering
     \begin{subfigure}{0.35\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.2\width{} 0.2\height{} 0.2\width{} 0.2\height{}}{\input{figures/toy-reverse_3.pgf}}
+            \clipbox{0.1\width{} 0.1\height{} 0.1\width{} 0.1\height{}}{\input{figures/toy-reverse_3.pgf}}
         }
         \caption{Toy multiclass dataset, cubic}
         \label{fig:toy_reverse}
@@ -650,25 +650,25 @@ On the other hand, when the tropical polynomial is trained, since only active mo
 
 \subsection*{Feature selection}
 
-A heuristic for adaptive monomial choice might be to sample pairs of points of different classes, and make perpendicular slopes admissible. In many cases, this gives better results, as we can see in Figures \ref{fig:nofeatureeng} and \ref{fig:featureeng}, in which we allow homogeneous positive real monomials.
+A heuristic for adaptive monomial choice might be to sample pairs of points of different classes, and make perpendicular slopes admissible. In many cases, this gives better results (and even better margins), as we can see in Figures \ref{fig:nofeatureeng} and \ref{fig:featureeng}, in which we allow homogeneous positive real monomials.
 
 \begin{figure}[!h]
     \centering
-    \begin{subfigure}{0.35\textwidth}
+    \begin{subfigure}{0.45\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.35\width{} 0.25\height{} 0.25\width{} 0.35\height{}}{\input{figures/circular_3_2.pgf}}}
+            \clipbox{0.1\width{} 0.2\height{} 0.1\width{} 0.2\height{}}{\input{figures/circular_3.pgf}}}
         \caption{Using $\mathcal{A}_3$}
         \label{fig:nofeatureeng}
     \end{subfigure}
-    \hspace{2cm}
+    \hfill
     \centering
-    \begin{subfigure}{0.35\textwidth}
+    \begin{subfigure}{0.45\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.35\width{} 0.25\height{} 0.27\width{} 0.35\height{}}{\input{figures/circular_3_feature_eng.pgf}}}
+            \clipbox{0.1\width{} 0.2\height{} 0.1\width{} 0.2\height{}}{\input{figures/circular_3_feature_eng.pgf}}}
         
         \caption{Sampling $10$ points from each class}
         \label{fig:featureeng}
@@ -680,7 +680,7 @@ A heuristic for adaptive monomial choice might be to sample pairs of points of d
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.15\width{} 0.3\height{} 0.15\width{} 0.2\height{}}{\input{figures/moon_3.pgf}}}
+            \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/moon_3.pgf}}}
         \caption{Using $\mathcal{A}_3$}
         \label{fig:nofeatureeng}
     \end{subfigure}
@@ -690,9 +690,9 @@ A heuristic for adaptive monomial choice might be to sample pairs of points of d
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.15\width{} 0.3\height{} 0.15\width{} 0.2\height{}}{\input{figures/moon_10_feature_eng.pgf}}}
+            \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/moon_10_feature_eng.pgf}}}
         
-        \caption{Sampling $10$ points from each class}
+        \caption{Sampling $5$ points from each class}
         \label{fig:featureeng}
     \end{subfigure}
     

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import sys
 from tropy.graph import init_ax, plot_classes, plot_polynomial_hypersurface_3d
 from tropy.svm import TropicalSVC
@@ -85,7 +86,7 @@ def main(args):
   model = TropicalSVC()
   model.fit(data_classes, degree, native_tropical_data=native_tropical, log_linear_beta=log_linear_beta, feature_selection=feature_selection)
 
-  fig = plt.figure(figsize=(9,9) if not save else (6, 6))
+  fig = plt.figure(figsize=(9,9) if save is None else (6, 6))
   ax = init_ax(fig, 111, L=10, mode_3d=False)
   if log_linear_beta is not None:
     method = f'linear SVM on log paper, $\\beta = {log_linear_beta}$'
@@ -95,25 +96,28 @@ def main(args):
     features = f'(experimental) feature selection, {feature_selection} points per class'
   else:
     features = f'$deg = {degree}$'
-  if not save:
+  if save is None:
     ax.set_title(f'{features}, using {method}', fontsize='small', loc='left')
-  plot_classes(ax, model._data_classes, L=10)
-  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L=10, sector_indicator=model._sector_indicator, simplified_mode=simplified, margin=(model.margin() if log_linear_beta is None else 0))
+  L = plot_classes(ax, model._data_classes)
+  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L, sector_indicator=model._sector_indicator, simplified_mode=simplified, margin=(model.margin() if log_linear_beta is None else 0))
 
-  if save:
-    plt.savefig(f'{dataset}_{degree}.svg')
-
-  plt.show()
+  if save is not None:
+    if save == '__DEFAULT__':
+      plt.savefig(f'{dataset}_{degree}.svg')
+    else:
+      plt.savefig(os.path.abspath(save))
+  else:
+    plt.show()
 
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description="Fitting and plotting tropical piecewise linear classifiers on 3D datasets")
   parser.add_argument("dataset", type=str, choices=['iris', 'iris-binary', 'moons', 'toy', 'toy-centers', 'toy-reverse', 'toy-centers-reverse', 'bintoy', 'bintoy-separated', 'bintoy-mixed', 'circular'], help="Dataset to classify")
   parser.add_argument("degree", nargs='?', type=int, default=1, help="Degree of tropical polynomial")
-  parser.add_argument("-s", "--save", action="store_true", help="Save the figure (.PGF)")
+  parser.add_argument("-s", "--save", nargs='?', const='__DEFAULT__', default=None, metavar='file_path', help="Save the figure (.PGF)")
   parser.add_argument("--beta", type=float, default=None, help="If specified, Beta value for using 'linear SVM on log paper' trick")
   parser.add_argument("--simplified", action="store_true", help="Provide a simplified view of the hypersurface, with the decision boundary only")
-  parser.add_argument("--feature-selection", type=int, help="Experimental: heuristic to generate more relevant monomials based on data. Specify the number of points to sample per class if wanted. Bypasses degree option.")
+  parser.add_argument("--feature-selection", type=int, metavar='no_features', help="Experimental: heuristic to generate more relevant monomials based on data. Specify the number of points to sample per class if wanted. Bypasses degree option.")
 
   if len(sys.argv) == 1:
     parser.print_help(sys.stderr)

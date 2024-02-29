@@ -45,5 +45,5 @@ if __name__ == '__main__':
     sur_last = decision_frontiers[-1]
     ax.plot_surface(sur_last[0], sur_last[1], sur_last[2], alpha=0.8, color="r")
     plot_classes(ax, [Xplus, Xminus], L)
-    plot_hyperplane_3d(ax, apex, 0, L)
+    plot_hyperplane_3d(ax, apex, 0, L, sector_indicator=[0, 0, 1])
     plt.show()
