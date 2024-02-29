@@ -34,38 +34,11 @@ class TropicalSVC():
       # Default way of doing: compute coefficients from d-dimensional simplex
       monomials_idxes = list(simplex_lattice_points(d, poly_degree))
       aug_data_classes = veronese(monomials_idxes, data_classes_copy)
-      self._veronese_coefficients = monomials_idxes
-    
     else:
-      # (Experimental) feature selection heuristic: first sample random data points
-      sampled_points = []
-      for data_class in data_classes_copy:
-        np.random.seed(42)
-        sampled_indices = np.random.choice(data_class.shape[1], size=feature_selection, replace=False)
-        for idx in sampled_indices:
-          sampled_points.append(data_class[:, idx])
+      aug_data_classes, monomials_idxes = _experimental_feature_selection(data_classes_copy, d, feature_selection)
 
-      # Generate vectors between sampled points and monomials
-      monomials = []
-      for i in range(len(sampled_points)):
-        p = sampled_points[i] - np.mean(sampled_points[i])
-        for j in range(i+1, len(sampled_points)):
-          p2 = sampled_points[j] - np.mean(sampled_points[j])
-          segment = (p2 - p)/(np.linalg.norm(p2-p)**1)
-          slope_vector = -d * segment + np.sum(segment)
-          monomials.append(segment)
-          monomials.append(segment + slope_vector)
-          monomials.append(segment - slope_vector)
-          monomials.append(-segment)
-          monomials.append(-segment - slope_vector)
-          monomials.append(-segment + slope_vector)
-
-      # HACK: Generate list of tuples (index, monomial)
-      monomials_idxes = [(tuple(range(d)), monomial.tolist()) for monomial in monomials]
-      aug_data_classes = veronese(monomials_idxes, data_classes_copy)
-      self._veronese_coefficients = monomials_idxes
-
-
+    self._veronese_coefficients = monomials_idxes
+    
     # Handle log-linear mode
     if log_linear_beta:
       assert len(aug_data_classes) == 2
@@ -73,7 +46,7 @@ class TropicalSVC():
       self._apex = np.sign(w) * np.log(np.sign(w) * w)/log_linear_beta
     else:
       # Compute apex
-      self._apex, self._eigval = _inrad_eigenpair(aug_data_classes, N=15)
+      self._apex, self._eigval = _inrad_eigenpair(aug_data_classes, N=1000)
 
     # Assign secotrs based on majoritary population
     Counts = np.zeros((len(aug_data_classes), self._apex.shape[0]))
@@ -122,6 +95,9 @@ class TropicalSVC():
     self._monomials = weights[:, :-2]
     self._coeffs = weights[:, -2]
     self._sector_indicator = weights[:, -1]
+  
+  def margin(self) -> float:
+    return max(0.0, -self._eigval) / np.max(np.sum(np.abs(self._monomials), axis=1))
 
 
 def _inrad_op(Clist: list[np.ndarray]) -> callable:
@@ -149,7 +125,7 @@ def fit_tropicalized_linear_SVM(data_classes: np.ndarray, beta: float = 1) -> tu
 
 
 def _krasnoselskii_mann(op: callable, N: int,
-                        x0: np.ndarray, tol: float = 1e-6) -> tuple[np.ndarray, float]:
+                        x0: np.ndarray, tol: float = 1e-3) -> tuple[np.ndarray, float]:
   """Compute the eigenpair of a Shapley operator using Krasnoselskii-Mann iterations"""
   x, z = x0.copy(), np.zeros_like(x0)
   for _ in range(N):
@@ -159,6 +135,7 @@ def _krasnoselskii_mann(op: callable, N: int,
       x = new_x
       break
     x = new_x
+  print(f"KM converged in {_} iterations")
   return x - x.mean(), 2 * np.max(z)
 
 
@@ -167,3 +144,34 @@ def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20, x0=None) -> tuple[np.
   if x0 is None:
     x0 = np.ones(Clist[0].shape[0])
   return _krasnoselskii_mann(_inrad_op(Clist), N, x0)
+
+
+def _experimental_feature_selection(X, d: int, no_samples: int):
+  """(Experimental) feature selection heuristic"""
+  # Sample random data points
+  sampled_points = []
+  for data_class in X:
+    np.random.seed(42)
+    sampled_indices = np.random.choice(data_class.shape[1], size=no_samples, replace=False)
+    for idx in sampled_indices:
+      sampled_points.append(data_class[:, idx])
+
+  # Generate vectors between sampled points and monomials
+  monomials = []
+  for i in range(len(sampled_points)):
+    p = sampled_points[i] - np.mean(sampled_points[i])
+    for j in range(i+1, len(sampled_points)):
+      p2 = sampled_points[j] - np.mean(sampled_points[j])
+      segment = (p2 - p)/(np.linalg.norm(p2-p)**1)
+      slope_vector = -d * segment + np.sum(segment)
+      monomials.append(segment)
+      monomials.append(segment + slope_vector)
+      monomials.append(segment - slope_vector)
+      monomials.append(-segment)
+      monomials.append(-segment - slope_vector)
+      monomials.append(-segment + slope_vector)
+
+  # HACK: Generate list of tuples (index, monomial)
+  monomials_idxes = [(tuple(range(d)), monomial.tolist()) for monomial in monomials]
+  aug_data_classes = veronese(monomials_idxes, X)
+  return aug_data_classes, monomials_idxes
