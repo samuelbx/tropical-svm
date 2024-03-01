@@ -12,8 +12,8 @@ import pandas as pd
 from sklearn.datasets import make_moons
 
 
-def toy_gaussian(center: list) -> np.ndarray:
-  return apply_noise(np.array([center] * 10, dtype=float).T, mu=0.1, seed=42)
+def toy_gaussian(center: list, seed: int = 42) -> np.ndarray:
+  return apply_noise(np.array([center] * 10, dtype=float).T, mu=0.1, seed=seed)
 
 
 def generate_toy_data(dataset: str) -> tuple[list[np.ndarray], bool]:
@@ -49,7 +49,7 @@ def generate_toy_data(dataset: str) -> tuple[list[np.ndarray], bool]:
     data_classes = [Xplus, Xminus]
   elif 'toy' in dataset:
     native_tropical = True
-    data_classes = [np.array([c]).T if 'centers' in dataset else toy_gaussian(c) for c in centers]
+    data_classes = [np.array([c]).T if 'centers' in dataset else toy_gaussian(c, 43+i) for i, c in enumerate(centers)]
   elif 'iris' in dataset:
     native_tropical = False
     base_df = pd.read_csv('./data/iris.csv')
