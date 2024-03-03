@@ -1,8 +1,7 @@
 from typing import Union
 import numpy as np
-import seaborn as sns
+from seaborn import set_context
 from mpl_toolkits.mplot3d.art3d import Line3D, Poly3DCollection
-import matplotlib.pyplot as plt
 from .utils import max_max2_idx
 from .veronese import hypersurface_nodes
 
@@ -55,12 +54,12 @@ def plot_classes(ax, data_classes, L = 0, features=None, show_lines=False) -> fl
 
 def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = False):
   """Initialize plot in the projective space R^3/(1,1,1)"""
-  sns.set_context("paper")
+  set_context("paper")
   if type(config) == list:
-    ax = fig.add_subplot(*config, projection="3d", proj_type="ortho", computed_zorder=False)
+    ax = fig.add_subplot(*config, projection="3d", proj_type="ortho", aspect='equal', computed_zorder=False)
   else:
-    ax = fig.add_subplot(config, projection="3d", proj_type="ortho", computed_zorder=False)
-  ax.view_init(elev=28, azim=45)
+    ax = fig.add_subplot(config, projection="3d", proj_type="ortho", aspect='equal', computed_zorder=False)
+  ax.view_init(elev=np.arctan(1/np.sqrt(2)) * 180/np.pi, azim=45)
   ax.set_xlim([-L, L])
   ax.set_ylim([-L, L])
   ax.set_zlim([-L, L])
