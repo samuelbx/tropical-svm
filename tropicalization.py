@@ -39,7 +39,7 @@ if __name__ == '__main__':
   if dim == 3:
     fig = plt.figure(figsize=(9,9))
     ax = init_ax(fig, 111, L, mode_3d=False)
-    ax.view_init(elev=29, azim=45)
+    ax.view_init(elev=36, azim=45)
     sur = decision_frontiers[0]
     ax.plot_surface(sur[0], sur[1], sur[2], alpha=0.8, color="orange")
     sur_last = decision_frontiers[-1]
