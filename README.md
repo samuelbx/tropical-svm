@@ -42,12 +42,22 @@ optional arguments:
 
 ```
 
-| Command | Result |
+./playground.py moons 3 -s ./img/moons.svg
+./playground.py moons --feature-selection 5 --simplified -s ./img/moons_feature_sel.svg
+./playground.py circular 3 -s ./img/circular.svg
+./playground.py circular --feature-selection 5 -s ./img/circular_feature_sel.svg
+./playground.py bintoy-separated 1 ./img/bintoy-separated.svg
+./playground.py bintoy-separated 1 --beta 10 -s ./img/bintoy-separated_feature_sel.svg
+./playground.py toy-reverse 3 -s ./img/toy-reverse.svg
+./playground.py toy-reverse --feature-selection 3 -s ./img/toy-reverse_feature_sel.svg
+
+
+| Commands | Results |
 |--|--|
-| `./playground.py moons 3` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/moons_3.svg" width="40%"> |
-| `./playground.py circular --feature-selection 5` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/circular_1.svg" width="40%"> |
-| `./playground.py bintoy-separated 1 --beta 10` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/bintoy-separated_1.svg" width="40%"> |
-| `./playground.py toy-reverse 3` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/toy-reverse_3.svg" width="40%"> |
+| `./playground.py moons 3` <br /> `./playground.py moons --feature-selection 5 --simplified` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/moons.svg" width="40%"> <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/moons_feature_sel.svg" width="40%"> |
+| `./playground.py circular 3` <br /> `./playground.py circular --feature-selection 5` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/circular.svg" width="40%"> <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/circular_feature_sel.svg" width="40%"> |
+| `./playground.py bintoy-separated 1` <br /> `./playground.py bintoy-separated 1 --beta 10` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/bintoy-separated.svg" width="40%"> <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/bintoy-separated_feature_sel.svg" width="40%"> |
+| `./playground.py toy-reverse 3` <br /> `./playground.py toy-reverse --feature-selection 3` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/toy-reverse.svg" width="40%"> <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/toy-reverse_feature_sel.svg" width="40%"> |
 
 
 ### Fitting custom datasets
@@ -68,6 +78,10 @@ acc = model.accuracy(Xtest)
 ```
 
 Methods `model.predict`, `model.export_weights` and `model.load_weights` are also provided.
+
+### Plotting tropical hypersurfaces
+
+Module `tropy.graph` comes with a handful of methods to plot tridimensional tropical hypersurfaces. Feel free to use them for custom purposes.
 
 ## Other experiments
 
