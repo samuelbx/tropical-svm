@@ -4,13 +4,13 @@ import numpy as np
 
 def lattice_values(d: int, size: int):
   """Generate sorted integer values whose sum is smaller than size"""
-  if size == 0:
+  if size == 0 or d == 0:
     yield []
-  if size == 1:
+  elif size == 1:
     yield [1]
   else:
     for k in range(1, size + 1):
-      for cur in lattice_values(d, size - k):
+      for cur in lattice_values(d - 1, size - k):
         cur.append(k)
         yield cur
 

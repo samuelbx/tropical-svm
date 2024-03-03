@@ -15,30 +15,28 @@ class TropicalSVC():
 
   def fit(self, data_classes: list[np.ndarray], poly_degree: int = 1, native_tropical_data: bool = False, log_linear_beta: bool = None, feature_selection: int = None) -> None:
     """Fit the model according to the given training data.
-    data_classes: list of classes (2D numpy arrays whose columns are the data points)
-    poly_degree: complexity parameter of the model
-    tropical_data: whether the data is intrinsically tropical or not (default: False)
-    log_linear_beta: option to use "linear hyperplane on logarithmic paper" trick
-    feature_selection: (experimental) heuristic for adaptive monomial choice
+    data_classes: list of classes (2D NumPy arrays whose columns are the data points)
+    poly_degree: degree of the tropical polynomial to fit
+    native_tropical_data: whether the data is intrinsically tropical or not (default: False)
+    log_linear_beta: option to use Maslov's dequantization trick
+    feature_selection: (experimental) heuristic for adaptive monomial choice, overrides poly_degree
     """
-    # Map d-dimensional data into subspace H: x1+...+x^{d+1}=0 of R^{d+1}
+    # By default, map d-dimensional data into subspace H: x1+...+x^{d+1}=0 of R^{d+1}
     data_classes_copy = data_classes.copy()
     if not native_tropical_data:
       for i, data in enumerate(data_classes_copy):
         data_classes_copy[i] = np.vstack((-np.sum(data, axis=0), data))
     d = data_classes_copy[0].shape[0]
     self._tropical_data, self._log_linear_beta, self._poly_degree = native_tropical_data, log_linear_beta, d
-    self._data_classes = data_classes_copy # TODO: remove
+    self._data_classes = data_classes_copy
     
-    if feature_selection is None: 
-      # Default way of doing: compute coefficients from d-dimensional simplex
+    # Choose features using combinations from d-dimensional simplex, or experimental feature selection heuristic
+    if feature_selection is None:
       monomials_idxes = list(simplex_lattice_points(d, poly_degree))
       aug_data_classes = veronese(monomials_idxes, data_classes_copy)
     else:
       aug_data_classes, monomials_idxes = _experimental_feature_selection(data_classes_copy, d, feature_selection)
 
-    self._veronese_coefficients = monomials_idxes
-    
     # Handle log-linear mode
     if log_linear_beta:
       assert len(aug_data_classes) == 2
@@ -82,7 +80,7 @@ class TropicalSVC():
       predicted_labels.extend(self.predict(points))
     return accuracy_score(true_labels, predicted_labels)
 
-  def export_weights(self, file) -> None:
+  def export_weights(self, file: str) -> None:
     assert self._monomials is not None, "Model must be trained before prediction"
     data_matrix = np.column_stack((self._monomials, self._coeffs, self._sector_indicator))
     valid_rows = data_matrix[self._sector_indicator != -1]
@@ -97,11 +95,13 @@ class TropicalSVC():
     self._sector_indicator = weights[:, -1]
   
   def margin(self) -> float:
-    return max(0.0, -self._eigval) / np.max(np.sum(np.abs(self._monomials), axis=1))
+    """Margin of the tropical classifier"""
+    op_norm = np.max(np.sum(np.abs(self._monomials), axis=1)) # L^inf norm of Veronese embedding
+    return max(0.0, -self._eigval) / op_norm
 
 
 def _inrad_op(Clist: list[np.ndarray]) -> callable:
-  """Returns the Shapley operator describing the overlap between convex hulls"""
+  """Returns the Shapley operator for tropical linear classification"""
   def op(x):
     d = Clist[0].shape[0]
     comb_idxes = list(combinations(range(len(Clist)), 2))
@@ -116,7 +116,7 @@ def _inrad_op(Clist: list[np.ndarray]) -> callable:
 
 
 def fit_tropicalized_linear_SVM(data_classes: np.ndarray, beta: float = 1) -> tuple[LinearSVC, np.ndarray]:
-  """Compute an approximating tropical hyperplane by taking the logarithm of a linear SVM"""
+  """Compute an approximating tropical hyperplane by Maslov's dequantization"""
   xtrain, ytrain = map_to_exponential_space(data_classes, beta)
   model = LinearSVC(dual=True, fit_intercept=False)
   clf = model.fit(xtrain.T, ytrain)
@@ -125,28 +125,29 @@ def fit_tropicalized_linear_SVM(data_classes: np.ndarray, beta: float = 1) -> tu
 
 
 def _krasnoselskii_mann(op: callable, N: int,
-                        x0: np.ndarray, tol: float = 1e-3) -> tuple[np.ndarray, float]:
+                        x: np.ndarray, tol: float = 1e-3) -> tuple[np.ndarray, float]:
   """Compute the eigenpair of a Shapley operator using Krasnoselskii-Mann iterations"""
-  x, z = x0.copy(), np.zeros_like(x0)
-  for _ in range(N):
+  z = None
+  for i in range(N):
     z = (x + op(x)) / 2
-    new_x = z - np.max(z) * np.ones_like(x0)
+    new_x = z - np.max(z)
     if np.linalg.norm(new_x - x) < tol:
       x = new_x
       break
     x = new_x
-  print(f"KM converged in {_} iterations")
+  if i == N-1:
+    print(f"WARN: KM did not converge in {N} iterations")
+  else:
+    print(f"KM converged in {i+1} iterations")
   return x - x.mean(), 2 * np.max(z)
 
 
-def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20, x0=None) -> tuple[np.ndarray, float]:
+def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20) -> tuple[np.ndarray, float]:
   """Compute the eigenpair of the multi-class inner radius operator"""
-  if x0 is None:
-    x0 = np.ones(Clist[0].shape[0])
-  return _krasnoselskii_mann(_inrad_op(Clist), N, x0)
+  return _krasnoselskii_mann(_inrad_op(Clist), N, np.ones(Clist[0].shape[0]))
 
 
-def _experimental_feature_selection(X, d: int, no_samples: int):
+def _experimental_feature_selection(X: list[np.ndarray], d: int, no_samples: int):
   """(Experimental) feature selection heuristic"""
   # Sample random data points
   sampled_points = []

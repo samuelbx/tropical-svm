@@ -1,13 +1,14 @@
 import numpy as np
 
 
-def veronese_feature_names(feature_names: list[str], lattice_points: list[np.ndarray]):
+def veronese_feature_names(feature_names: list[str], monomials: list[np.ndarray]):
   ext_feature_names = []
-  for comb, vals in lattice_points:
+  for monomial in monomials:
     subfeatures = []
-    for c, v in zip(comb, vals):
-      feature = feature_names[c]
-      subfeatures.append(feature if v == 1 else f"{v}*{feature}")
+    for i, coef in enumerate(monomial):
+      feature = feature_names[i]
+      if coef != 0:
+        subfeatures.append(feature if coef == 1 else f"{int(coef)}*{feature}")
     ext_feature_names.append(" + ".join(subfeatures))
   return ext_feature_names
 
