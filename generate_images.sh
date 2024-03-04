@@ -6,7 +6,7 @@
 ./playground.py circular 3 -s ./img/circular.svg
 ./playground.py circular --feature-selection 5 -s ./img/circular_feature_sel.svg
 ./playground.py bintoy-separated 1 -s ./img/bintoy-separated.svg
-./playground.py bintoy-separated 1 --beta 10 -s ./img/bintoy-separated_feature_sel.svg
+./playground.py bintoy-separated 1 --beta 10 -s ./img/bintoy-separated_maslov.svg
 ./playground.py toy-reverse 3 -s ./img/toy-reverse.svg
 ./playground.py toy-reverse --feature-selection 3 -s ./img/toy-reverse_feature_sel.svg
 
