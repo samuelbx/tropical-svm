@@ -1,0 +1,150 @@
+
+\newpage
+\subsection{Linear Hyperplanes Look Tropical on Log Paper}
+
+Let $X_{ij}$ be our point clouds, and for $\beta>0$, let's define
+$x^{\beta}=(x_{ij}^{\beta}:=e^{\beta X_{ij}})_{ij}$. We will show
+that separating different classes from $x^{\beta}$ using a linear
+SVM, when $\beta$ tends toward infinity, yields a separating hyperplane
+that converges towards a tropical hyperplane in the initial space.
+
+Our method, by directly outputting an optimal-margin separating tropical
+hyperplane in pseudo-polynomial time, is expected to achieve better
+results. If $\beta$ is small, we might indeed be far away from the
+limiting tropical hypersurface; conversely, as $\beta$ approaches
+infinity, numerical error becomes predominant.
+
+\begin{figure}[h]
+\centering \includegraphics[scale=0.1]{\string"fig/linear log-exp kernel\string".png}
+\includegraphics[scale=0.1]{\string"fig/tropical svm\string".png} 
+\end{figure}
+
+
+\subsubsection{Tropical hyperplanes are limiting classical hyperplanes}
+
+Under the assumption that the $x_{ij}^{\beta}$ are linearly separable
+\textbf{\emph{(strong assumption because it has to hold for all values
+of $\beta$)}}, we compute a support vector classifier without intercept
+term, whose separation surface's equation is: 
+\[
+H^{\beta}:\quad w^{\beta}\cdot x=0,
+\]
+where all positive (resp. negative) points verify $w^{\beta}\cdot x\ge1$
+(resp. $w^{\beta}\cdot x\le-1$). We write 
+\[
+w_{i}^{\beta}=\sigma_{i}e^{\beta W_{i}^{\beta}},
+\]
+where $\sigma_{i}\in\{\pm1\}$ and $W_{i}^{\beta}\in\mathbb{R}\cup\{-\infty\}$.
+For now, we simplify the study by considering a fixed $W_{i}$ value
+and $w_{i}^{\beta}=\sigma_{i}e^{\beta W_{i}}$. 
+\begin{lem}
+(Maslov's sandwich) For $\beta>0$ and $I\subset[d]$ we have: 
+\[
+0\leq\beta^{-1}\log\left(\sum_{i\in I}e^{\beta(W_{i}+X_{ij})}\right)-\max_{i\in I}(W_{i}+X_{ij})\le\beta^{-1}\log d.
+\]
+\end{lem}
+
+\begin{proof}
+Let $\beta>0$ and $I\subset[d]$. We have: 
+\[
+\exp\left\{ \beta\max_{i\in I}\left(W_{i}+X_{ij}\right)\right\} \le\sum_{i\in I}e^{\beta(W_{i}+X_{ij})}\le d\cdot\exp\left\{ \beta\max_{i\in I}\left(W_{i}+X_{ij}\right)\right\} ,
+\]
+hence the result by taking the logarithm and dividing by $\beta$. 
+\end{proof}
+\begin{prop} 
+
+Defining $H^{\text{trop}}$ as the hyperplane of apex $(-W_{i})_{i\in[d]}$,
+signed using $I^{+}:=\{i\in[d],\quad\sigma_{i}>0\}$ and $I^{-}:=[d]\backslash I^{+}$,
+we have: 
+\[
+d_{H}\left(\log H^{\beta},H^{\text{trop}}\right)\le\beta^{-1}\log d,
+\]
+where $d_{H}$ is the tropical Haussdorf distance. Hence $\log H^{\beta}\longrightarrow H^{\text{trop}}$
+as $\beta\longrightarrow+\infty$. 
+\end{prop}
+
+\begin{proof}
+Let $\beta>0$ and $X\in H^{\beta}$. By writing the inequalities
+from previous lemma with $I^{+}$ and $I^{-}$, and as $$\beta^{-1}\log\left(\sum_{i\in I^{+}}e^{\beta(W_{i}+X_{ij})}\right)=\beta^{-1}\log\left(\sum_{i\in I^{-}}e^{\beta(W_{i}+X_{ij})}\right),$$
+substracting the first to second inequality yields: 
+\[
+-\beta^{-1}\log d\le\max_{i\in I^{+}}(W_{i}+X_{ij})-\max_{i\in I^{-}}(W_{i}+X_{ij})\le\beta^{-1}\log d.
+\]
+hence $d_H(X,H^{\text{trop}})\le\beta^{-1}\log d$.
+
+Reciprocally, let $Y\in H^{\text{trop}}$ and $X=Y+\delta\mathbf{1}_{I^{+}}$,
+with $\delta$ to be defined later. To have $Y\in H^{\beta}$, we
+have to ensure that: 
+\[
+w^{\beta}\cdot y=0,
+\]
+which amounts to 
+\[
+\sum_{i=1}^d\sigma_{i}e^{\beta W_{i}}e^{\beta X_{i}}=0.
+\]
+By separating the positive and negative terms, and taking the logarithm,
+we get 
+\[
+\beta\delta+\log\left(\sum_{i\in I^{+}}e^{\beta(W_{i}+X_{ij})}\right)=\log\left(\sum_{i\in I^{-}}e^{\beta(W_{i}+X_{ij})}\right),
+\]
+which similarily yields 
+\[
+\delta\le\left|\beta^{-1}\log\left(\sum_{i\in I^{+}}e^{\beta(W_{i}+X_{ij})}\right)-\beta^{-1}\log\left(\sum_{i\in I^{-}}e^{\beta(W_{i}+X_{ij})}\right)\right|\le\beta^{-1}\log d,
+\]
+hence $d_H(Y,H^{\beta})\le\beta^{-1}\log d$. 
+\end{proof}
+\begin{rem}
+We note $L$ the order of magnitude of our data points, and $B$ a
+typical number at which the computer starts having numerical errors
+or overflow (typically, for C integer calculations, $B=2^{16}-1)$.
+We want to have $\beta L\ll\log B$ (that is, no numerical error),
+and $\beta^{-1}\log d\ll L$ (good convergence towards tropical hyperplane),
+i.e $d\ll B$. By directly computing logarithms, for instance, our
+method should be very suitable for $d\apprge65535$ dimensions using
+C integers. 
+\end{rem}
+
+
+\subsubsection{Finding tropical apex}
+
+In the classical hard-margin setting, admissible $w$ vectors verify
+$w^{T}x^{+}\ge1$ (resp. $w^{T}x^{-}\le-1$) for positive (resp. negative)
+vectors. Thus they belong to the polytope $P^{\beta}$ where 
+\[
+P^{\beta}:=\left\{ w\in\mathbb{R}^{d},\quad w^{T}x_{j_{+}}^{\beta}\ge1\text{ and }w^{T}x_{j_{-}}^{\beta}\le-1,\forall j_{+},j_{-}\in J^{+},J^{-}\right\} .
+\]
+
+We hope that $L_{\sigma}(P^{\beta}):=\left\{ (\beta^{-1}\log(\sigma_{i}w_{i}))_{1\le i\le d}\right\} $
+converges towards the corresponding limiting tropical polytope $P_{\sigma}^{\text{trop}}:=P_{\sigma,+}^{\text{trop}}\cap P_{\sigma,-}^{\text{trop}}$,
+where 
+\[
+P_{+,\sigma}^{\text{trop}}:=\left\{ W\in(\mathbb{R}\cup\{-\infty\})^{d},\quad\max_{i,\sigma_{i}=1}(W_{i}+X_{ij}^{\sigma})\ge\max_{i,\sigma_{i}=-1}(W_{i}+X_{ij}^{\sigma})\vee0,\forall j\in J^{+}\right\} .
+\]
+and 
+\[
+P_{-,\sigma}^{\text{trop}}:=\left\{ W\in(\mathbb{R}\cup\{-\infty\})^{d},\quad\max_{i,\sigma_{i}=-1}(W_{i}+X_{ij}^{\sigma})\le\max_{i,\sigma_{i}=1}(W_{i}+X_{ij}^{\sigma})\vee0,\forall j\in J^{-}\right\} .
+\]
+
+\begin{thm}
+(Cite the corresponding article) When points $x_{ij}^{\beta}$ are
+in a general position, \textbf{(clarify what this means as $\beta$}
+\textbf{approaches infinity)} 
+\[
+\lim_{\beta\rightarrow+\infty}L_{\sigma}(P^{\beta})=P_{\sigma}^{\text{trop}},
+\]
+with respect to the Haussdorf distance. 
+\end{thm}
+
+We proved the convergence of the logarithm of linear hypersurfaces
+towards a tropical limiting hypersurface, when the apex is fixed.
+However, in practice, there is an underlying double limit here: for
+each $\beta$ value, we compute an apex in the exponentialized space
+and we hope it will converge towards a fixed apex in the initial space:
+let's consider $w_{i}^{\beta}=\sigma_{i}e^{\beta W_{i}^{\beta}}$
+again. 
+\begin{thm}
+(Cite the corresponding article) 
+\[
+W^{\infty}:=\lim_{\beta\rightarrow+\infty}\beta^{-1}\log w^{\beta}\in\underset{W\in P^{\text{trop}}}{\arg\min}\left(\max w\right).
+\]
+\end{thm}

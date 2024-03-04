@@ -58,27 +58,27 @@
 
 
 \begin{document}
-\title{Tropical Support Vector Machines and mean payoff games}
+\title{Tropical Support Vector Machines and mean-payoff games}
 \author{Xavier Allamigeon, Stéphane Gaubert, Samuel Boïté, Théo Molfessis}
 \maketitle
 
 \begin{abstract}
-    We introduce a pseudo-polynomial algorithm for tropical support vector machines (SVMs), using mean payoff games for binary and multiclass classification. We provide a simple numerical criterion for tropical separability. In the separable case, we construct a separating tropical hyperplane, with margin guarantees. In the non-separable case, we use the same algorithm to provide a suitable classifier ; it also measures the distance to tropical separability and allows to geometrically transform the data to reduce this distance to zero. We then extend our algorithm to the multiclass case. Finally, we study a feature map method to make the data separable in higher dimensions and propose a heuristic for sparsely adding relevant dimensions to better separate the data. 
+    We introduce a pseudo-polynomial algorithm for tropical support vector machines (SVMs), using mean-payoff games for binary and multiclass classification. We provide a simple numerical criterion for tropical separability. In the separable case, we construct an optimal margin tropical hyperplane. In the non-separable case, we use the same algorithm to provide a suitable classifier ; it also measures the distance to tropical separability and allows to geometrically transform the data to reduce this distance to zero. We then extend our algorithm and results to the multiclass case. Finally, we study a feature map method to make the data separable in higher dimensions. We propose a heuristic method for sparsely adding relevant features to better separate the data. 
 \end{abstract}
 
 
 \section{Introduction}
 
 \subsection*{Motivation and context}
-\emph{Support Vector Machines} (SVMs), introduced by Boser et al. (1992) \cite{Boser92}, are used in data science to determine separating hyperplanes for binary classification tasks.
+\emph{Support vector machines} (SVMs), introduced by Boser et al. (1992) \cite{Boser92}, are used in data science to determine separating hyperplanes for binary classification tasks.
 
 Tropical geometry recently found applications in machine learning: tropical linear regression (Akian et al., 2021) \cite{Akian2021TropicalLR}, analysis of deep neural networks and parametric statistical models (Maragos et al., 2021) \cite{Vasileios2021} and principal component analysis (Page et al., 2019) \cite{YoshidaPCA2019}.
 
-First considered by Gärtner and Jaggi (2006) \cite{Gartner2006}, \emph{Tropical Support Vector Machines} classify data points with a tropical hyperplane and using the tropical metric. Tropical SVMs find natural applications in phylogenomics (Tang et al., 2020) \cite{Tang2020}.
+First considered by Gärtner and Jaggi (2006) \cite{Gartner2006}, \emph{tropical support vector machines} classify data points with a tropical hyperplane and using the tropical metric. Tropical SVMs find natural applications in phylogenomics (Tang et al., 2020) \cite{Tang2020}.
 
-Initially formulated as linear programs \cite{Gartner2006}, tropical hyperplanes can also be obtained by tropicalizing a classical hyperplane using \emph{Maslov dequantization} \cite{litvinov2005maslov} or Viro's method \cite{viro2000dequantization}. Yet, redundant features can cause difficulties in the performance of $L^2$-norm classical SVMs (Zhang and Zhou, 2010) \cite{ZHANG2010373}. Moreover, tropicalization relies on exponentialization and is subject to arithmetic errors, while not optimizing the margin directly in the initial space.
+Initially formulated as linear programs \cite{Gartner2006}, tropical hyperplanes can also be obtained by tropicalizing a classical hyperplane using \emph{Maslov dequantization} \cite{litvinov2005maslov} or Viro's method \cite{viro2000dequantization}. Yet, redundant features can cause difficulties in the performance of $L^2$-norm classical SVMs (Zhang and Zhou, 2010) \cite{ZHANG2010373}. Moreover, tropicalization relies on exponentialization and is subject to arithmetic errors, while not directly maximizing the margin in the initial space.
 
-Tropical linear regression has been shown by Akian et al. (2021) \cite{Akian2021TropicalLR} as equivalent to solving mean payoff games. We consider this parallel for Tropical Support Vector Machines.
+Tropical linear regression has been shown by Akian et al. (2021) \cite{Akian2021TropicalLR} as equivalent to solving mean-payoff games. We consider this parallel for tropical support vector machines.
 
 \subsection*{The tropical linear classification problem}
 
@@ -88,16 +88,15 @@ addition $a\oplus b=\max(a,b)$ and the multiplication $a\odot b=a+b$.
 A \emph{tropical hyperplane} in the $d$-dimensional tropical vector
 space $\mathbb{R}_{\max}^{d}$ is a set of vectors of the form
 \begin{equation}
-\mathcal{H}_{a}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\max_{1\le i\le d}(a_{i}+x_{i})\,\text{is achieved at least twice}\right\}.\label{eq:unsigned}
+\mathcal{H}_{a}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\max_{1\le i\le d}(x_{i}+a_{i})\,\text{is achieved at least twice}\right\}.\label{eq:unsigned}
 \end{equation}
 Such a hyperplane is parameterized by the vector $a=(a_{1},\ldots,a_{d})\in\mathbb{R}_{\max}^{d}$,
 which is required to be non-identically $-\infty$. It hence partitions
-the space depending on which coordinate reaches its maximum, laying the
-ground for $d$-class classification. By definition, tropical hyperplanes are invariant by translation along the constant vector $(1,\ldots, 1)$.
+the space depending on which coordinate reaches its maximum, i.e. between $d$ different sectors. By definition, tropical hyperplanes are invariant by translation along the constant vector $\mathbf{1}_d \coloneqq(1,\ldots, 1)$.
 
 In this paper, we address the following tropical analogue of support
 vector machines. Given $n\in\{1,\ldots, d\}$ classes of $d$-dimensional data
-points $X^{1},\ldots,X^{p}$, we look for a maximum-margin separating
+points $X^{1},\ldots,X^{n}$, we look for a maximum-margin separating
 tropical hyperplane to build a classifier. The notion of margin depends
 on the metric: the canonical choice in tropical geometry is the (additive
 version of) Hilbert's projective metric. Its restriction to $\mathbb{R}^{d}$
@@ -108,54 +107,59 @@ oscillation}
 \]
 It is a projective metric, in the sense that the distance between
 two points is zero if and only if these two points differ by an additive
-constant. When dealing with hard-margin support vector machines (SVMs),
+constant.
+
+When dealing with hard-margin support vector machines (SVMs),
 we also have to ensure that every point lands in the right sector. Each class $k$ belongs to some sectors $I^k\subset \{1,\ldots, d\}$, with each sector assigned to only one class. We then define the \emph{tropical parameterized hyperplane} of configuration
-$\sigma=\left\{I^{1},\ldots,I^{n}\right\}$, where $I^{k}$ and $I^{\ell}$
+$\sigma\coloneqq\left\{I^{1},\ldots,I^{n}\right\}$, where $I^{k}$ and $I^{\ell}$
 are disjoint for $k\ne\ell$, as:
 \[
 \mathcal{H}\coloneqq\left\{x\in\mathbb{R}_{\max}^{d},\quad\exists k\ne\ell,\quad (x-a)\,\text{reaches its max coordinate in \ensuremath{I^{k}} and \ensuremath{I^{\ell}}}\right\}.
 \]
-We note $\mathcal{S}^k\subset \mathbb{R}_{\max}^d$ the \emph{sector} classified as class $k$, where the maximum coordinate is reached in $I^k$. $\mathcal{H}$ is said to \emph{separate} point
+We note $\mathcal{S}^k\subset \mathbb{R}_{\max}^d$ the \emph{sector} classified as class $k$, where the maximum coordinate is reached in $I^k$, and $\mathcal{S}^{0}$ the union of unclassified sectors, corresponding to coordinates $I^0$. $\mathcal{H}$ is said to \emph{separate} point
 clouds $(X^{k})_{1\le k\le p}$ with a margin of $\nu$ when for every point
 $x^{k}$ of class $k$:
 \begin{enumerate}
 \item $x^{k}$ is on the right sector of the hyperplane, i.e its maximum
 coordinate is reached in $I^{k}$
-\item $x^{k}$ is at distance at least $\nu$ from any other sector $\mathcal{S}^\ell$, $l \ne k$: %$\mathcal{H}_{a}^{\sigma}$:
+\item $x^{k}$ is at distance at least $\nu$ from any other sector $\mathcal{S}^\ell$, $\ell \in \{1,\ldots, n\} \cup \{0\}$, $\ell \ne k$:
 \begin{equation*}
 d_H(\mathcal{S}^\ell,x^{k})\coloneqq\max(x^{k}-a)-\max_{i\in I^\ell}(x^{k}-a)_i\ge\nu.
 \end{equation*}
+
 \end{enumerate}
+
+
+We say that the margin is \emph{exact} when at least one of these distance inequalities is reached, and that it is \emph{optimal} when no other tropical hyperplane can separate our points with a better margin. Notably, here, multiclass optimality only requires maximizing the minimum of the distances $d(S^\ell, x^k)$.
 
 
 In Figure \ref{fig:MaxMargin}, we separate two classes
 of $3$-dimensional points from a toy tropical dataset using a tropical
-hyperplane. The two lower sectors are assigned to one class, the upper sector corresponds to the other class. Its margin is maximal and is represented by the Hilbert
-ball in gray. The figure is represented in the projective space $\mathbb{P}\left(\mathbb{R}_{\text{max}}^{3}\right)$,
+hyperplane. The two lower sectors are assigned to one class, the upper sector corresponds to the other class. Its margin is maximal and is represented in pale yellow. The figure is represented in the projective space $\mathbb{P}\left(\mathbb{R}_{\text{max}}^{3}\right)$,
 i.e. the quotient of the set of non-identically $-\infty$ vectors
 of $\mathbb{R}_{\text{max}}^{3}$ by the equivalence relation which
 identifies tropically proportional values.
 
-Since our separator is translation-invariant by the constant vector, in order to separate any $d$-dimensional dataset, we plunge it into the $x_1+\cdots+x_{d+1}=0$ subspace of $\mathbb{R}_{\max}^{d+1}$. This amounts to artificially adding a new coordinate to each point, equal to the opposite of the sum of the initial coordinates. In the rare case where we are dealing with an intrinsically tropical dataset, for which this translation invariance makes sense, it is better to apply the tropical classifier on the initial features.
+Since our separator is translation-invariant by the constant vector, in order to separate any $d$-dimensional dataset, we plunge it into the $d$ dimensional subspace $\mathbb{R}_{\max}^{d+1}$ defined by equation $x_1+\cdots+x_{d+1}=0$. This amounts to artificially adding a new coordinate to each point, equal to the opposite of the sum of the initial coordinates. In the rare case where we are dealing with an intrinsically tropical dataset, for which this translation invariance makes sense, it is better to apply the tropical classifier on the initial features.
 
-\begin{figure}[!h]
+\begin{figure}[hbtp]
     \centering
-    \begin{subfigure}{0.55\textwidth}
+    \begin{subfigure}{0.45\textwidth}
         \centering
-        \resizebox{0.5\textwidth}{!}{%
+        \resizebox{\linewidth}{!}{%
         \centering
-    \clipbox{0.2\width{} 0.2\height{} 0.2\width{} 0.2\height{}}{\input{figures/bintoy-separated_1.pgf}}
+    \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/bintoy-separated_1.pgf}}
 }
         \caption{Maximum-margin tropical hyperplane}
         \label{fig:MaxMargin}
     \end{subfigure}
     \hfill
     \centering
-    \begin{subfigure}{0.4\textwidth}
+    \begin{subfigure}{0.45\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/moon_3.pgf}}
+            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/moon_3.pgf}}
         }
         \caption{Moons dataset from Scikit-learn}
         \label{fig:moon}
@@ -163,22 +167,22 @@ Since our separator is translation-invariant by the constant vector, in order to
 
     \bigskip
     \centering
-    \begin{subfigure}{0.5\textwidth}
+    \begin{subfigure}{0.45\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.1\width{} 0.2\height{} 0.1\width{} 0.2\height{}}{\input{figures/circular_3.pgf}}
+            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/circular_3.pgf}}
         }
         \caption{Circles dataset, cubic}
         \label{fig:circular}
     \end{subfigure}
-    \hspace{2cm}
+    \hfill
     \centering
-    \begin{subfigure}{0.35\textwidth}
+    \begin{subfigure}{0.45\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.1\width{} 0.1\height{} 0.1\width{} 0.1\height{}}{\input{figures/toy-reverse_3.pgf}}
+            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/toy-reverse_3.pgf}}
         }
         \caption{Toy multiclass dataset, cubic}
         \label{fig:toy_reverse}
@@ -190,9 +194,9 @@ Since our separator is translation-invariant by the constant vector, in order to
 
 \subsection*{Contribution}
 
-We formulate the tropical classification problem as a mean payoff game. We apply a Krasnoselskii-Mann iteration scheme to derive an $\varepsilon$-approximation of the tropical classifier in pseudo-polynomial time, and we develop geometrical guarantees, e.g. on the margin in the separable case. Finally, we propose a feature map for fitting tropical polynomials while retaining margin information. Thanks to their evaluation speed and their piecewise linear hypersurfaces, we enable more complex classification tasks. All our methods are implemented in \emph{Python} in the following repository: \url{https://gitlab.inria.fr/tropical/tropical-svm}.
+We formulate the tropical classification problem as a mean-payoff game. We apply a Krasnoselskii-Mann iteration scheme to derive an $\varepsilon$-approximation of the tropical classifier in pseudo-polynomial time, and we develop geometric guarantees, e.g. on the optimality of the margin in the separable case. Finally, we propose a feature map for fitting tropical polynomials while retaining margin information. Thanks to their evaluation speed and their piecewise linear hypersurfaces, we enable more complex classification tasks. Figure \ref{fig:plots} shows how our classifiers look like for 3D data. Our algorithm is implemented in \emph{Python} in the following repository: \url{https://gitlab.inria.fr/tropical/tropical-svm}. 
 
-\section{Shapley operators and mean payoff games}
+\section{Shapley operators and mean-payoff games}
 
 In this section, we have a finite set of points $X=(x_{1},\ldots,x_{p})\in\mathbb{R}_{\text{max}}^{d\times p}$.
 We define the \emph{tropical span} of $X$ as the set of tropical
@@ -210,7 +214,7 @@ P_{\mathcal{V}}(x)\coloneqq\max\{y\in \mathcal{V},\quad y\le x\}.
 \]
 When $\mathcal{V}$ is the tropical span of $X$, we will also note
 this projection as $P_{X}$. Tropical projections
-can be expressed as a mean payoff game: for $i\in\{1,\ldots, p\}$ and $x$ in $\mathbb{R}_{\max}^{d}$,   \cite{Maclagan2015}
+can be expressed as a mean-payoff game: for $i\in\{1,\ldots, p\}$ and $x$ in $\mathbb{R}_{\max}^{d}$,   \cite{Maclagan2015}
 \begin{equation*}
 P_{X}(x)_{i}=\max_{1\le j\le p}\left\{X_{ij}+\min_{1\le k \le d}(-X_{kj}+x_{k})\right\}.
 \end{equation*}
@@ -222,37 +226,51 @@ $i$, Player Max chooses to move to node $j$, and receives $X_{ij}$
 from Player Min. Similarily, Player Min in turn chooses a node $k$
 and has to pay $-X_{kj}$ to Player Max.
 
-We now recall some tools from Perron-Frobenius theory, in relation
-with mean payoff games. We refer the reader to \cite{AKIAN2012} for more
+We now recall some tools from Perron-Frobenius theory, related to mean-payoff games. We refer the reader to \cite{AKIAN2012} for more
 information.
 
 We call \emph{Shapley operator} a map $T:\mathbb{R}_{\max}^{d}\rightarrow\mathbb{R}_{\max}^{d}$
 that is \emph{order-preserving} and \emph{additively homogenous}, i.e. $T(\alpha+x)=\alpha+T(x)$
 for all $\alpha$ in $\mathbb{R}_{\max}$ and $x$ in $\mathbb{R}_{\max}^{d}$. $T$ is said to be \emph{diagonal free} when $T_{i}(x)$
-is independent of $x_{i}$ for all $i\in\{1,\ldots, n\}$, i.e. when for all $x$, $y$ in $\mathbb{R}_{\max}$ which coincide on all coordinates except the $i$-th, we have $T_{i}(x)=T_{i}(y)$. 
+is independent of $x_{i}$ for all $i$ in $\{1,\ldots, n\}$, i.e. when for all $x$, $y$ in $\mathbb{R}_{\max}$ which coincide on all coordinates except the $i$-th, we have $T_{i}(x)=T_{i}(y)$. 
 
 Tropical projections are Shapley operators. Given a Shapley operator $T$, we also define
 \[
 \mathcal{S}(T)\coloneqq\left\{x\in\mathbb{R}_{\max}^{d},\quad x\le T(x)\right\}.
 \]
 More specifically, any tropically convex set $\mathcal{V}$ is equal
-to $\mathcal{S}(P_{\mathcal{V}})$. Indeed, as for any $x\in\mathbb{R}_{\text{max}}^{d}$,
-$P_{\mathcal{V}}(x)\le x$, having $x\in\mathcal{S}(P_{\mathcal{V}})$
+to $\mathcal{S}(P_{\mathcal{V}})$. Indeed, as for any vector $x$ in $\mathbb{R}_{\text{max}}^{d}$,
+$P_{\mathcal{V}}(x)\le x$, having $x$ in $\mathcal{S}(P_{\mathcal{V}})$
 implies $x=P_{\mathcal{V}}(x)$, meaning $x$ is in
 $\mathcal{V}$.
 
 
-Operator $P$ can be slightly tweaked to make it \emph{diagonal-free} -- but the resulting operator isn't a projector anymore.
+The \emph{spectral radius} of $T$
+is, by definition: \cite{Allamigeon2018}
+\[
+\rho(T)\coloneqq\sup\left\{\lambda\in\mathbb{R}_{\max},\quad\exists u\in\mathbb{R}_{\max}^{d}\backslash\{\perp\},\quad T(u)=\lambda+u\right\}.
+\]
+
+$\rho(T)$ is also equal to the \emph{upper Collatz–Wielandt number} of $T$: \cite{Allamigeon2018}
+\begin{equation}\label{eq:Collatz}
+\rho(T) = \inf \left \{m\in \mathbb{R}, \quad\exists u\in\mathbb{R}_{\max}^{d}\backslash\{\perp\},\quad T(u) \le m + u \right \}.
+\end{equation}
+
+
+Operator $P$ can be slightly tweaked to make it \emph{diagonal-free} -- but the resulting operator is not a projector anymore.
 In the modified game, the opponent is prevented from replying eye-for-an-eye:
 \[
 \left[P^{\text{DF}}_X(x)\right]_{i}\coloneqq\max_{1\le j\le p}\left\{ X_{ij}+\min_{k\ne i}(-X_{kj}+x_{k})\right\} .
 \]
 
-Noticeably, $\mathcal{S}(P_X^\text{DF}) = \mathcal{S}(P_X)$. $P$ and $P^\text{DF}$ can be evaluated in time $\mathcal{O}(dp)$ as they involve computing the two greatest values of $(-X_{kj}+x_k)_{1 \le k \le d}$ for $j\in\{1,\ldots, p\}$.
+Noticeably, $\mathcal{S}(P_X^\text{DF}) = \mathcal{S}(P_X)$. $P$ and $P^\text{DF}$ can be evaluated in time $\mathcal{O}(dp)$ as they involve computing the two greatest values of $(-X_{kj}+x_k)_{1 \le k \le d}$ for $j$ in $\{1,\ldots, p\}$.
+
+To conclude, the point clouds we seek to separate are represented by the tropical projection or its diagonal-free counterpart.
+
 
 \section{Binary Tropical Support Vector Machines}
 
-\subsection{Hard-Margin SVM}
+\subsection{Hard-Margin classifier}
 In this section, we introduce a practical criterion for the existence of a separating tropical hyperplane, and if it exists, we construct one with optimal margin. We also place ourselves in the binary setting, where we seek to separate two convex hulls $\mathcal{V}^{+}$
 and $\mathcal{V}^{-}$. We assume we have two Shapley operators $T^{+}$
 and $T^{-}$ such that $\mathcal{S}(T^{\pm})=\mathcal{V}^{\pm}$,
@@ -262,35 +280,35 @@ corresponding operators are projections $P_{\mathcal{V}^{\pm}}$. We define:
 T=\min(T^{+},T^{-}),
 \]
 which is also a Shapley operator. We denote by $\perp$ the vector of $\mathbb{R}_{\max}^{d}$
-identically equal to $-\infty$. The \emph{spectral radius} of $T$
-is, by definition:
-\[
-\rho(T)=\sup\left\{\lambda\in\mathbb{R}_{\max},\quad\exists u\in\mathbb{R}_{\max}^{d}\backslash\{\perp\},\quad T(u)=\lambda+u\right\}.
-\]
-
+identically equal to $-\infty$. 
+    
 Note that $\mathcal{S}(T)$ is equal to the intersection of $\mathcal{S}(T^{+})$ and $\mathcal{S}(T^{-})$, the convex hulls we are seeking to separate.
-From Allamigeon et al. \cite{Allamigeon2018}, we know that $\mathcal{V}^{+}$
+From \cite{Allamigeon2018}, we know that $\mathcal{V}^{+}$
 and $\mathcal{V^{-}}$ being disjoint is equivalent to $\rho(T)<0$.
 
 Given $a$ the eigenvector corresponding to $\rho(T)$, we define the sectors:
 \[
 I^{\pm}\coloneqq\left\{i\in\{1,\ldots, d\},\quad T^{\pm}(a)_{i}>\rho(T)+a_{i}\right\},
 \]
-and the corresponding configuration $\sigma=\{I^{+},I^{-}\}$.
+and the corresponding configuration $\sigma\coloneqq\{I^{+},I^{-}\}$.
+
+We first state the following result, which will be demonstrated in the multiclass case in Lemma \ref{lemma:LinkSepShapleyMulti}:
+
+\begin{lem}
+\label{lemma:LinkSepShapleyBinary}
+    If a tropical hyperplane of apex $\alpha$ separates our two data point clouds with a margin of at least $-\mu > 0,$ then $T(\alpha) \le \alpha  + \mu$.
+\end{lem}
+
+We now characterize the maximal margin separating hyperplane using $T$:
 
 \begin{prop} \label{prop:BinaryHardMargin}
-If $\rho(T) < 0$, the tropical hyperplane of apex $a$ and configuration $\sigma$, given the sectors defined
+The tropical hyperplane of apex $a$ and configuration $\sigma$, given the sectors defined
 above, separates $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$ with a
-margin of at least $-\rho(T)$. Moreover, this margin is exact when $T^{\pm}$
-are of the form
-\[
-\sup_{v\in\mathcal{V}^{\pm}}\left(v_{i}+\min(-v+x)\right),
-\]
-which is in particular the case when separating finite point clouds.
+margin of at least $-\rho(T)$, if and only if $\rho(T) < 0$. Moreover, this margin is \emph{optimal} among all  tropical hyperplanes when  separating finite point clouds.
 \end{prop}
 
 \begin{proof}
-For instance, let $i\in I^{-}$. As $T^{+}$ is non-expansive, for $v^{+}\in \mathcal{V}^{+}$:
+For instance, let $i\notin I^{+}$. As $T^{+}$ is non-expansive, for $v^{+}\in \mathcal{V}^{+}$:
 \[
 v_{i}^{+}\le T^{+}(v^{+})_{i}=\left(T^{+}(v^{+})-T^{+}(a)\right)_{i}+T^{+}(a)_{i},
 \]
@@ -299,52 +317,46 @@ hence
 v_{i}^{+}\le\max(v^{+}-a)+T^{+}(a)_{i}.
 \end{equation*}
 
-As $i\in I^-$, $T^{+}(a)_{i}\le \rho(T)+a_{i}$,
+As $i\notin I^+$, $T^{+}(a)_{i}\le \rho(T)+a_{i}$,
 and
 \[
 v_{i}^{+}-a_{i}\le\max(v^{+}-a)+\rho(T).
 \]
 In particular, $v_{i}^{+}-a_{i}<\max(v^{+}-a)$ and any element of
-$\mathcal{V}^{+}$ cannot belong to any of the sectors in $I^{-}$ with
+$\mathcal{V}^{+}$ belongs to a sector of $I^+$ with
 respect to $\mathcal{H}_{a}$, from which the sectors are well-defined.
 Finally, 
 \[
 d_H(\mathcal{S}^-,v^{+})=\max(v^{+}-a)-\max(v^{+}-a)_{I^{-}}\ge-\rho(T),
 \]
-hence the margin is at least $-\rho(T)$ which is positive in the separable case, as shown in \cite{Allamigeon2018}.
+(and the same results hold for the distance to $S^0$), hence the margin is at least $-\rho(T)$ (which is always positive in the separable case, as shown in \cite{Allamigeon2018}, making our sufficient condition for separability also necessary).
 
-Finally, when $T^{\pm}$
-are of the aforementioned form, for  $i\in I^{-}$ and $\varepsilon>0$, we can
-find $v\in \mathcal{V}^{+}$ such that 
-\[
-T^{+}(a)_{i}-\varepsilon\le v_{i}-\max(v-a)\le T^{+}(a)_{i},
-\]
-giving us 
-\[
-\rho(T)-\varepsilon\le v_{i}-a_{i}-\max(v-a)\le\rho(T).
-\]
+Moreover, when $T^{\pm}$
+are tropical projections, for  $i\in I^{-}$, we can
+find $x^+\in X^{+}$ such that  $x^+_{i}-\max(v-a) = T^{+}(a)_{i},$ giving us 
+$x^+_{i}-a_{i}-\max(x^+-a)=\rho(T).$ Maximizing over all $i\in I^{-}$ gives that $x^+$ is at distance $-\rho(T)$ of $\mathcal{S}^-$, hence the margin.
 
-Maximizing over all $i\in I^{-}$ gives that $v$ is
-at most at distance $-\rho(T)+\varepsilon$ of $\mathcal{S}^-$, hence
-the margin.
-\end{proof}
-
-\begin{prop}\label{prop:SectorInterpretation}
-TBD
-\end{prop}
-\todo{Caractérisation des secteurs en terme de présence de points témoins.}
-
-\begin{proof}
-TBD
+Finally, combining Equation \ref{eq:Collatz} and Lemma \ref{lemma:LinkSepShapleyBinary}, $-\rho(T)$ is the optimal margin in the binary setting.
 \end{proof}
 
 \begin{rem}\label{rem:UnreachedSectors}
-To save on calculations, especially in large dimensions, we don't evaluate the coordinates associated with empty sectors. In fact, this is equivalent to defining corresponding apex coordinates to $+\inf$, which only increases the margin. For example, for $x^+\in X^+$, and $i$ a sector not assigned to the positive class, $$d_H(\mathcal{S}^-, x^+)=\max(x^+-a) - (x^+_i - a_i)$$ is an increasing quantity in $a_i$, as the $\max$ is not reached in the $i$ coordinate. This reasoning also applies to the multiclass case.
+To save on calculations, especially in large dimensions, we do not evaluate the coordinates associated with unassigned sectors $I^0$.
+
+We can also prove similarly to above that if $i$ is a positive sector, there is a witness point $x$ from positive class at distance at most $-\rho(T)$ from sector $i$. In a context of learning, this shows that excluding sectors of $I^\pm$ that do not contain training data points can be unsafe as we have no guarantee that no testing points can fall into such sectors, or that a noise, even smaller than $-\rho(T)$, might move points there. By contrast, we do have the guarantee that excluding sectors $i$ that do not belong to $I^+$ or $I^-$ is safe, as no training data point lies at distance less than $-\rho(T)$ from such sectors.
+
+
+Ignoring some sectors in our classifier is equivalent to setting corresponding apex coordinates to $+\infty$, which only increases the margin. For example, for $x^+\in X^+$, and $i$ a sector not assigned to the positive class, $$d_H(\mathcal{S}^i, x^+)=\max(x^+-a) - (x^+_i - a_i)$$ is an increasing quantity in $a_i$, as the $\max$ is not reached in the $i$ coordinate. 
+Lastly, this also applies to the multiclass case presented in Section \ref{section:MultiClass}.
 \end{rem}
+
+
+
+%Let $x\in X^+$. If we note $I^+$ and $I^-$ the sectors defined by $H_{\alpha}$, then, by definition, 
+%    $\text{argmax} \left ( x-\alpha \right )\in I^+$ and for any $i\in I^-,$ $d_H(S^i,x) = \max (x-\alpha) - (x-\alpha)_i \ge - \mu,$ which can be rewritten as $x_i - \max(x-\alpha) \le \alpha_i + \mu$. Maximizing over all $x\in X^+$ then yields $T^+(\alpha)_i \le \alpha_i + \mu.$ We conclude by symmetry and according to  Remark \ref{rem:UnreachedSectors} that $T(\alpha)\le \alpha + \mu.$
 
 %
 To build a practical algorithm, we still need to compute the spectral
-radius of $T$. As it amounts to solving mean payoff games, we can apply the Krasnoselskii-Mann iteration scheme described in Algorithm \ref{RVI}.
+radius of $T$ and its corresponding eigenvector. As it amounts to solving mean-payoff games, we can apply the Krasnoselskii-Mann iteration scheme described in Algorithm \ref{RVI}.
 \begin{algorithm}[h!]
 \caption{Krasnoselskii-Mann iteration scheme for finding Shapley eigenpairs}\label{RVI}
 \begin{algorithmic}[1]
@@ -382,7 +394,7 @@ $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$, as shown by Allamigeon et al. (2018) \c
         }
     \end{subfigure}
     
-    \caption{Eigenvalue is inner radius of intersection}
+    \caption{The spectral radius is the inner radius of the intersection between tropical spans}
     \label{fig:softmargin_ex}
 \end{figure}
 
@@ -404,7 +416,7 @@ is of empty interior.
 
 \begin{proof}
 The distance between any point $x$ in $\mathbb{R}_{\max}^d$ and the tropical hyperplane of apex $a$ is:
-\[ d_H(x, \mathcal{H}_a) = \max(x-a) - \text{max}_2 (x-a), \]
+\[ d_H(x, \mathcal{H}_a) \coloneqq \max(x-a) - \text{max}_2 (x-a), \]
 where $\max_2$ stands for the second maximal value of any vector.
 
 Considering $X$ the cloud consisting of all points (regardless of
@@ -419,7 +431,7 @@ X_{s_{j}j}-d_H(x_{j},\mathcal{H}_{a}) & \text{at \ensuremath{s_{j}}}
 \end{cases}
 \]
 so that $w_{j}$ is projected on the hyperplane. As $T^{\pm}$ is
-non-expansive and diagonal-free, let's remark that for $x^{\pm}\in V^{\pm}$:
+non-expansive and diagonal-free, Let us remark that for $x^{\pm}\in V^{\pm}$:
 \[
 x_{i}^{\pm}\le T^{\pm}(x^{\pm})_{i}=\left(T^{\pm}(x^{\pm})-T^{\pm}(a)\right)_{i}+T^{\pm}(a)_{i},
 \]
@@ -459,7 +471,7 @@ Moreover, for any $j$ such that $x_{j}\in X^{+}$ is in sector $i$,
 equation \ref{eq31} gives $d_H(x_{j},\mathcal{H}_{a})\leq\rho(T)$.
 
 Let $Q^{\pm}$ be the \emph{diagonal-free} projections over transformed
-point clouds, and $Q=\inf(Q^{+}, Q^{-}).$ We've just shown that $Q(a)_{i}=Q^{+}(a)_{i}=a_{i}$,
+point clouds, and $Q=\inf(Q^{+}, Q^{-}).$ We have just shown that $Q(a)_{i}=Q^{+}(a)_{i}=a_{i}$,
 and finally $Q(a)=a$.
 \end{proof}
 %
@@ -473,13 +485,11 @@ $\mathcal{H}$ of apex $a$ and then assign the sectors based on dominant
 population, for instance.
 
 
-\section{Multiclass classification}
+\section{Multiclass classification}\label{section:MultiClass}
 
 In this section, we consider convex hulls of $n$
 point classes, noted $(\mathcal{V}^{k})_{1\le k\le n}$ and described by Shapley operators
-$T^{k}$. We give a simple criterion for these classes to be separable by a tropical hyperplane, meaning that there exists a tropical signed
-hyperplane such that each $\mathcal{V}^{k}$ belong to sectors of $I^{k}\subset\{1,\ldots, d\}$
-with $(I^{k})_{1\le k \le n}$ being pairwaise disjoint. We then characterize the margin as another spectral radius in this case.
+$T^{k}$. We give a necessary and sufficient condition for these classes to be tropically separable. We then characterize the margin as another spectral radius in this case.
 
 We now consider the Shapley operator
 \[
@@ -487,9 +497,9 @@ T\coloneqq\max_{1\le k<l\le n}\min(T^{k}, T^{l}),
 \]
 
 which can be rewritten, for any $x$ in $\mathbb{R}_{\max}^d$ and $i$ in $\{1,\ldots, d\}$:
-\[
+\begin{equation}\label{eq:Max2Form}
 T(x)_i\coloneqq\text{max}_2\, \{T^k(x)_i, \,\, 1\le k\le n\}.
-\]
+\end{equation}
 
 
 Morally, we can think of $\mathcal{S}(T)$ as the union of pairwise intersections of data classes, although the max operator does not strictly speaking correspond to a union. We also remark that when $n=2$, $T$ is the same as previously
@@ -497,14 +507,26 @@ defined.
 
 Let $(a,\rho(T))$ be the eigenpair of $T$ approximated by the Kranoselskii-Mann
 algorithm, verifying $T(a)=\rho(T)+a$. We define the sectors:
-\[
-I^{k}\coloneqq\{1\le i\le d,\quad T^{k}(a)_{i}>\rho(T)+a_{i}\}.
-\]
+\begin{equation}
+I^{k}\coloneqq\{1\le i\le d,\quad T^{k}(a)_{i}>\rho(T)+a_{i}\}.\label{eq:SectorAssign}
+\end{equation}
 
-Given the definition of $T$, it is clear that these sets are disjoint, and we have the following result:
+Given the definition of $T$, it is clear that these sets are disjoint. As in the binary case, $T$ is linked with separating tropical hyperplanes by the following result: 
+
+\begin{lem}
+\label{lemma:LinkSepShapleyMulti}
+    If a tropical hyperplane of apex $\alpha$ separates our finite point clouds with a margin of at least $-\mu > 0,$ then $T(\alpha) \le \alpha  + \mu$.
+\end{lem}
+
+\begin{proof}
+    We consider two different classes $k$ and $\ell$ in $\{1,\ldots, n\}$, and the sectors $\sigma' \coloneqq \{I'^j\}_{1\le j\le n}$ defined by $H_{\alpha}$. Then, by definition, for $x\in X^k$, $(x-\alpha)$ reaches its maximum coordinate in $I'^k$ and for any $i$ in $I'^{\ell},$ 
+    $d_H(S^i,x) \ge - \mu,$ which can be rewritten as $x_i - \max(x-\alpha) \le \alpha_i + \mu.$ Maximizing over all $x$ in $X^k$ then yields $T^k(\alpha)_i \le \alpha_i + \mu.$ As this holds for all $k\ne \ell$ at least, we have $T(\alpha)_i \le \alpha_i + \mu,$ (which also holds for $\ell =0$, i.e when we consider unassigned sectors) we conclude that $T(\alpha)\le \alpha + \mu.$
+\end{proof}
+
 \begin{prop}\label{prop:MultiClass}
-If $\rho(T)\le 0$, the tropical parameterized hyperplane of apex $a$ and configuration $\sigma$,
-given the configuration $\sigma=\{I^{k}\}_{1\le k\le n}$, separates all point clouds with a margin of at least $-\rho(T)$.
+The tropical parameterized hyperplane of apex $a$ and configuration $\sigma$,
+given the configuration $\sigma=\{I^{k}\}_{1\le k\le n}$, separates all point clouds with a margin of at least $-\rho(T)$, if and only if $\rho(T) < 0$.
+Moreover, this margin is optimal among all tropical hyperplanes.
 
 %Moreover, this margin is reached somewhere in the case where all $T^{k}$ are
 %of the form
@@ -523,37 +545,28 @@ d_H(\mathcal{S}^\ell,v^{k})=\max(v^{k}-a)-\max_{j\in I^{\ell}}(v^{k}-a)_j\ge-\rh
 and $v^k$ cannot belong to sector $\mathcal{S}^\ell$, from which, as again, the sectors are well-defined.
 \end{proof}
 
-In practice, our method tends to minimize the minimum margin between two classes. For example, if two classes are very close, and the third is far away, the method won't bother separating the latter from the others as much as possible.
+%In practice, our method tends to maximize the minimum distance among all $d(\mathcal{S}^k, x^\ell)$ for $k\ne \ell$ and $x^\ell$ of class $\ell$. For example, if two classes are very close, and the third is far away, the method will not bother separating the latter from the others as much as possible.
 
-But don't assume that the margin is reached, even between two classes. Indeed, let $i\in\{1,\ldots, d\}$. As $T(a)=\rho(T)+a$, 
-From the expression of $T$, noting $k$ and $\ell$ respectively the second argmax and argmax of the family $\left(T^{j}(a)_{i}\right)_{1\le j\le n}$, we have
-\[
-T^{k}(a)_{i} =\lambda+a_{i}\qquad \text{and}\qquad T^{\ell}(a)_{i} >\lambda+a_{i},
-\] %\todo{ceci est vrai si l'on a envoyé l'apex sur +inf dans les coordonnées i où max Tk= max2 Tk %Il faudrait alors modifier le "this margin is reached somewhere" en disant que pour chaque secteur (attribué à une classe), il y a un point d'une classe non attribuée à ce secteur à distance presque la marge}
-meaning $i\in \mathcal{I}^{\ell}$. When separating finite point clouds, $T^k$
-is of the form
-\[
-\sup_{v\in\mathcal{V}^{k}}\left(v_{i}+\min(-v+x)\right).
-\]
-Hence, adapting the ideas of Proposition \ref{prop:BinaryHardMargin}, for $\varepsilon > 0$, we can find $v\in \mathcal{V}^k$ such that $$\max(v^{k}-a)-(v_{i}^{k}-a_{i})\le-\rho(T)+\varepsilon,$$ which means that 
-\[
-d_H\left(\mathcal{V}^{k}, \mathcal{S}^\ell \right)\le \max(v^{k}-a)-\max_{j\in I_l}(v^{k}-a)_j \le \max(v^{k}-a) - (v^{k}_i - a_i) \le -\rho(T)+\varepsilon.
-\]
+%But do not assume that the margin is reached, even between two classes. Indeed, let $i\in\{1,\ldots, d\}$. As $T(a)=\rho(T)+a$, 
+%when each $T^j$ is a tropical projection, noting $k$ and $\ell$ respectively the second argmax and argmax of the family $\left(T^{j}(a)_{i}\right)_{1\le j\le n}$, Equation \ref{eq:Max2Form} gives
+%$T^{k}(a)_{i} =\lambda+a_{i}$ and $T^{\ell}(a)_{i} >\lambda+a_{i}$, meaning $i\in \mathcal{I}^{\ell}$. When separating finite point clouds, adapting the ideas of Proposition \ref{prop:BinaryHardMargin}, we can find $x^k$ in $X^k$ such that $\max(x^{k}-a)-(x_{i}^{k}-a_{i})\le-\rho(T)$, which means that $d_H\left(\mathcal{V}^{k}, \mathcal{S}^\ell \right) = -\rho(T).$
 
-So, for every sector (assigned to a certain class), there's a point of a class not assigned to that sector within margin distance. In general, nothing says that this situation will be symmetrical between 2 sectors in particular, which would achieve the margin between them. In simple, general cases, more complex relationships can be observed.
+%So, for every sector (assigned to a certain class), there's a point of a class not assigned to that sector within margin distance. In general, nothing says that this situation will be symmetrical between 2 classes in particular, which would achieve the margin between them. In simple, general cases, more complex relationships can be observed.
 
-Since this method optimizes the minimum margin, it works best on previously balanced data. If necessary, it's still possible to use the binary setting of the previous section with one-vs-all approaches, in order to maximize all margins 2 by 2.
+Since this method optimizes the worst margin, it works best on previously balanced data. If necessary, it is still possible to use the binary setting of the previous section with one-vs-all approaches, in order to maximize all margins 2 by 2.
+
 
 \begin{rem}\label{rem:SectorAssign}
-According to Proposition 2, we extend the sector assignment policy as follows: the sector corresponding to the maximum coordinate $i$ is assigned to the class with the greatest number of points at distance $\max(0,-\rho(T))$ from it. Unreached sectors are removed for more sparsity, which preserves the margin, as explained in Remark \ref{rem:UnreachedSectors}
+According to Remark \ref{rem:UnreachedSectors}, we extend the sector assignment policy as follows in the non-separable case. Relative to some apex $a$, the sector corresponding to the maximum coordinate $i$ is assigned to the class with the greatest number of points at distance $\max(0,-\rho(T))$ from it. Unassigned sectors are removed for more sparsity, which preserves the margin in the separable case.
 \end{rem}
+
 
 \subsection*{Conclusion}
 
 We therefore introduce Algorithm \ref{algo:Final} to solve the tropical linear classification problem.
 
 \begin{algorithm}[h!]
-\caption{Determining tropical linear classifiers by solving mean payoff games}
+\caption{Determining tropical linear classifiers by solving mean-payoff games}
 \label{algo:Final}
 \begin{algorithmic}[1]
   \State \Input: Data classes $X^1,\ldots, X^n$ corresponding to labels $1, \ldots, n$, and a relative convergence criterion $\eta$ for the iteration scheme.
@@ -564,9 +577,9 @@ We therefore introduce Algorithm \ref{algo:Final} to solve the tropical linear c
 \end{algorithmic}
 \end{algorithm}
 
-In the separable case, we have margin information, which is exact in the binary setting (as it is reached by the two classes, see Proposition \ref{prop:BinaryHardMargin} and \ref{prop:MultiClass}). In the non-separable case, by Proposition \ref{prop:BinarySoftMargin}, the overlap zone is contained around the (non-parameterized) hyperplane $H_a$ in a tubular envelope of radius $\lambda$, the (positive) eigenvalue approximated by the algorithm.
+In the separable case, we have margin optimality. In the non-separable case, by Proposition \ref{prop:BinarySoftMargin}, the overlap zone is contained around the (non-parameterized) hyperplane $H_a$ in a tubular envelope of radius $\lambda$, the (positive) eigenvalue approximated by the algorithm.
 
-Let's analyze the complexity of Algorithm \ref{algo:Final}. Step \ref{step:3} typically involves a few dozen iterations, in which $n$ tropical projections have to be calculated each time, for a total cost in $\mathcal{O}(dp)$, where $p$ is the total number of points in the dataset. We therefore have a pseudo-polynomial algorithm for calculating an $\varepsilon$-approximation of the classifier described above.
+Let us analyze the complexity of Algorithm \ref{algo:Final}. Step \ref{step:3} typically involves a few dozen iterations, in which $n$ tropical projections have to be calculated each time, for a total cost in $\mathcal{O}(dp)$, where $p$ is the total number of points in the dataset. We therefore have a pseudo-polynomial algorithm for calculating an $\varepsilon$-approximation of the classifier described above.
 
 This gain in efficiency is achieved at the cost that tropical SVMs are ultimately very sensitive to outliers, which count as much as any point in the margin calculation.
 
@@ -576,11 +589,11 @@ Tropical hyperplanes can be obtained as the limit of classical hyperplanes seen 
 
 \begin{figure}[!h]
     \centering
-    \begin{subfigure}{0.5\textwidth}
+    \begin{subfigure}{0.45\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.3\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/log-log.pgf}}}
+            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/log-log.pgf}}}
     \end{subfigure}
 
     \caption{Tropicalized hyperplane tends towards a suboptimal tropical hyperplane}
@@ -627,40 +640,41 @@ is a tropical polynomial hypersurface in the initial space, corresponding to the
 Hence, $\text{ver}_{\mathcal{A}_{s}}$ is a feature map
 enabling us to perform piecewise linear classification in $\mathbb{R}_{\max}^{d}$. This brings us close to the framework of neural networks with piecewise linear activations, e.g. relaxed linear units \cite{zhang2018tropical}. $\mathcal{A}_1$ corresponds to tropical hyperplanes: we are generalizing the approach previously developed.
 
-The initial metric can be easily linked to the metric in the augmented space: for $x\in\mathbb{R}_{\max}^d$, we have
+The initial metric can be easily linked to the metric in the augmented space: for $x\in\mathbb{R}_{\max}^d$, noting $V$ the (injective) Veronese embedding, we have
+\[
+\lVert (V^TV)^{-1} V^T \rVert_{\text{op},\infty}^{-1} \le \frac{\lVert\text{ver}(x)\rVert_{H,\mathbb{R}^{\mathcal{A}_s}_{\max}}}{\lVert x\rVert_{H,\mathbb{R}_{\max}^d}} \le \lVert V \rVert_{\text{op},\infty},
+\]
+
+which gives, using $\mathcal{A}_s$, according to Appendix \ref{appendix:NormEquivalence}:
 \[
 \left[\frac{d}{s+d}+\frac{sd^{2}}{(s+d)^{2}}\right]^{-1} \le \frac{\lVert\text{ver}(x)\rVert_{H,\mathbb{R}^{\mathcal{A}_s}_{\max}}}{\lVert x\rVert_{H,\mathbb{R}_{\max}^d}} \le s.
 \]
-Indeed,
-\begin{align*}
-\lVert\text{ver}(x)\rVert_{H,\mathbb{R}^{\mathcal{A}_s}_{\max}}&=\max_{\alpha\in\mathcal{A}_{s}}\sum_{i}\alpha_{i}x_{i}-\min_{\alpha\in\mathcal{A}^{s}}\sum_{i}\alpha_{i}x_{i}\\&\le s(\max x-\min x)=s\lVert x\rVert_{H,\mathbb{R}_{\max}^d}.
-\end{align*}
-The rest of the proof is in Appendix \ref{appendix:NormEquivalence}. We deduce the following result:
+
+We deduce the following result:
 \begin{prop}
-If data is separable in the augmented space, noting $(a, \rho(T))$ the eigenpair of $T$ applied to $\mathbb{R}_{\max}^s$, data is separable in the initial space by the tropical hypersurface of $f_{-a,\mathcal{A}^s}$ with a margin of at least $-\rho(T)/s$.
+Noting $(a, \rho(T))$ the eigenpair of $T$ applied to new point clouds in $\mathbb{R}_{\max}^\mathcal{A}$, data is separable in the initial space by the tropical hypersurface of $f_{-a,\mathcal{A}}$ with a margin of at least $-\rho(T)/\lVert V \rVert_{\text{op},\infty}$, if and only if $\rho(T) < 0$.
 \end{prop}
 
 In Figures \ref{fig:moon}, \ref{fig:circular} and \ref{fig:toy_reverse}, we visualize the decision boundaries of the piecewise linear classifier using monomials from $\mathcal{A}_3$. Dotted lines in light gray indicate merged sectors after assignment, and margin lower estimation is represented by the Hilbert balls around each point. These methods obviously work in higher dimensions, but we can only visualize them in lower ones.
 
-\subsection*{Complexity}
+\subsection*{Complexity analysis}
 
 The learning speed depends essentially on the dimension of the feature space, i.e. the starting dimension and the number of monomials considered. Although our iteration scheme is efficient, given that $$|\mathcal{A}^s| = \binom{s+d-1}{s},$$ the complexity grows very quickly, opening the way to feature selection questions for directly learning \emph{sparse} polynomials.
 
-On the other hand, when the tropical polynomial is trained, since only active monomials are kept, inference is in $\mathcal{O}(rd)$ only, where $r$ is the number of monomials considered.
+On the other hand, when the tropical polynomial is trained, since only active monomials are kept, inference is in $\mathcal{O}(rd)$ only, where $r$ is the number of monomials kept. $r$ is always lower than the number of data points, and it is equal to it when every sector contains exactly one point.
 
 \subsection*{Feature selection}
 
-A heuristic for adaptive monomial choice might be to sample pairs of points of different classes, and make perpendicular slopes admissible. In many cases, this gives better results (and even better margins), as we can see in Figures \ref{fig:nofeatureeng} and \ref{fig:featureeng}, in which we allow homogeneous positive real monomials.
+A heuristic for adaptive monomial choice might be to sample pairs of points of different classes, and make perpendicular slopes admissible. In many cases, this gives better results (and even better margins), as we can see in Figure \ref{fig:featureeng}, in which we allow for homogeneous positive real monomials. Here, points are sampled randomly, but we may perform better by choosing a more representative sample, with points relatively distant from each other, for example.
 
-\begin{figure}[!h]
+\begin{figure}[hbtp]
     \centering
     \begin{subfigure}{0.45\textwidth}
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.1\width{} 0.2\height{} 0.1\width{} 0.2\height{}}{\input{figures/circular_3.pgf}}}
+            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/circular_3.pgf}}}
         \caption{Using $\mathcal{A}_3$}
-        \label{fig:nofeatureeng}
     \end{subfigure}
     \hfill
     \centering
@@ -668,10 +682,9 @@ A heuristic for adaptive monomial choice might be to sample pairs of points of d
         \centering
         \resizebox{\linewidth}{!}{%
         \centering
-            \clipbox{0.1\width{} 0.2\height{} 0.1\width{} 0.2\height{}}{\input{figures/circular_3_feature_eng.pgf}}}
+            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.1(\height{}}{\input{figures/circular_3_feature_eng.pgf}}}
         
         \caption{Sampling $10$ points from each class}
-        \label{fig:featureeng}
     \end{subfigure}
     
     \bigskip
@@ -682,7 +695,6 @@ A heuristic for adaptive monomial choice might be to sample pairs of points of d
         \centering
             \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/moon_3.pgf}}}
         \caption{Using $\mathcal{A}_3$}
-        \label{fig:nofeatureeng}
     \end{subfigure}
     \hfill
     \centering
@@ -693,42 +705,40 @@ A heuristic for adaptive monomial choice might be to sample pairs of points of d
             \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/moon_10_feature_eng.pgf}}}
         
         \caption{Sampling $5$ points from each class}
-        \label{fig:featureeng}
     \end{subfigure}
-    
     \caption{Feature engineering might yield better results}
+    \label{fig:featureeng}
 \end{figure}
 
 \section{Concluding remarks}
 
-We have formulated a pseudo-polynomial algorithm to determine a classifying tropical hyperplane, with geometrical guarantees. It would be interesting to conduct further work on monomial selection heuristics, to better separate complex datasets in the real world.
+We have formulated a pseudo-polynomial algorithm to determine a classifying tropical hyperplane, with geometric guarantees. It would be interesting to conduct further work on monomial selection heuristics, to better separate complex datasets in the real world.
 
 \bigskip
 \bigskip
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 \bibliography{ea}
 \bigskip
 \bigskip
 
 \appendix
 \section{Norm equivalence between Veronese and starting spaces}\label{appendix:NormEquivalence}
+Firstly,
+\begin{align*}
+\lVert\text{ver}(x)\rVert_{H,\mathbb{R}^{\mathcal{A}_s}_{\max}}&=\max_{\alpha\in\mathcal{A}_{s}}\sum_{i}\alpha_{i}x_{i}-\min_{\alpha\in\mathcal{A}^{s}}\sum_{i}\alpha_{i}x_{i}\\&\le s(\max x-\min x)=s\lVert x\rVert_{H,\mathbb{R}_{\max}^d}.
+\end{align*}
 
-We note $V$ the (invertible) Veronese embedding, $Y\in\mathbb{R}_{\max}^{d}$ from the initial
-space, and $y\coloneqqVY$. For the reciprocal side, using the lemma 
+In general, using
 \[
 \lVert Y\rVert_{H}=2\inf_{\alpha\in\mathbb{R}}\lVert Y+\alpha e\rVert_{\infty},
 \]
-we only need to show that 
+and denoting $V$ the Veronese (linear) embedding, knowing that
 \[
-\lVert Y\rVert_{\infty}\le C'\lVert VY\rVert_{\infty}
+\lVert VY\rVert_{\infty}\le \lVert V\rVert_{\text{op},\infty} \, \lVert Y \rVert_\infty,
 \]
-using some constant $C'$. Denoting $y=VY$, we have $V^{T}y=V^{T}VY$,
-where $V^{T}V$ is definite positive. Hence, $Y=(V^{T}V)^{-1}V^{T}y$,
-and
-\[
-\lVert Y\rVert_{\infty}=\lVert(V^{T}V)^{-1}V^{T}y\rVert_{\infty}\le\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}\lVert VY\rVert_{\infty}
-\]
-hence we define $C'=\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty}$.
+we have the first side.
+
+The other inequality is obtained using the pseudo-inverse of (non-square) $V$.
 
 $V$ is a $\ell_{s,d}\times n$ matrix, where $\ell_{s,d}$ is the
 cardinal of $\mathcal{A}^{s}$, i.e. the number of homogenous polynomials
@@ -807,7 +817,7 @@ and
 \end{align*}
 as $b\le s$. Finally, for $s\ge2$:
 \begin{align*}
-\lVert(V^{T}V)^{-1}V^{T}\rVert_{\infty,\text{op}} & \le\frac{(s-1)d}{s(s+d)}+\frac{d(s(d-1)+2)}{(s+d-1)(s+d)}\\
+\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty} & \le\frac{(s-1)d}{s(s+d)}+\frac{d(s(d-1)+2)}{(s+d-1)(s+d)}\\
  & \le\frac{d}{s+d}+\frac{sd^{2}}{(s+d)^{2}}
 \end{align*}
 

@@ -37,7 +37,7 @@ if __name__ == '__main__':
       decision_frontiers.append((xx/beta, yy/beta, zz/beta))
 
   if dim == 3:
-    fig = plt.figure(figsize=(9,9))
+    fig = plt.figure(figsize=(5,5))
     ax = init_ax(fig, 111, L, mode_3d=False)
     ax.view_init(elev=36, azim=45)
     sur = decision_frontiers[0]
@@ -46,4 +46,5 @@ if __name__ == '__main__':
     ax.plot_surface(sur_last[0], sur_last[1], sur_last[2], alpha=0.8, color="r")
     plot_classes(ax, [Xplus, Xminus], L)
     plot_hyperplane_3d(ax, apex, 0, L, sector_indicator=[0, 0, 1])
+    plt.savefig('./tex/figures/log-log.pgf')
     plt.show()
