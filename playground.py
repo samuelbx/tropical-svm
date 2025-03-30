@@ -9,7 +9,7 @@ from tropy.utils import apply_noise, build_toy_tropical_data
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.datasets import make_moons
+from sklearn.datasets import make_moons, make_circles, make_blobs
 
 
 def toy_gaussian(center: list, seed: int = 42) -> np.ndarray:
@@ -38,6 +38,20 @@ def generate_toy_data(dataset: str) -> tuple[list[np.ndarray], bool]:
     data, labels = make_moons(noise=0.2, random_state=1)
     Xminus, Xplus = data[labels == 0], data[labels == 1]
     data_classes = [Xplus.T, Xminus.T]
+  elif dataset == 'circles':
+    native_tropical = False
+    data, labels = make_circles(noise=0.05, factor=.5, random_state=1)
+    Xminus, Xplus = data[labels == 0], data[labels == 1]
+    data_classes = [Xplus.T, Xminus.T]
+  elif dataset == 'blobs':
+    native_tropical = False
+    n_clusters = 5
+    data, labels = make_blobs(n_samples=100,
+                              centers=n_clusters,
+                              cluster_std=1.0,
+                              n_features=2,
+                              random_state=10)
+    data_classes = [np.flipud(data[labels == i].T) for i in range(n_clusters)]
   elif dataset == 'circular':
     native_tropical = True
     C = np.random.normal([[0, 0, 0]]*100, 10, (100, 3)).T
@@ -99,7 +113,7 @@ def main(args):
   if save is None:
     ax.set_title(f'{features}, using {method}', fontsize='small', loc='left')
   L = plot_classes(ax, model._data_classes)
-  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L, sector_indicator=model._sector_indicator, simplified_mode=simplified, margin=(model.margin() if log_linear_beta is None else 0))
+  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L, sector_indicator=model._sector_indicator, data_classes=(model._data_classes if args.equations else None), simplified_mode=simplified, margin=(model.margin() if log_linear_beta is None else 0))
 
   if save is not None:
     if save == '__DEFAULT__':
@@ -112,11 +126,12 @@ def main(args):
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description="Fitting and plotting tropical piecewise linear classifiers on 3D datasets")
-  parser.add_argument("dataset", type=str, choices=['iris', 'iris-binary', 'moons', 'toy', 'toy-centers', 'toy-reverse', 'toy-centers-reverse', 'bintoy', 'bintoy-separated', 'bintoy-mixed', 'circular'], help="Dataset to classify")
+  parser.add_argument("dataset", type=str, choices=['iris', 'iris-binary', 'moons', 'circles', 'blobs', 'toy', 'toy-centers', 'toy-reverse', 'toy-centers-reverse', 'bintoy', 'bintoy-separated', 'bintoy-mixed', 'circular'], help="Dataset to classify")
   parser.add_argument("degree", nargs='?', type=int, default=1, help="Degree of tropical polynomial")
   parser.add_argument("-s", "--save", nargs='?', const='__DEFAULT__', default=None, metavar='file_path', help="Save the figure (.PGF)")
   parser.add_argument("--beta", type=float, default=None, help="If specified, Beta value for using 'linear SVM on log paper' trick")
   parser.add_argument("--simplified", action="store_true", help="Provide a simplified view of the hypersurface, with the decision boundary only")
+  parser.add_argument("--equations", action="store_true", help="Show the equations for each monomial")
   parser.add_argument("--feature-selection", type=int, metavar='no_features', help="Experimental: heuristic to generate more relevant monomials based on data. Specify the number of points to sample per class if wanted. Bypasses degree option.")
 
   if len(sys.argv) == 1:

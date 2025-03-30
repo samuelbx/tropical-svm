@@ -2,11 +2,12 @@ import csv
 import numpy as np
 import pandas as pd
 from .ops import proj, veronese
-from .utils import count_points_sectors
+from .utils import count_points_sectors, max_max2_idx
 from .veronese import map_to_exponential_space, simplex_lattice_points, newton_polynomial
 from itertools import combinations
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
+import time
 
 
 class TropicalSVC():
@@ -46,22 +47,34 @@ class TropicalSVC():
       # Compute apex
       self._apex, self._eigval = _inrad_eigenpair(aug_data_classes, N=1000)
 
-    # Assign secotrs based on majoritary population
+    # TODO: use less lines of code
+    projections = _tropical_projections(aug_data_classes, self._apex)
+    sector_indicator = np.argmax(projections, axis=0)
+    idxes = max_max2_idx(projections)
+    max_idxes, max2_idxes = idxes[0], idxes[1]
+    sector_indicator = max_idxes
+    for i in range(len(sector_indicator)):
+      if np.isclose(projections[max_idxes[i], i], projections[max2_idxes[i], i]):
+        sector_indicator[i] = -1
+    self._sector_indicator = sector_indicator
+    #zero_mask = np.where(self._sector_indicator == -1)[0]
+
+    """# Assign secotrs based on majoritary population
     Counts = np.zeros((len(aug_data_classes), self._apex.shape[0]))
     for i, C in enumerate(aug_data_classes):
       Counts[i] = count_points_sectors(C, self._apex)
     zero_mask = np.all(Counts == 0, axis=0)
     sector_indicator = np.argmax(Counts, axis=0)
     sector_indicator[zero_mask] = -1
-    self._sector_indicator = sector_indicator
+    self._sector_indicator = sector_indicator"""
     
     # Save model weights
     self._monomials, self._coeffs = newton_polynomial(monomials_idxes, self._apex, self._poly_degree)
 
     # Only keep active monomials
-    self._monomials = self._monomials[zero_mask == False]
-    self._coeffs = self._coeffs[zero_mask == False]
-    self._sector_indicator = self._sector_indicator[zero_mask == False]
+    #self._monomials = self._monomials[zero_mask == False]
+    #self._coeffs = self._coeffs[zero_mask == False]
+    #self._sector_indicator = self._sector_indicator[zero_mask == False]
 
   def predict(self, data: np.ndarray) -> list[int]:
     """Predict the labels of some data points (as a 2D matrix whose columns are the points)"""
@@ -97,9 +110,19 @@ class TropicalSVC():
   def margin(self) -> float:
     """Margin of the tropical classifier"""
     op_norm = np.max(np.sum(np.abs(self._monomials), axis=1)) # L^inf norm of Veronese embedding
+    print(self._eigval, op_norm)
     return max(0.0, -self._eigval) / op_norm
 
 
+def _tropical_projections(Clist: list[np.ndarray], x: np.ndarray) -> np.ndarray:
+  d = Clist[0].shape[0]
+  projections = np.zeros((len(Clist), d))
+  for i, C in enumerate(Clist):
+    projections[i] = proj(C, x, DF=True)
+  return projections
+
+
+# TODO: use previous function and max2
 def _inrad_op(Clist: list[np.ndarray]) -> callable:
   """Returns the Shapley operator for tropical linear classification"""
   def op(x):
@@ -120,18 +143,23 @@ def fit_tropicalized_linear_SVM(data_classes: np.ndarray, beta: float = 1) -> tu
   xtrain, ytrain = map_to_exponential_space(data_classes, beta)
   model = LinearSVC(dual=True, fit_intercept=False)
   clf = model.fit(xtrain.T, ytrain)
+  print('iter', clf.n_iter_)
   w = clf.coef_[0]
   return model, w
 
 
+KM_TIME = 0
 def _krasnoselskii_mann(op: callable, N: int,
                         x: np.ndarray, tol: float = 1e-3) -> tuple[np.ndarray, float]:
   """Compute the eigenpair of a Shapley operator using Krasnoselskii-Mann iterations"""
+  global KM_TIME
   z = None
+  t1 = time.time()
   for i in range(N):
     z = (x + op(x)) / 2
     new_x = z - np.max(z)
-    if np.linalg.norm(new_x - x) < tol:
+    if np.linalg.norm(new_x - x) < tol * np.linalg.norm(new_x):
+      
       x = new_x
       break
     x = new_x
@@ -139,7 +167,14 @@ def _krasnoselskii_mann(op: callable, N: int,
     print(f"WARN: KM did not converge in {N} iterations")
   else:
     print(f"KM converged in {i+1} iterations")
+  t2 = time.time()
+  KM_TIME = t2-t1
   return x - x.mean(), 2 * np.max(z)
+
+
+def get_km_time():
+  global KM_TIME
+  return KM_TIME
 
 
 def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20) -> tuple[np.ndarray, float]:

@@ -1,824 +1,814 @@
-\documentclass[oneside,UKenglish,a4paper]{amsart}
-\usepackage{bbold}
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{inputenc}
-\setlength{\parskip}{\smallskipamount}
-\setlength{\parindent}{0pt}
-\usepackage{amstext}
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{pgfplots}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\usepackage{algorithm}
+\usepackage[preprint]{neurips_2024}
 \usepackage{hyperref}
-\usepackage{algpseudocode}
+\usepackage{url}
+\usepackage{booktabs}
 \usepackage{multirow}
-\usepackage{subcaption}
-\usepackage{todonotes}
-\usepackage{wasysym}
-\usepackage{fullpage}
+\usepackage{pgfplots}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{adjustbox}
-\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{subcaption}
 
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
 
-\makeatletter
-\numberwithin{equation}{section}
-\numberwithin{figure}{section}
-\theoremstyle{plain}
-\newtheorem{thm}{\protect\theoremname}
-\theoremstyle{definition}
-\newtheorem{defn}[thm]{\protect\definitionname}
-\theoremstyle{plain}
-\newtheorem{prop}[thm]{\protect\propositionname}
-\theoremstyle{remark}
-\newtheorem{rem}[thm]{\protect\remarkname}
-\theoremstyle{plain}
-\newtheorem{lem}[thm]{\protect\lemmaname}
-\theoremstyle{definition}
-\newtheorem{example}[thm]{\protect\examplename}
-\newtheorem{cor}[thm]{\protect\corollaryname}
-\theoremstyle{definition}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rmax}{\mathbb{R}_{\max}}
 
+\title{Efficient Tropical SVMs via Mean-Payoff Games}
 
-\floatname{algorithm}{Algorithm}
-
-\makeatother
-
-\usepackage{babel}
-\providecommand{\definitionname}{Definition}
-\providecommand{\lemmaname}{Lemma}
-\providecommand{\propositionname}{Proposition}
-\providecommand{\remarkname}{Remark}
-\providecommand{\theoremname}{Theorem}
-\providecommand{\examplename}{Example}
-\providecommand{\corollaryname}{Corollary}
-
-\newcommand{\Input}{\textbf{input}}
-
+\author{
+  Xavier Allamigeon \\
+  Inria and CMAP \\
+  École polytechnique \\
+  Palaiseau, France \\
+  \And
+  Samuel Boïté \\
+  Inria and CMAP \\
+  École polytechnique \\
+  Palaiseau, France \\
+  \And
+  Stéphane Gaubert \\
+  Inria and CMAP \\
+  École polytechnique \\
+  Palaiseau, France \\
+  \And
+  Théo Molfessis \\
+  Inria and CMAP \\
+  École polytechnique \\
+  Palaiseau, France \\
+}
 
 \begin{document}
-\title{Tropical Support Vector Machines and mean-payoff games}
-\author{Xavier Allamigeon, Stéphane Gaubert, Samuel Boïté, Théo Molfessis}
+
 \maketitle
 
 \begin{abstract}
-    We introduce a pseudo-polynomial algorithm for tropical support vector machines (SVMs), using mean-payoff games for binary and multiclass classification. We provide a simple numerical criterion for tropical separability. In the separable case, we construct an optimal margin tropical hyperplane. In the non-separable case, we use the same algorithm to provide a suitable classifier ; it also measures the distance to tropical separability and allows to geometrically transform the data to reduce this distance to zero. We then extend our algorithm and results to the multiclass case. Finally, we study a feature map method to make the data separable in higher dimensions. We propose a heuristic method for sparsely adding relevant features to better separate the data. 
+We introduce an algorithm for Tropical Support Vector Machines that overcomes the combinatorial explosion of previous approaches. Tropical hyperplanes partition the input space into multiple sectors, naturally supporting multi-class classification. Our main result shows that the spectral radius of a specially constructed Shapley operator fully characterizes separability and margin: data are tropically separable if and only if the spectral radius is negative, with an optimal margin equal to the negative of this radius. This reformulation enables efficient computation of the optimal hyperplane via pseudo-polynomial mean-payoff game algorithms. In the non-separable setting, we show that the spectral radius characterizes the overlap between classes. We extend this framework to tropical polynomials, enabling more flexible decision boundaries while maintaining margin guarantees.
 \end{abstract}
 
+\section{Introduction}\label{sec:intro}
 
-\section{Introduction}
+Classification is a fundamental task in machine learning, and Support Vector Machines (SVMs) have been a cornerstone method for decades. Traditional SVMs create decision boundaries using affine hyperplanes, which provide maximum-margin separation with strong generalization guarantees \cite{vapnik1999}. However, these linear boundaries become limiting when faced with complex, nonlinear data patterns, typically requiring kernel methods or feature engineering \cite{scholkopf2002}.
 
-\subsection*{Motivation and context}
-\emph{Support vector machines} (SVMs), introduced by Boser et al. (1992) \cite{Boser92}, are used in data science to determine separating hyperplanes for binary classification tasks.
+\paragraph{Motivation: Beyond Linear Boundaries.} We explore tropical algebra, a framework where standard addition becomes the maximum operation, and multiplication becomes addition \cite{maclagan2015}. This leads to different geometric structures with attractive properties for machine learning: (1) instead of creating binary partitions, tropical hyperplanes divide space into multiple sectors, making them naturally suited for multi-class problems; (2) their piecewise-linear nature captures more complex patterns while maintaining interpretability; (3) the resulting decision boundaries closely resemble those created by modern deep learning models with ReLU activations \cite{zhang2018}. These properties provide richer, yet interpretable, decision boundaries that can capture nonlinear patterns in data while maintaining computational tractability \cite{maragos2021}.
 
-Tropical geometry recently found applications in machine learning: tropical linear regression (Akian et al., 2021) \cite{Akian2021TropicalLR}, analysis of deep neural networks and parametric statistical models (Maragos et al., 2021) \cite{Vasileios2021} and principal component analysis (Page et al., 2019) \cite{YoshidaPCA2019}.
+Tropical geometry has emerged as a powerful tool for modeling piecewise-linear phenomena in machine learning. It has been successfully applied to linear regression \cite{akian2020}, principal component analysis \cite{yoshida2019}, neural network analysis \cite{maragos2021}, and clustering \cite{monod2022}. Related work by Fotopoulos et al.~\cite{fotopoulos2024} has explored neural network compression through tropical geometry, demonstrating the broader utility of these techniques.
 
-First considered by Gärtner and Jaggi (2006) \cite{Gartner2006}, \emph{tropical support vector machines} classify data points with a tropical hyperplane and using the tropical metric. Tropical SVMs find natural applications in phylogenomics (Tang et al., 2020) \cite{Tang2020}.
+\paragraph{Previous Work on Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work demonstrated that tropical hyperplanes provide improved locality in decision boundaries, where only nearby support vectors influence classification, unlike classical SVMs where all support vectors contribute globally. Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leading to exponential worst-case complexity. This computational barrier has severely limited practical applications. Tang et al.~\cite{tang2020} later developed specialized algorithms for binary classification cases where data points from the same category stay in the same sector, showing promising results in computational biology for analyzing evolutionary trees.
 
-Initially formulated as linear programs \cite{Gartner2006}, tropical hyperplanes can also be obtained by tropicalizing a classical hyperplane using \emph{Maslov dequantization} \cite{litvinov2005maslov} or Viro's method \cite{viro2000dequantization}. Yet, redundant features can cause difficulties in the performance of $L^2$-norm classical SVMs (Zhang and Zhou, 2010) \cite{ZHANG2010373}. Moreover, tropicalization relies on exponentialization and is subject to arithmetic errors, while not directly maximizing the margin in the initial space.
+\paragraph{From Game Theory to Machine Learning.} Our approach uses concepts from game theory—specifically, Shapley operators from stochastic games \cite{shapley1953} and their adaptation to tropical algebra \cite{kolokoltsov1997}. The spectral properties of these operators have been extensively studied for analyzing fixed points and convergence in nonlinear systems \cite{gaubert2004}. Mean-payoff games, a class of two-player zero-sum games, are closely linked to the spectral radius of such operators \cite{zwick1996}. Importantly, recent advances in solving these games efficiently \cite{allamigeon2025} provide efficient algorithms that we can apply to tropical classification.
 
-Tropical linear regression has been shown by Akian et al. (2021) \cite{Akian2021TropicalLR} as equivalent to solving mean-payoff games. We consider this parallel for tropical support vector machines.
+\paragraph{Contributions.} We reformulate tropical classification using mean-payoff games, addressing the fundamental computational limitations of previous approaches:
 
-\subsection*{The tropical linear classification problem}
-
-The tropical \emph{max-plus} semifield $\mathbb{R}_{\max}$ is the
-set of real numbers, completed by $-\infty$ and equipped with the
-addition $a\oplus b=\max(a,b)$ and the multiplication $a\odot b=a+b$.
-A \emph{tropical hyperplane} in the $d$-dimensional tropical vector
-space $\mathbb{R}_{\max}^{d}$ is a set of vectors of the form
-\begin{equation}
-\mathcal{H}_{a}=\left\{x\in\mathbb{R}_{\max}^{d},\quad\max_{1\le i\le d}(x_{i}+a_{i})\,\text{is achieved at least twice}\right\}.\label{eq:unsigned}
-\end{equation}
-Such a hyperplane is parameterized by the vector $a=(a_{1},\ldots,a_{d})\in\mathbb{R}_{\max}^{d}$,
-which is required to be non-identically $-\infty$. It hence partitions
-the space depending on which coordinate reaches its maximum, i.e. between $d$ different sectors. By definition, tropical hyperplanes are invariant by translation along the constant vector $\mathbf{1}_d \coloneqq(1,\ldots, 1)$.
-
-In this paper, we address the following tropical analogue of support
-vector machines. Given $n\in\{1,\ldots, d\}$ classes of $d$-dimensional data
-points $X^{1},\ldots,X^{n}$, we look for a maximum-margin separating
-tropical hyperplane to build a classifier. The notion of margin depends
-on the metric: the canonical choice in tropical geometry is the (additive
-version of) Hilbert's projective metric. Its restriction to $\mathbb{R}^{d}$
-is induced by the so-called \emph{Hilbert's seminorm} or \emph{Hopf
-oscillation}
-\[
-\lVert x\rVert_{H}\coloneqq\max_{1\le i\le d}x_{i}-\min_{1\le i\le d}x_{i}.
-\]
-It is a projective metric, in the sense that the distance between
-two points is zero if and only if these two points differ by an additive
-constant.
-
-When dealing with hard-margin support vector machines (SVMs),
-we also have to ensure that every point lands in the right sector. Each class $k$ belongs to some sectors $I^k\subset \{1,\ldots, d\}$, with each sector assigned to only one class. We then define the \emph{tropical parameterized hyperplane} of configuration
-$\sigma\coloneqq\left\{I^{1},\ldots,I^{n}\right\}$, where $I^{k}$ and $I^{\ell}$
-are disjoint for $k\ne\ell$, as:
-\[
-\mathcal{H}\coloneqq\left\{x\in\mathbb{R}_{\max}^{d},\quad\exists k\ne\ell,\quad (x-a)\,\text{reaches its max coordinate in \ensuremath{I^{k}} and \ensuremath{I^{\ell}}}\right\}.
-\]
-We note $\mathcal{S}^k\subset \mathbb{R}_{\max}^d$ the \emph{sector} classified as class $k$, where the maximum coordinate is reached in $I^k$, and $\mathcal{S}^{0}$ the union of unclassified sectors, corresponding to coordinates $I^0$. $\mathcal{H}$ is said to \emph{separate} point
-clouds $(X^{k})_{1\le k\le p}$ with a margin of $\nu$ when for every point
-$x^{k}$ of class $k$:
 \begin{enumerate}
-\item $x^{k}$ is on the right sector of the hyperplane, i.e its maximum
-coordinate is reached in $I^{k}$
-\item $x^{k}$ is at distance at least $\nu$ from any other sector $\mathcal{S}^\ell$, $\ell \in \{1,\ldots, n\} \cup \{0\}$, $\ell \ne k$:
-\begin{equation*}
-d_H(\mathcal{S}^\ell,x^{k})\coloneqq\max(x^{k}-a)-\max_{i\in I^\ell}(x^{k}-a)_i\ge\nu.
-\end{equation*}
+    \item We establish a direct connection between tropical separability and the spectral radius $\rho(T)$ of a Shapley operator constructed from class-specific tropical projections.
+    
+    \item We prove that when data are separable, the optimal margin equals $-\rho(T)$, and in non-separable cases, $\rho(T)$ quantifies exactly how much the data points would need to be perturbed to achieve separability.
+    
+    \item We develop an algorithm based on mean-payoff games and Krasnoselskii--Mann iterations that computes the optimal classifier in pseudo-polynomial time rather than exponential time.
+    
+    \item We extend our framework to tropical polynomial classifiers, enabling more expressive decision boundaries while preserving theoretical margin guarantees.
+\end{enumerate}
+
+This work makes tropical SVMs tractable for real-world applications, enabling natural multi-class classification, and opening new directions for piecewise-linear methods that balance expressivity, interpretability, and computational efficiency.
+
+\begin{figure}[h]
+    \centering
+    \resizebox{0.99\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
+    \caption{Visualization of a degree-2 tropical polynomial classifier. Each region corresponds to a sector where a specific affine combination of the features dominate, creating an interpretable piecewise-linear decision boundary. Inference remains computationally efficient, requiring only the evaluation of the dominant monomial at each test point.}
+    \label{fig:tropical_hyperplane}
+\end{figure}
+
+The remainder of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how tropical separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to tropical polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions. The code to reproduce our figures and experiments is available at \url{https://github.com/samuelbx/tropical-svm}.
+
+\section{Tropical Geometry Preliminaries}\label{sec:prelim}
+
+We now introduce the key concepts from tropical geometry that form the foundation of our approach. To make these abstract concepts more accessible, we include intuitive explanations alongside formal definitions.
+
+\paragraph{The Max-Plus Semiring.}
+The tropical (or max-plus) semiring $\Rmax = \R \cup \{-\infty\}$ replaces traditional arithmetic operations with:
+\begin{align}
+x \oplus y &= \max(x,y) \quad \text{(tropical addition)} \\
+x \otimes y &= x + y \quad \text{(tropical multiplication)}
+\end{align}
+
+These operations may seem strange at first, but they naturally model systems where we care about ``bottlenecks'' or ``critical paths.'' For example, in project planning, if task A takes $x$ days and task B takes $y$ days, the project completion time depends on the maximum ($x \oplus y$) of these durations if tasks are parallel, and their sum ($x \otimes y$) if sequential.
+
+\paragraph{Tropical Projective Space.}  
+The tropical projective space identifies points that differ by adding the same constant to all coordinates. Formally, it's the quotient of $\Rmax^d \setminus \{(-\infty,\dots,-\infty)\}$ by the equivalence relation $x \sim y$ if $x = y + c \cdot \mathbf{1}$ for some constant $c$. In practice, we embed data from $\R^d$ into the projective space via:
+\[
+x=(x_1,\dots,x_d)\mapsto (x_1,\dots,x_d,-(x_1+\cdots+x_d))
+\]
+
+This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. It's similar to how projective geometry in computer vision makes analysis invariant to camera distance.
+
+\paragraph{Tropical Hyperplanes and Sectors.}
+A tropical hyperplane with apex $a \in \Rmax^d$ is defined as:
+\begin{align}
+\mathcal{H}_a = \left\{ x \in \Rmax^d : \text{the maximum of }(x_i + a_i)\text{ is attained at least twice} \right\}
+\end{align}
+
+This hyperplane divides the space into at most $d$ sectors. The $i$-th sector contains points where the maximum of $x + a$ occurs at the $i$-th coordinate:
+\begin{align}
+S_i(a) = \{x \in \Rmax^d : i \in \underset{j}{\arg\max} (x_j + a_j)\}
+\end{align}
+
+Unlike classical hyperplanes that create two half-spaces, tropical hyperplanes create multiple sectors—one for each dimension. They naturally support multi-class classification, where we can assign different sectors to different classes.
+
+\paragraph{Hilbert Seminorm and Tropical Distance.}
+The Hilbert seminorm in tropical geometry measures the ``spread'' of coordinates:
+\begin{align}
+\|x\|_H = \max_i x_i - \min_i x_i
+\end{align}
+
+This induces a projective distance $d_H(x,y) = \|x - y\|_H$ that remains invariant to adding the same constant to all coordinates \cite{cohen2004}. We use this distance to define margins in tropical classification. For classification, it tells us how confidently a point belongs to its assigned sector rather than another sector.
+
+\paragraph{Tropical Convexity and Projections.}
+A set $C \subset \Rmax^d$ is tropically convex if for all $x,y$ in $C$ and coefficients $\lambda,\mu$ in $\Rmax$ with $\lambda \oplus \mu = 0$ (meaning $\max(\lambda,\mu)=0$), the point $(\lambda \otimes x) \oplus (\mu \otimes y)$ is also in $C$ \cite{develin2004}. The tropical convex hull of points $\{x_1,\ldots,x_p\}$ is defined as:
+\begin{align}
+\text{conv}_{\max}(X) = \left\{\bigoplus_{i=1}^p \lambda_i \otimes x_i : \lambda_i \in \Rmax,\, \bigoplus_{i=1}^p \lambda_i = 0 \right\}
+\end{align}
+
+The tropical projection $P_X(y)$ of a point $y$ onto this convex hull is:
+\begin{align}
+P_X(y) = \max\{z \in \text{conv}_{\max}(X) : z \leq y\}
+\end{align}
+
+Tropical convexity generalizes the idea of conventional convexity to the max-plus setting. A tropical convex hull contains all tropical linear combinations of points. The projection finds the ``closest'' point in the convex hull that doesn't exceed our target point in any coordinate.
+
+These tropical projections will play a central role in our classification framework. We will use them to build class-specific operators that characterize the separability of data.
+
+\section{Spectral Framework for Tropical SVMs}\label{sec:spectral}
+
+Having established the basics of tropical geometry, we now develop our spectral approach to tropical classification. The key insight is connecting the separability of data classes to the spectral properties of a specially constructed operator.
+
+\paragraph{Shapley Operators and Their Spectral Theory.}
+A Shapley operator $T: \Rmax^d \to \Rmax^d$ satisfies two fundamental properties \cite{kolokoltsov1992}:
+\begin{enumerate}
+    \item \textit{Monotonicity:} If $x \leq y$ coordinatewise, then $T(x) \leq T(y)$ coordinatewise
+    \item \textit{Additive homogeneity:} For any constant $\alpha \in \R$, $T(\alpha + x) = \alpha + T(x)$
+\end{enumerate}
+
+The spectral radius of $T$ is defined as:
+\begin{align}
+\rho(T) = \sup\{\lambda \in \R : \exists u \neq -\infty \text{ with } T(u) = \lambda + u\}
+\end{align}
+
+Equivalently, $\rho(T)$ is the smallest value $\lambda$ for which there exists a vector $u$ satisfying $T(u) \leq \lambda + u$ \cite{nussbaum1986}.
+
+\paragraph{Constructing the Classification Operator.}
+Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \Rmax^d$. We define an operator $T^k$ for each class $k$ by taking the tropical projection onto the convex hull of points in that class:
+\[
+T^k(x) = P_{X^k}(x)
+\]
+
+We then combine these operators into a single classification operator $T$ defined coordinatewise as:
+\[
+T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}
+\]
+where $\operatorname{\max}_2$ denotes the second-largest value among the outputs. For binary classification ($K=2$), this simplifies to $T(x)=\min\{T^1(x), T^2(x)\}$.
+
+\paragraph{Main Theorem: Spectral Separability.}
+Our central result establishes the connection between tropical separability and the spectral radius:
+
+\begin{theorem}[Spectral Separability Criterion]\label{thm:spectral_separability}
+Let $X^1,\ldots,X^K \subset \Rmax^d$ be labeled point sets and let $T$ be the classification operator defined above. Then:
+
+(1) \textit{Separability Criterion:} The data are tropically separable by a hyperplane if and only if $\rho(T) < 0$.
+
+(2) \textit{Margin Optimality:} In the separable case, the maximum achievable margin equals $-\rho(T)$.
+
+(3) \textit{Soft-Margin Interpretation:} For binary classification with overlapping data, $\rho(T)$ is positive and quantifies the minimal perturbation needed to achieve separability.
+
+Moreover, both $\rho(T)$ and an associated apex vector $a$ satisfying $T(a) = \rho(T)+a$ can be computed in pseudo-polynomial time using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).
+\end{theorem}
+
+\emph{Proof Sketch.}
+The proof follows two main directions. First, if there exists a tropical hyperplane $\mathcal{H}_a$ separating the classes with margin $\gamma>0$, then using the monotonicity and homogeneity properties of the operator, we can show $T(a) \leq a - \gamma$. This implies $\rho(T) \leq -\gamma < 0$.
+
+Conversely, if $\rho(T)<0$, we can find an eigenvector $a$ satisfying $T(a)=\rho(T)+a$. Using this apex, we can construct a separating hyperplane by assigning sectors based on which class operator dominates at each coordinate. This hyperplane achieves a margin of exactly $-\rho(T)$.
+
+For the non-separable case, we show that $\rho(T)$ quantifies the minimum perturbation required to make the data separable by constructing an explicit perturbation of magnitude $\rho(T)$.
+
+A complete proof is provided in Appendix~\ref{appendix:proofs}.
+
+\paragraph{Benefits of the Spectral Approach.} 
+Our framework significantly advances the tropical SVM foundation established by Gärtner and Jaggi \cite{gartner2008}. Their work showed that tropical SVM could be formulated as finding a point of maximum margin within a tropical polytope defined by sector constraints, but required exhaustive exploration of sector assignments—leading to exponential complexity.
+
+In contrast, our spectral characterization offers a complete theoretical understanding of when data are tropically separable, an exact formula for the optimal margin, an efficient algorithm to find the optimal classifier without combinatorial exploration and a natural interpretation for non-separable cases.
+
+\paragraph{Limitations.} 
+The primary limitation of our spectral approach is its sensitivity to outliers. Since tropical convex hulls encompass all points in each class, a single misplaced point can significantly alter the classification boundary and potentially render previously separable data inseparable.
+
+Additionally, because our method is formulated as a spectral criterion rather than an optimization problem, it's challenging to incorporate relaxation mechanisms that would handle misclassified points in a controlled way. Traditional SVMs use slack variables to allow soft margins and tolerate some misclassifications, but our current approach doesn't have a direct equivalent. This suggests an important direction for future research in tropical classification.
+
+\section{Algorithm and Implementation}\label{sec:algorithm}
+
+Having established the theoretical foundation, we now present our algorithm for tropical SVM based on the spectral criterion. The key insight is that we can compute the spectral radius and optimal hyperplane efficiently without exploring all possible sector assignments.
+
+\paragraph{Efficient Computation of Tropical Projections.}
+\label{subsec:computing_projections}
+The first step is to compute the tropical projections efficiently. The tropical projection $P_X(y)$ of a point $y$ onto the tropical convex hull of a set $X \subset \Rmax^d$ can be computed using:
+\[
+P_X(y)_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{1 \leq k \leq d} \left(-X_{kj} + y_k\right)\right\}
+\]
+where $p$ is the number of points in $X$ and $X_{ij}$ is the $i$-th coordinate of the $j$-th point.
+
+This formulation can be viewed as a mean-payoff game \cite{akian2020} and computed in $\mathcal{O}(pd)$ time—linear in both the number of points and dimensions.
+
+\paragraph{Computing the Spectral Radius with Krasnoselskii-Mann Iterations.}
+\label{subsec:spectral_computation}
+To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we apply a Krasnoselskii-Mann iteration scheme \cite{nussbaum1986, gaubert2004}, outlined in Algorithm~\ref{alg:km_iteration}.
+
+\begin{algorithm}
+\caption{Krasnoselskii--Mann Iteration for Tropical SVM}\label{alg:km_iteration}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Shapley operator $T$, convergence threshold $\varepsilon > 0$
+\STATE \textbf{Initialize:} $x^{(0)} \in \R^d$ (typically set to $\mathbf{1}_d$), $\lambda^{(0)} = 0$
+\FOR{$k = 0, 1, 2, \ldots$ until convergence}
+  \STATE $z^{(k+1)} \leftarrow \frac{1}{2}\bigl(x^{(k)} + T(x^{(k)})\bigr)$ \COMMENT{Average the current point with its image to stabilize}
+  \STATE $x^{(k+1)} \leftarrow z^{(k+1)} - \max\bigl(z^{(k+1)}\bigr)\,\mathbf{1}_d$ \COMMENT{Project onto the tropical projective space}
+  \STATE $\lambda^{(k+1)} \leftarrow 2\max\bigl(z^{(k+1)}\bigr) - \max\bigl(x^{(k)}\bigr)$ \COMMENT{Estimate the current spectral radius}
+  \IF{$|\lambda^{(k+1)} - \lambda^{(k)}| < \varepsilon$ \COMMENT{Check if the spectral radius has stabilized}}
+    \STATE \textbf{break}
+  \ENDIF
+\ENDFOR
+\STATE \textbf{Return:} $\rho(T) \approx \lambda^{(\text{final})}$, $a \approx x^{(\text{final})} - \frac{1}{d}\sum_{i=1}^d x_i^{(\text{final})} \cdot \mathbf{1}_d$ \COMMENT{Center the apex for numerical stability}
+\end{algorithmic}
+\end{algorithm}
+
+Recent results by Allamigeon et al. \cite{allamigeon2025} show that this iteration achieves an $\varepsilon$-approximation in $O(1/\varepsilon)$ iterations. By avoiding the combinatorial exploration of sector assignments, our method runs in pseudo-polynomial time—specifically $O\bigl(\frac{nd}{\varepsilon}\bigr)$ for $n$ data points in $d$ dimensions.
+
+\paragraph{The Complete Tropical SVM Algorithm.}\label{subsec:complete_algorithm}
+Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SVM classification.
+
+\begin{algorithm}
+\caption{Tropical SVM}\label{alg:tropical_svm}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Labeled point sets $X^1,\dots,X^K \subset \Rmax^d$
+\STATE \textbf{Construct Operators:}
+  \STATE \quad For each class $k$, compute the tropical projection operator $T^k(x) = P_{X^k}(x)$
+  \STATE \quad Combine via $T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}$ for each coordinate $i$
+\STATE \textbf{Compute Spectral Properties:}
+  \STATE \quad Run Algorithm~\ref{alg:km_iteration} to obtain $\rho(T)$ and apex $a$
+\STATE \textbf{Assign Sectors to Classes:}
+  \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
+    \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$ \COMMENT{Assignment based on dominant operator}
+  \ELSE
+    \STATE Use a heuristic (e.g., majority vote) for non-separable data \COMMENT{Fall back to best-effort assignment}
+  \ENDIF
+\STATE \textbf{Output:} Apex $a$, margin $-\rho(T)$ (if separable), and sector assignments for classification
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Empirical Performance Analysis.}
+We validated the computational complexity of our algorithm through empirical testing (detailed in Appendix~\ref{appendix:empirical}). Our implementation achieves tractable performance on standard benchmark datasets, with performance scaling linearly with both dataset size and feature dimension as predicted by our theoretical analysis.
+
+For the first time, we demonstrate that tropical SVMs can be practically computed with pseudo-polynomial guarantees, removing the exponential barrier that limited previous approaches. While specialized classical SVM libraries remain faster on conventional tasks, our approach enables new applications where piecewise-linear decision boundaries offer advantages.
+
+Future optimizations could include kernel methods, sparse representations for large datasets, and parallel implementations to further improve performance on high-dimensional problems.
+
+\section{Tropical Polynomials for Enhanced Expressivity}\label{sec:polynomials}
+
+While tropical hyperplanes provide effective classification boundaries, we can achieve even greater expressivity by extending our framework to tropical polynomials. These polynomials create more flexible decision boundaries while maintaining theoretical guarantees.
+
+\paragraph{Tropical Polynomial Kernel.}
+A tropical polynomial in $\Rmax^d$ takes the form:
+\begin{align}
+f(x) = \max_{\alpha \in A} (c_\alpha + \langle \alpha, x \rangle)
+\end{align}
+where $A \subset \mathbb{Z}^d$ is a finite set of integer vectors (monomials), $c_\alpha \in \R$ are coefficients, and $\langle \alpha, x \rangle = \alpha_1 x_1 + \cdots + \alpha_d x_d$ is the tropical dot product.
+
+To fit such polynomials, we use a feature map $\Phi_A: \Rmax^d \to \Rmax^{|A|}$ defined by:
+\begin{align}
+[\Phi_A(x)]_\alpha = \langle \alpha, x \rangle
+\end{align}
+
+This feature map transforms the original data into a higher-dimensional space where each coordinate corresponds to a monomial term. A tropical hyperplane in this feature space corresponds to a tropical polynomial in the original space. This is conceptually similar to the kernel trick in classical SVMs, but with an explicit feature mapping based on tropical algebra.
+
+\paragraph{Strategic Monomial Selection.}
+The choice of monomial set $A$ critically affects both the expressivity and computational complexity of the resulting classifier. We explore two complementary approaches:
+
+\begin{enumerate}
+    \item \textbf{Homogeneous Monomials:} We use all monomials of degree $s$, defined as 
+    $A_s = \{\alpha \in \mathbb{N}^d : \sum_i \alpha_i = s\}$. The number of such monomials is $\binom{s+d-1}{s}$, which grows polynomially with $s$ for fixed dimension $d$.
+    
+    \item \textbf{Adaptive Selection:} We sample pairs of points from different classes and construct monomials corresponding to the slopes of separating lines between them. This approach focuses computational resources on the most discriminative monomials.
+\end{enumerate}
+
+The degree parameter $s$ controls the trade-off between expressivity and overfitting. Higher degrees create more flexible boundaries but may overfit the training data. Cross-validation can guide this selection process.
+
+Importantly, only a sparse subset of monomials typically becomes active in the final classifier, making the approach computationally efficient even with many candidate monomials.
+
+\paragraph{Classification with Tropical Polynomials.}\label{subsec:poly_classification}
+To perform classification with tropical polynomials:
+
+\begin{enumerate}
+    \item Map the original data to the feature space: $\Phi_A(X^k) = \{\Phi_A(x) : x \in X^k\}$ for each class $k$.
+    
+    \item Apply the tropical SVM algorithm in this feature space to find apex $a \in \Rmax^{|A|}$ and spectral radius $\rho(T)$.
+    
+    \item The classifier in the original space is the tropical polynomial:
+    \begin{align}
+    f_a(x) = \max_{\alpha \in A} (-a_\alpha + \langle \alpha, x \rangle)
+    \end{align}
+    
+    \item Classify new points by identifying which sector of $f_a(x)$ they fall into.
+\end{enumerate}
+
+\paragraph{Margin Guarantees for Tropical Polynomials.}
+When extending to polynomial classifiers, we maintain theoretical guarantees on the margin. Specifically, when $\rho(T)<0$ (indicating separability in the feature space), the data are separable in the original space with a margin of at least $-\rho(T)/\lVert \Phi_A\rVert_{\text{op},\infty}$, where $\lVert \Phi_A\rVert_{\text{op},\infty}$ is the operator norm of the feature map.
+
+For homogeneous degree-$s$ monomials, this simplifies to $-\rho(T)/s$, meaning the margin scales inversely with the polynomial degree. This gives a principled way to balance expressivity with generalization through the choice of polynomial degree.
+
+This approach maintains the core theoretical guarantees of the hyperplane formulation while substantially increasing model flexibility, as illustrated in Figures~\ref{fig:homogeneous_selection} and \ref{fig:adaptive_polynomial} on the following pages.
+
+\newpage
+
+\vspace*{2em}
+\begin{figure}[ht!]
+    \centering
+    \resizebox{0.9\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
+    \caption{Multi-class classification using a cubic tropical polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho(T)/3$ due to our theoretical results.}
+    \label{fig:homogeneous_selection}
+\end{figure}
+\vspace*{4em}
+\begin{figure}[ht!]
+    \centering
+    \resizebox{0.9\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
+    \caption{Visualization of a tropical polynomial classifier using the adaptive monomial selection strategy described in Section~\ref{sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.}
+    \label{fig:adaptive_polynomial}
+\end{figure}
+\vspace*{2em}
+
+
+\newpage
+\section{Connection to Classical SVMs}\label{sec:maslov}
+Tropical hyperplanes can be seen as limits of classical hyperplanes under logarithmic scaling, a process known as Maslov dequantization \cite{viro2001}. This connection suggests a naive approach to tropical SVM: raise the data to a power $\beta > 0$, apply a classical SVM in the transformed space to maximize the margin, then map the result back via a logarithm. As $\beta$ tends to infinity, the resulting decision boundary converges to a tropical hyperplane.
+
+However, this method suffers from severe numerical instability for large $\beta$ and fails to guarantee a good margin in the original space. The limiting hyperplane is typically suboptimal compared to the true tropical classifier obtained through our spectral approach, as illustrated in Figure~\ref{fig:maslov_dequantization}.
+
+\begin{figure}[h]
+    \centering
+    \resizebox{0.5\textwidth}{!}{\clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/log-log.pgf}}}
+    \caption{Comparison of tropical hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral tropical classifier (black).}
+    \label{fig:maslov_dequantization}
+\end{figure}
+
+Interestingly, the connection could be exploited in the reverse direction: tropical SVMs may offer efficient, interpretable warm-starts for classical methods, especially in high-dimensional or large-scale settings.
+
+\section{Discussion and Future work}\label{sec:discussion}
+
+We addressed a key computational barrier limiting tropical SVM's practical application in machine learning. By reformulating tropical classification through spectral theory and mean-payoff games, we reduced complexity from exponential to pseudo-polynomial, making tropical SVMs feasible for real-world applications. Our framework provides natural multi-class capabilities, theoretical margin guarantees, and interpretable piecewise-linear decision boundaries.
+
+Our work opens several promising avenues for further investigation. The relationship between tropical polynomials and ReLU networks deserves deeper exploration, potentially yielding insights into network expressivity and inspiring new tropical classifiers. Combining spectral tropical SVMs with classical kernel methods could create powerful hybrid models balancing interpretability with performance. Extending the analysis to derive proper generalization bounds would strengthen the theoretical foundation, particularly understanding how polynomial degree influences sample complexity. Developing tropical analogues to slack variables would address sensitivity to outliers and noisy data. Finally, implementing sparse representations, efficient data structures, and parallel algorithms could extend the approach to large datasets and high-dimensional problems.
+
+\subsection*{Acknowledgements}
+
+TBD
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\newpage
+\appendix
+\section{Proof of Theorem~\ref{thm:spectral_separability} (Spectral Separability)}\label{appendix:proofs}
+We provide a complete proof of our main result on spectral separability.
+
+\begin{lemma}\label{lemma:hyperplane_to_operator}
+If the hyperplane $\mathcal{H}_a$ separates point clouds $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, then $T(a) \leq -\gamma + a$.
+\end{lemma}
+
+\begin{proof}
+Consider two different classes $k$ and $\ell$. Let $I^k$ denote the set of coordinates assigned to class $k$. For any point $x \in X^k$, the margin condition implies
+\begin{align}
+d_H(x, S^{\ell}) = \max_i(x_i - a_i) - \max_{j \in I^{\ell}}(x_j - a_j) \geq \gamma.
+\end{align}
+
+This can be rewritten as: for all $i \in I^{\ell}$,
+\begin{align}
+x_i - a_i \leq \max_j(x_j - a_j) - \gamma.
+\end{align}
+
+Taking the maximum over all $x \in X^k$, we get
+\begin{align}
+\max_{x \in X^k}(x_i - a_i) \leq \max_{x \in X^k}(\max_j(x_j - a_j)) - \gamma.
+\end{align}
+
+By the definition of $T^k$, this implies
+\begin{align}
+T^k(a)_i \leq -\gamma + a_i.
+\end{align}
+
+Since this holds for all $i \in I^{\ell}$ and all classes $k \neq \ell$, we have $T(a)_i \leq -\gamma + a_i$ for all $i$, which gives us $T(a) \leq -\gamma + a$.
+\end{proof}
+
+\begin{lemma}\label{lemma:operator_to_hyperplane}
+If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the data with a margin of at least $-\rho(T)$.
+\end{lemma}
+
+\begin{proof}
+Since $\rho(T) < 0$, there exists $a \in \R^d$ such that $T(a) = \rho(T) + a$. We define the sectors as
+\begin{align}
+I^k = \{i : T^k(a)_i > \rho(T) + a_i\}.
+\end{align}
+
+First, we show these sectors are disjoint. If $i \in I^k \cap I^{\ell}$ for $k \neq \ell$, then $T^k(a)_i > \rho(T) + a_i$ and $T^{\ell}(a)_i > \rho(T) + a_i$. But then the second-largest value among $\{T^1(a)_i,\ldots,T^K(a)_i\}$ would exceed $\rho(T) + a_i$, contradicting $T(a)_i = \rho(T) + a_i$.
+
+Next, we show that each point belongs to its assigned sector. For $x \in X^k$ and $i \not\in I^k$, we have
+\begin{align}
+x_i \leq T^k(x)_i = (T^k(x) - T^k(a))_i + T^k(a)_i.
+\end{align}
+
+Since $T^k$ is non-expansive, $(T^k(x) - T^k(a))_i \leq \max_j(x_j - a_j)$. And since $i \not\in I^k$, we have $T^k(a)_i \leq \rho(T) + a_i$. Combining these,
+\begin{align}
+x_i - a_i \leq \max_j(x_j - a_j) + \rho(T).
+\end{align}
+
+With $\rho(T) < 0$, this implies $x_i - a_i < \max_j(x_j - a_j)$, meaning $i$ cannot be the $\arg\max$ of $x - a$. Therefore, the $\arg\max$ must lie in $I^k$, placing $x$ in its correct sector.
+
+Finally, for the margin, consider $x \in X^k$ and sector $S^{\ell}$ with $\ell \neq k$. The distance is.
+\begin{align}
+d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
+\end{align}
+
+Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
+\end{proof}
+
+For any Shapley operator $T$, we define its fixed-point set as $S(T) = \{x \in \Rmax^d : x \leq T(x)\}$. An important property is that any tropically convex set $V$ can be written as $V = S(P_V)$. 
+
+In the binary case where data overlaps, we have $T = \min(T^1, T^2)$, hence $S(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020}, this implies that $\rho(T)$ equals the inner radius of this intersection, measuring the extent of overlap. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of $V1+ \cap V^2$.
+
+In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
+\begin{align}
+T = \max_{1 \leq k < l \leq n}\min(T^k, T^l).
+\end{align}
+Intuitively, this can be thought of as representing the union of pairwise intersections between data classes, although the $\max$ operator does not strictly correspond to a union of fixed-point sets. This formulation provides an intuition on why our operator effectively characterizes separability across multiple classes.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{0.5\textwidth}{!}{\clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/non-separable.pgf}}}
+    \caption{Non-separable case: $\rho(T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.}
+    \label{fig:non_separable}
+\end{figure}
+
+Before moving to the next proof, we define diagonal-free ``projections'' \cite{gaubert2011}:
+\begin{align}
+P_X^{\text{DF}}(y)_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{k \neq i} (-X_{kj} + y_k)\right\}.
+\end{align}
+Both $P$ and $P^\text{DF}$ have identical fixed-point sets and can serve as the class operators $T^k$ in our framework.
+
+
+\begin{lemma}\label{lemma:perturbation}
+For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
+\end{lemma}
+
+\begin{proof}
+Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
+
+For a point $x \in \Rmax^d$, its distance to $\mathcal{H}_a$ is
+\begin{align}
+d_H(x, \mathcal{H}_a) = \max_i(x_i - a_i) - \max_2(x_i - a_i),
+\end{align}
+where $\max_2$ denotes the second-largest value.
+
+For each point $x_j \in X^1 \cup X^2$, we define a perturbed point $\tilde{x}_j$ as follows:
+\begin{itemize}
+\item If $d_H(x_j, \mathcal{H}_a) \geq \rho(T)$, then $\tilde{x}_j = x_j$ (no perturbation)
+\item If $d_H(x_j, \mathcal{H}_a) < \rho(T)$, let $s = \arg\max_i(x_{ji} - a_i)$ be the sector of $x_j$. We set:
+  \begin{align}
+  \tilde{x}_{ji} = \begin{cases}
+  x_{ji} - d_H(x_j, \mathcal{H}_a) & \text{if } i = s \\
+  x_{ji} & \text{otherwise}
+  \end{cases}
+  \end{align}
+\end{itemize}
+
+This projection ensures that $\tilde{x}_j$ lies exactly on $\mathcal{H}_a$.
+
+Therefore, for any $x^{c}$ in the tropical convex hull of class $c\in\{1,2\}$,
+\begin{equation}
+[x^{c}]_{i}\le T^{c}(x^{c})_{i}=\underbrace{\left(T^{c}(x^{c})-T^{c}(a)\right)_{i}}_{\le\,\max_{k\ne i}(x_{k}^{c}-a_{k})}+T^{c}(a)_{i}.\label{eq:major}
+\end{equation}
+Fix a coordinate $i$. If $x\in X^{1}\cup X^{2}$ is in sector $s\ne i$, and reaches it second argmax at coordinate $t$, then for $k\ne s$, by definition,
+$(\tilde{x}_{j}-a)_{k}\le(x_{j}-a)_{t}\le(\tilde{x}_{j}-a)_{s}$,
+hence $\tilde{x}_{jk}-\max_{k\ne i}(\tilde{x}_{jk}-a_{k})\le a_{i}$.
+Otherwise, $x_{j}$ is in the $i$-th sector and $\max_{k\ne i}(\tilde{x}_{jk}-a_{k})=x_{jt}-a_{t}$,
+thus
+\[
+\tilde{x}_{ji}-\max_{k\ne i}(\tilde{x}_{j}-a)_{k}=(\tilde{x}_{j}-a)_{i}-(\tilde{x}_{j}-a)_{t}+a_{i}\ge a_{i},
+\]
+with equality if $d_{H}\left(x_{j},\mathcal{H}_{a}\right)\le\rho(T)$.
+
+Suppose by symmetry that $T(a)_{i}=T^{1}(a)_{i}=\rho(T)+a_{i}$. We
+also have $T^{2}(a)\ge\rho(T)+a_{i}$. Then, using the proof of Theorem
+22 in \cite{akian2020}, there exists witness points $x_{j_{1}}\in X^{1}$ and
+$x_{j_{2}}\in X^{2}$ in sector $i$ , with $x_{j_{1}}$ being at
+distance $\rho(T)$ from $\mathcal{H}_{a}$ and $x_{j_{2}}$ at distance
+greater than $\rho(T)$. Therefore, $\tilde{x}_{j_{1}i}-\max_{k\ne i}(\tilde{x}_{j_{1}k}-a_{k})=a_{i}$
+and $\tilde{x}_{j_{2}i}-\max_{k\ne i}(\tilde{x}_{j_{2}k}-a_{k})\ge a_{i}$.
+Moreover, for any $j$ such that $x_{j}\in X^1$ is in sector $i$,
+Equation \ref{eq:major} gives $d_{H}(x_{j},\mathcal{H}_{a})\le\rho(T)$.
+
+Let $\tilde{T}^{1}$ and $\tilde{T}^{2}$ be the diagonal-free projections
+over transformed projections, and $\tilde{T}=\min(\tilde{T}^{1},\tilde{T}^{2})$.
+We have just shown that $\tilde{T}(a)_{i}=\tilde{T}^{1}(a)_{i}=a_{i}$,
+and finally $\tilde{T}(a)=a$.
+\end{proof}
+
+We summarize the proof of the Main Theorem:
+
+\begin{proof}[Proof of Theorem~\ref{thm:spectral_separability}]
+For part 1 (Separability Criterion): If the data are separable with margin $\gamma > 0$, then by Lemma~\ref{lemma:hyperplane_to_operator}, $\rho(T) \leq -\gamma < 0$. Conversely, if $\rho(T) < 0$, then by Lemma~\ref{lemma:operator_to_hyperplane}, the data are separable.
+
+For part 2 (Margin Optimality): Lemma~\ref{lemma:hyperplane_to_operator} shows that no hyperplane can achieve a margin larger than $-\rho(T)$, while Lemma~\ref{lemma:operator_to_hyperplane} provides a construction achieving exactly this margin.
+
+For part 3 (Soft-Margin Interpretation): Lemma~\ref{lemma:perturbation} shows that in the binary case, $\rho(T)$ is positive and characterizes the overlap between the tropical convex hulls.
+\end{proof}
+
+\section{Empirical Evaluation}\label{appendix:empirical}
+
+To validate our theoretical complexity analysis, we evaluated both standard tropical SVM and an enhanced tropical polynomial implementation (with $k=4$ sampling points per class) against scikit-learn's LinearSVC on benchmark datasets \cite{scikit-learn,waveform_database_generator_(version_1)_107}. All experiments used 5-fold cross-validation with standardized features. We compare training times for a fixed convergence threshold. All experiments were conducted on a MacBook Air M2.
+
+\begin{table}[h]
+\centering
+\footnotesize
+\begin{tabular}{@{}l@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 8pt}cc@{\hskip 8pt}cc@{\hskip 8pt}cc@{}}
+\toprule
+\multirow{3}{*}{\textbf{Dataset}} & \multirow{3}{*}{\textbf{\#C}} & \multirow{3}{*}{\textbf{\#S}} & \multicolumn{6}{c}{\textbf{Accuracy (\%) / Training Time (s)}} \\
+\cmidrule(lr){4-9}
+& & & \multicolumn{2}{c}{\textbf{Tropical SVM}} & \multicolumn{2}{c}{\textbf{Tropical Poly}} & \multicolumn{2}{c}{\textbf{Linear SVC}} \\
+\cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+& & & Acc & Time & Acc & Time & Acc & Time \\
+\midrule
+Iris & 3 & 150 & 66.7 & 0.0004 & 93.3 & 0.038 & 92.7 & 0.0003 \\
+Wine & 3 & 178 & 73.7 & 0.0008 & 92.7 & 0.036 & 97.8 & 0.0004 \\
+Breast Cancer & 2 & 569 & 82.6 & 0.0025 & 91.7 & 0.174 & 96.7 & 0.0006 \\
+Waveform & 3 & 5000 & 50.5 & 0.021 & 63.7 & 3.571 & 86.7 & 0.0147 \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.9\% to 9.6\%. \#C: number of classes; \#S: number of samples.}
+\label{tab:benchmark_results}
+\end{table}
+
+The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets, demonstrating practical computational feasibility. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
+
+Notably, the spectral radius values closely align with our theoretical predictions: datasets yielding negative spectral radius values (Wine: -7.53, Breast Cancer: -1.76, Iris: -0.97) exhibited the highest tropical polynomial accuracy, while the non-separable Waveform dataset (spectral radius: 0.87) proved more challenging.
+
+As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. While specialized classical SVM implementations remain faster, our results conclusively demonstrate that tropical SVMs can be practically computed with pseudo-polynomial guarantees.
+
+\begin{figure}[htbp]
+    \centering
+    % First subfigure
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \resizebox{0.95\textwidth}{!}{\input{figures/pca_degree_scaling.pgf}}
+        \caption{Training time vs. number of monomials}
+        \label{fig:pca_degree_scaling}
+    \end{subfigure}
+    \hfill  % Adds horizontal spacing between subfigures
+    % Second subfigure
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \resizebox{0.95\textwidth}{!}{\input{figures/sample_size_scaling.pgf}}
+        \caption{Training time vs. size of training set}
+        \label{fig:sample_size_scaling}
+    \end{subfigure}
+    \caption{Performance scaling analysis of tropical SVM on MNIST data}
+    \label{fig:scaling_analysis}
+\end{figure}
+
+Figure~\ref{fig:scaling_analysis} reveals that the tropical SVM algorithm exhibits linear scaling behavior both with respect to the number of effective monomials and the training set size. We used a Python script that systematically varies PCA dimensions, polynomial degrees, and sample sizes on MNIST data \cite{MNIST}.
+
+\newpage
+\section*{NeurIPS Paper Checklist}
+
+\begin{enumerate}
+
+\item {\bf Claims}
+    \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The abstract and introduction clearly state the contributions—including the spectral characterization, margin optimality, pseudo‐polynomial algorithm, and extension to tropical polynomials—which are supported by both theoretical results and empirical evaluations.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the abstract and introduction do not include the claims made in the paper.
+        \item The abstract and/or introduction should clearly state the claims made, including the contributions made in the paper and important assumptions and limitations. A No or NA answer to this question will not be perceived well by the reviewers. 
+        \item The claims made should match theoretical and experimental results, and reflect how much the results can be expected to generalize to other settings. 
+        \item It is fine to include aspirational goals as motivation as long as it is clear that these goals are not attained by the paper. 
+    \end{itemize}
+
+\item {\bf Limitations}
+    \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The paper explicitly discusses limitations such as sensitivity to outliers and the challenge of incorporating soft margins (see the ``Limitations'' paragraph in Section~\ref{sec:spectral})
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper has no limitation while the answer No means that the paper has limitations, but those are not discussed in the paper. 
+        \item The authors are encouraged to create a separate "Limitations" section in their paper.
+        \item The paper should point out any strong assumptions and how robust the results are to violations of these assumptions (e.g., independence assumptions, noiseless settings, model well-specification, asymptotic approximations only holding locally). The authors should reflect on how these assumptions might be violated in practice and what the implications would be.
+        \item The authors should reflect on the scope of the claims made, e.g., if the approach was only tested on a few datasets or with a few runs. In general, empirical results often depend on implicit assumptions, which should be articulated.
+        \item The authors should reflect on the factors that influence the performance of the approach. For example, a facial recognition algorithm may perform poorly when image resolution is low or images are taken in low lighting. Or a speech-to-text system might not be used reliably to provide closed captions for online lectures because it fails to handle technical jargon.
+        \item The authors should discuss the computational efficiency of the proposed algorithms and how they scale with dataset size.
+        \item If applicable, the authors should discuss possible limitations of their approach to address problems of privacy and fairness.
+        \item While the authors might fear that complete honesty about limitations might be used by reviewers as grounds for rejection, a worse outcome might be that reviewers discover limitations that aren't acknowledged in the paper. The authors should use their best judgment and recognize that individual actions in favor of transparency play an important role in developing norms that preserve the integrity of the community. Reviewers will be specifically instructed to not penalize honesty concerning limitations.
+    \end{itemize}
+
+\item {\bf Theory Assumptions and Proofs}
+    \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: All major theoretical results—including the spectral separability theorem—are supported by clearly stated assumptions and complete proofs provided in the Appendix~\ref{appendix:proofs}.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include theoretical results. 
+        \item All the theorems, formulas, and proofs in the paper should be numbered and cross-referenced.
+        \item All assumptions should be clearly stated or referenced in the statement of any theorems.
+        \item The proofs can either appear in the main paper or the supplemental material, but if they appear in the supplemental material, the authors are encouraged to provide a short proof sketch to provide intuition. 
+        \item Inversely, any informal proof provided in the core of the paper should be complemented by formal proofs provided in appendix or supplemental material.
+        \item Theorems and Lemmas that the proof relies upon should be properly referenced. 
+    \end{itemize}
+
+    \item {\bf Experimental Result Reproducibility}
+    \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The algorithm is fully described in Section~\ref{sec:algorithm}. The experimental section provides details on data splits (5-fold cross-validation), training times, accuracy metrics, and references a publicly available GitHub repository for code and reproduction (see Table~\ref{tab:benchmark_results} and Appendix~\ref{appendix:empirical}).
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item If the paper includes experiments, a No answer to this question will not be perceived well by the reviewers: Making the paper reproducible is important, regardless of whether the code and data are provided or not.
+        \item If the contribution is a dataset and/or model, the authors should describe the steps taken to make their results reproducible or verifiable. 
+        \item Depending on the contribution, reproducibility can be accomplished in various ways. For example, if the contribution is a novel architecture, describing the architecture fully might suffice, or if the contribution is a specific model and empirical evaluation, it may be necessary to either make it possible for others to replicate the model with the same dataset, or provide access to the model. In general. releasing code and data is often one good way to accomplish this, but reproducibility can also be provided via detailed instructions for how to replicate the results, access to a hosted model (e.g., in the case of a large language model), releasing of a model checkpoint, or other means that are appropriate to the research performed.
+        \item While NeurIPS does not require releasing code, the conference does require all submissions to provide some reasonable avenue for reproducibility, which may depend on the nature of the contribution. For example
+        \begin{enumerate}
+            \item If the contribution is primarily a new algorithm, the paper should make it clear how to reproduce that algorithm.
+            \item If the contribution is primarily a new model architecture, the paper should describe the architecture clearly and fully.
+            \item If the contribution is a new model (e.g., a large language model), then there should either be a way to access this model for reproducing the results or a way to reproduce the model (e.g., with an open-source dataset or instructions for how to construct the dataset).
+            \item We recognize that reproducibility may be tricky in some cases, in which case authors are welcome to describe the particular way they provide for reproducibility. In the case of closed-source models, it may be that access to the model is limited in some way (e.g., to registered users), but it should be possible for other researchers to have some path to reproducing or verifying the results.
+        \end{enumerate}
+    \end{itemize}
+
+
+\item {\bf Open access to data and code}
+    \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The paper includes a link to a GitHub repository (\url{https://github.com/samuelbx/tropical-svm}) with code and instructions for reproducing the experiments.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that paper does not include experiments requiring code.
+        \item Please see the NeurIPS code and data submission guidelines (\url{https://nips.cc/public/guides/CodeSubmissionPolicy}) for more details.
+        \item While we encourage the release of code and data, we understand that this might not be possible, so “No” is an acceptable answer. Papers cannot be rejected simply for not including code, unless this is central to the contribution (e.g., for a new open-source benchmark).
+        \item The instructions should contain the exact command and environment needed to run to reproduce the results. See the NeurIPS code and data submission guidelines (\url{https://nips.cc/public/guides/CodeSubmissionPolicy}) for more details.
+        \item The authors should provide instructions on data access and preparation, including how to access the raw data, preprocessed data, intermediate data, and generated data, etc.
+        \item The authors should provide scripts to reproduce all experimental results for the new proposed method and baselines. If only a subset of experiments are reproducible, they should state which ones are omitted from the script and why.
+        \item At submission time, to preserve anonymity, the authors should release anonymized versions (if applicable).
+        \item Providing as much information as possible in supplemental material (appended to the paper) is recommended, but including URLs to data and code is permitted.
+    \end{itemize}
+
+
+\item {\bf Experimental Setting/Details}
+    \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The paper details the experimental setup, including the use of 5-fold cross-validation, data standardization, and provides training times and accuracy metrics in Table~\ref{tab:benchmark_results} and related figures in the appendix.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The experimental setting should be presented in the core of the paper to a level of detail that is necessary to appreciate the results and make sense of them.
+        \item The full details can be provided either with the code, in appendix, or as supplemental material.
+    \end{itemize}
+
+\item {\bf Experiment Statistical Significance}
+    \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The results are reported with standard deviations.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The authors should answer "Yes" if the results are accompanied by error bars, confidence intervals, or statistical significance tests, at least for the experiments that support the main claims of the paper.
+        \item The factors of variability that the error bars are capturing should be clearly stated (for example, train/test split, initialization, random drawing of some parameter, or overall run with given experimental conditions).
+        \item The method for calculating the error bars should be explained (closed form formula, call to a library function, bootstrap, etc.)
+        \item The assumptions made should be given (e.g., Normally distributed errors).
+        \item It should be clear whether the error bar is the standard deviation or the standard error of the mean.
+        \item It is OK to report 1-sigma error bars, but one should state it. The authors should preferably report a 2-sigma error bar than state that they have a 96\% CI, if the hypothesis of Normality of errors is not verified.
+        \item For asymmetric distributions, the authors should be careful not to show in tables or figures symmetric error bars that would yield results that are out of range (e.g. negative error rates).
+        \item If error bars are reported in tables or plots, The authors should explain in the text how they were calculated and reference the corresponding figures or tables in the text.
+    \end{itemize}
+
+\item {\bf Experiments Compute Resources}
+    \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: All experiments were conducted on a MacBook Air M2. These specifications are typical for small-scale benchmark experiments, and the reported training times reflect the performance on this hardware.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The paper should indicate the type of compute workers CPU or GPU, internal cluster, or cloud provider, including relevant memory and storage.
+        \item The paper should provide the amount of compute required for each of the individual experimental runs as well as estimate the total compute. 
+        \item The paper should disclose whether the full research project required more compute than the experiments reported in the paper (e.g., preliminary or failed experiments that didn't make it into the paper). 
+    \end{itemize}
+    
+\item {\bf Code Of Ethics}
+    \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics \url{https://neurips.cc/public/EthicsGuidelines}?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The work is theoretical and algorithmic with supporting experiments on standard benchmark datasets; there are no ethical issues or concerns related to the research.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the authors have not reviewed the NeurIPS Code of Ethics.
+        \item If the authors answer No, they should explain the special circumstances that require a deviation from the Code of Ethics.
+        \item The authors should make sure to preserve anonymity (e.g., if there is a special consideration due to laws or regulations in their jurisdiction).
+    \end{itemize}
+
+
+\item {\bf Broader Impacts}
+    \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
+    \item[] Answer: \answerNA{}
+    \item[] Justification: The research is primarily theoretical and methodological with no direct societal impact, and no discussion of broader impacts is necessary.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that there is no societal impact of the work performed.
+        \item If the authors answer NA or No, they should explain why their work has no societal impact or why the paper does not address societal impact.
+        \item Examples of negative societal impacts include potential malicious or unintended uses (e.g., disinformation, generating fake profiles, surveillance), fairness considerations (e.g., deployment of technologies that could make decisions that unfairly impact specific groups), privacy considerations, and security considerations.
+        \item The conference expects that many papers will be foundational research and not tied to particular applications, let alone deployments. However, if there is a direct path to any negative applications, the authors should point it out. For example, it is legitimate to point out that an improvement in the quality of generative models could be used to generate deepfakes for disinformation. On the other hand, it is not needed to point out that a generic algorithm for optimizing neural networks could enable people to train models that generate Deepfakes faster.
+        \item The authors should consider possible harms that could arise when the technology is being used as intended and functioning correctly, harms that could arise when the technology is being used as intended but gives incorrect results, and harms following from (intentional or unintentional) misuse of the technology.
+        \item If there are negative societal impacts, the authors could also discuss possible mitigation strategies (e.g., gated release of models, providing defenses in addition to attacks, mechanisms for monitoring misuse, mechanisms to monitor how a system learns from feedback over time, improving the efficiency and accessibility of ML).
+    \end{itemize}
+    
+\item {\bf Safeguards}
+    \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse (e.g., pretrained language models, image generators, or scraped datasets)?
+    \item[] Answer: \answerNA{}
+    \item[] Justification: The work does not involve the release of data or models that present a high risk of misuse.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper poses no such risks.
+        \item Released models that have a high risk for misuse or dual-use should be released with necessary safeguards to allow for controlled use of the model, for example by requiring that users adhere to usage guidelines or restrictions to access the model or implementing safety filters. 
+        \item Datasets that have been scraped from the Internet could pose safety risks. The authors should describe how they avoided releasing unsafe images.
+        \item We recognize that providing effective safeguards is challenging, and many papers do not require this, but we encourage authors to take this into account and make a best faith effort.
+    \end{itemize}
+
+\item {\bf Licenses for existing assets}
+    \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
+    \item[] Answer: \answerYes{}.
+    \item[] Justification: All referenced works and datasets are properly cited, and the GitHub repository is expected to include license information consistent with proper academic practice.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not use existing assets.
+        \item The authors should cite the original paper that produced the code package or dataset.
+        \item The authors should state which version of the asset is used and, if possible, include a URL.
+        \item The name of the license (e.g., CC-BY 4.0) should be included for each asset.
+        \item For scraped data from a particular source (e.g., website), the copyright and terms of service of that source should be provided.
+        \item If assets are released, the license, copyright information, and terms of use in the package should be provided. For popular datasets, \url{paperswithcode.com/datasets} has curated licenses for some datasets. Their licensing guide can help determine the license of a dataset.
+        \item For existing datasets that are re-packaged, both the original license and the license of the derived asset (if it has changed) should be provided.
+        \item If this information is not available online, the authors are encouraged to reach out to the asset's creators.
+    \end{itemize}
+
+\item {\bf New Assets}
+    \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The paper introduces a novel algorithm and provides experimental code, with documentation available in the supplementary GitHub repository.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not release new assets.
+        \item Researchers should communicate the details of the dataset/code/model as part of their submissions via structured templates. This includes details about training, license, limitations, etc. 
+        \item The paper should discuss whether and how consent was obtained from people whose asset is used.
+        \item At submission time, remember to anonymize your assets (if applicable). You can either create an anonymized URL or include an anonymized zip file.
+    \end{itemize}
+
+\item {\bf Crowdsourcing and Research with Human Subjects}
+    \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)? 
+    \item[] Answer: \answerNA{}
+    \item[] Justification: The work does not involve crowdsourcing or human subjects.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
+        \item Including this information in the supplemental material is fine, but if the main contribution of the paper involves human subjects, then as much detail as possible should be included in the main paper. 
+        \item According to the NeurIPS Code of Ethics, workers involved in data collection, curation, or other labor should be paid at least the minimum wage in the country of the data collector. 
+    \end{itemize}
+
+\item {\bf Institutional Review Board (IRB) Approvals or Equivalent for Research with Human Subjects}
+    \item[] Question: Does the paper describe potential risks incurred by study participants, whether such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) approvals (or an equivalent approval/review based on the requirements of your country or institution) were obtained?
+    \item[] Answer: \answerNA{}
+    \item[] Justification: The research does not involve human subjects, so IRB approval is not applicable.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
+        \item Depending on the country in which research is conducted, IRB approval (or equivalent) may be required for any human subjects research. If you obtained IRB approval, you should clearly state this in the paper. 
+        \item We recognize that the procedures for this may vary significantly between institutions and locations, and we expect authors to adhere to the NeurIPS Code of Ethics and the guidelines for their institution. 
+        \item For initial submissions, do not include any information that would break anonymity (if applicable), such as the institution conducting the review.
+    \end{itemize}
 
 \end{enumerate}
 
-
-We say that the margin is \emph{exact} when at least one of these distance inequalities is reached, and that it is \emph{optimal} when no other tropical hyperplane can separate our points with a better margin. Notably, here, multiclass optimality only requires maximizing the minimum of the distances $d(S^\ell, x^k)$.
-
-
-In Figure \ref{fig:MaxMargin}, we separate two classes
-of $3$-dimensional points from a toy tropical dataset using a tropical
-hyperplane. The two lower sectors are assigned to one class, the upper sector corresponds to the other class. Its margin is maximal and is represented in pale yellow. The figure is represented in the projective space $\mathbb{P}\left(\mathbb{R}_{\text{max}}^{3}\right)$,
-i.e. the quotient of the set of non-identically $-\infty$ vectors
-of $\mathbb{R}_{\text{max}}^{3}$ by the equivalence relation which
-identifies tropically proportional values.
-
-Since our separator is translation-invariant by the constant vector, in order to separate any $d$-dimensional dataset, we plunge it into the $d$ dimensional subspace $\mathbb{R}_{\max}^{d+1}$ defined by equation $x_1+\cdots+x_{d+1}=0$. This amounts to artificially adding a new coordinate to each point, equal to the opposite of the sum of the initial coordinates. In the rare case where we are dealing with an intrinsically tropical dataset, for which this translation invariance makes sense, it is better to apply the tropical classifier on the initial features.
-
-\begin{figure}[hbtp]
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-    \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/bintoy-separated_1.pgf}}
-}
-        \caption{Maximum-margin tropical hyperplane}
-        \label{fig:MaxMargin}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/moon_3.pgf}}
-        }
-        \caption{Moons dataset from Scikit-learn}
-        \label{fig:moon}
-    \end{subfigure}
-
-    \bigskip
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/circular_3.pgf}}
-        }
-        \caption{Circles dataset, cubic}
-        \label{fig:circular}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/toy-reverse_3.pgf}}
-        }
-        \caption{Toy multiclass dataset, cubic}
-        \label{fig:toy_reverse}
-    \end{subfigure}
-    
-    \caption{Tropical piecewise linear classifiers}
-    \label{fig:plots}
-\end{figure}
-
-\subsection*{Contribution}
-
-We formulate the tropical classification problem as a mean-payoff game. We apply a Krasnoselskii-Mann iteration scheme to derive an $\varepsilon$-approximation of the tropical classifier in pseudo-polynomial time, and we develop geometric guarantees, e.g. on the optimality of the margin in the separable case. Finally, we propose a feature map for fitting tropical polynomials while retaining margin information. Thanks to their evaluation speed and their piecewise linear hypersurfaces, we enable more complex classification tasks. Figure \ref{fig:plots} shows how our classifiers look like for 3D data. Our algorithm is implemented in \emph{Python} in the following repository: \url{https://gitlab.inria.fr/tropical/tropical-svm}. 
-
-\section{Shapley operators and mean-payoff games}
-
-In this section, we have a finite set of points $X=(x_{1},\ldots,x_{p})\in\mathbb{R}_{\text{max}}^{d\times p}$.
-We define the \emph{tropical span} of $X$ as the set of tropical
-linear combinations of these points:
-\[
-\text{Span}(X)\coloneqq\left\{\max_{1\le i\le p}(x_{i}+\lambda_{i}),\quad\lambda\in\mathbb{R}^{p}\right\}.
-\]
-As this is also the smallest tropically convex set containing these
-points, separating several point clouds amounts to separating their
-tropical spans. Given a tropically convex, compact and nonempty subset $\mathcal{V}$
-of $\mathbb{R}_{\max}^{d}$, we define the projection of
-$x$ in $\mathbb{R}_{\max}^{d}$ by:
-\[
-P_{\mathcal{V}}(x)\coloneqq\max\{y\in \mathcal{V},\quad y\le x\}.
-\]
-When $\mathcal{V}$ is the tropical span of $X$, we will also note
-this projection as $P_{X}$. Tropical projections
-can be expressed as a mean-payoff game: for $i\in\{1,\ldots, p\}$ and $x$ in $\mathbb{R}_{\max}^{d}$,   \cite{Maclagan2015}
-\begin{equation*}
-P_{X}(x)_{i}=\max_{1\le j\le p}\left\{X_{ij}+\min_{1\le k \le d}(-X_{kj}+x_{k})\right\}.
-\end{equation*}
-
-Here, we recognize the payoff of a zero-sum deterministic game with perfect
-information. There are two players, ``Max'' and ``Min'' (the maximizer
-and the minimizer), who alternate their actions. Starting on node
-$i$, Player Max chooses to move to node $j$, and receives $X_{ij}$
-from Player Min. Similarily, Player Min in turn chooses a node $k$
-and has to pay $-X_{kj}$ to Player Max.
-
-We now recall some tools from Perron-Frobenius theory, related to mean-payoff games. We refer the reader to \cite{AKIAN2012} for more
-information.
-
-We call \emph{Shapley operator} a map $T:\mathbb{R}_{\max}^{d}\rightarrow\mathbb{R}_{\max}^{d}$
-that is \emph{order-preserving} and \emph{additively homogenous}, i.e. $T(\alpha+x)=\alpha+T(x)$
-for all $\alpha$ in $\mathbb{R}_{\max}$ and $x$ in $\mathbb{R}_{\max}^{d}$. $T$ is said to be \emph{diagonal free} when $T_{i}(x)$
-is independent of $x_{i}$ for all $i$ in $\{1,\ldots, n\}$, i.e. when for all $x$, $y$ in $\mathbb{R}_{\max}$ which coincide on all coordinates except the $i$-th, we have $T_{i}(x)=T_{i}(y)$. 
-
-Tropical projections are Shapley operators. Given a Shapley operator $T$, we also define
-\[
-\mathcal{S}(T)\coloneqq\left\{x\in\mathbb{R}_{\max}^{d},\quad x\le T(x)\right\}.
-\]
-More specifically, any tropically convex set $\mathcal{V}$ is equal
-to $\mathcal{S}(P_{\mathcal{V}})$. Indeed, as for any vector $x$ in $\mathbb{R}_{\text{max}}^{d}$,
-$P_{\mathcal{V}}(x)\le x$, having $x$ in $\mathcal{S}(P_{\mathcal{V}})$
-implies $x=P_{\mathcal{V}}(x)$, meaning $x$ is in
-$\mathcal{V}$.
-
-
-The \emph{spectral radius} of $T$
-is, by definition: \cite{Allamigeon2018}
-\[
-\rho(T)\coloneqq\sup\left\{\lambda\in\mathbb{R}_{\max},\quad\exists u\in\mathbb{R}_{\max}^{d}\backslash\{\perp\},\quad T(u)=\lambda+u\right\}.
-\]
-
-$\rho(T)$ is also equal to the \emph{upper Collatz–Wielandt number} of $T$: \cite{Allamigeon2018}
-\begin{equation}\label{eq:Collatz}
-\rho(T) = \inf \left \{m\in \mathbb{R}, \quad\exists u\in\mathbb{R}_{\max}^{d}\backslash\{\perp\},\quad T(u) \le m + u \right \}.
-\end{equation}
-
-
-Operator $P$ can be slightly tweaked to make it \emph{diagonal-free} -- but the resulting operator is not a projector anymore.
-In the modified game, the opponent is prevented from replying eye-for-an-eye:
-\[
-\left[P^{\text{DF}}_X(x)\right]_{i}\coloneqq\max_{1\le j\le p}\left\{ X_{ij}+\min_{k\ne i}(-X_{kj}+x_{k})\right\} .
-\]
-
-Noticeably, $\mathcal{S}(P_X^\text{DF}) = \mathcal{S}(P_X)$. $P$ and $P^\text{DF}$ can be evaluated in time $\mathcal{O}(dp)$ as they involve computing the two greatest values of $(-X_{kj}+x_k)_{1 \le k \le d}$ for $j$ in $\{1,\ldots, p\}$.
-
-To conclude, the point clouds we seek to separate are represented by the tropical projection or its diagonal-free counterpart.
-
-
-\section{Binary Tropical Support Vector Machines}
-
-\subsection{Hard-Margin classifier}
-In this section, we introduce a practical criterion for the existence of a separating tropical hyperplane, and if it exists, we construct one with optimal margin. We also place ourselves in the binary setting, where we seek to separate two convex hulls $\mathcal{V}^{+}$
-and $\mathcal{V}^{-}$. We assume we have two Shapley operators $T^{+}$
-and $T^{-}$ such that $\mathcal{S}(T^{\pm})=\mathcal{V}^{\pm}$,
-which is for instance the case when separating finite point clouds:
-corresponding operators are projections $P_{\mathcal{V}^{\pm}}$. We define:
-\[
-T=\min(T^{+},T^{-}),
-\]
-which is also a Shapley operator. We denote by $\perp$ the vector of $\mathbb{R}_{\max}^{d}$
-identically equal to $-\infty$. 
-    
-Note that $\mathcal{S}(T)$ is equal to the intersection of $\mathcal{S}(T^{+})$ and $\mathcal{S}(T^{-})$, the convex hulls we are seeking to separate.
-From \cite{Allamigeon2018}, we know that $\mathcal{V}^{+}$
-and $\mathcal{V^{-}}$ being disjoint is equivalent to $\rho(T)<0$.
-
-Given $a$ the eigenvector corresponding to $\rho(T)$, we define the sectors:
-\[
-I^{\pm}\coloneqq\left\{i\in\{1,\ldots, d\},\quad T^{\pm}(a)_{i}>\rho(T)+a_{i}\right\},
-\]
-and the corresponding configuration $\sigma\coloneqq\{I^{+},I^{-}\}$.
-
-We first state the following result, which will be demonstrated in the multiclass case in Lemma \ref{lemma:LinkSepShapleyMulti}:
-
-\begin{lem}
-\label{lemma:LinkSepShapleyBinary}
-    If a tropical hyperplane of apex $\alpha$ separates our two data point clouds with a margin of at least $-\mu > 0,$ then $T(\alpha) \le \alpha  + \mu$.
-\end{lem}
-
-We now characterize the maximal margin separating hyperplane using $T$:
-
-\begin{prop} \label{prop:BinaryHardMargin}
-The tropical hyperplane of apex $a$ and configuration $\sigma$, given the sectors defined
-above, separates $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$ with a
-margin of at least $-\rho(T)$, if and only if $\rho(T) < 0$. Moreover, this margin is \emph{optimal} among all  tropical hyperplanes when  separating finite point clouds.
-\end{prop}
-
-\begin{proof}
-For instance, let $i\notin I^{+}$. As $T^{+}$ is non-expansive, for $v^{+}\in \mathcal{V}^{+}$:
-\[
-v_{i}^{+}\le T^{+}(v^{+})_{i}=\left(T^{+}(v^{+})-T^{+}(a)\right)_{i}+T^{+}(a)_{i},
-\]
-hence 
-\begin{equation*}
-v_{i}^{+}\le\max(v^{+}-a)+T^{+}(a)_{i}.
-\end{equation*}
-
-As $i\notin I^+$, $T^{+}(a)_{i}\le \rho(T)+a_{i}$,
-and
-\[
-v_{i}^{+}-a_{i}\le\max(v^{+}-a)+\rho(T).
-\]
-In particular, $v_{i}^{+}-a_{i}<\max(v^{+}-a)$ and any element of
-$\mathcal{V}^{+}$ belongs to a sector of $I^+$ with
-respect to $\mathcal{H}_{a}$, from which the sectors are well-defined.
-Finally, 
-\[
-d_H(\mathcal{S}^-,v^{+})=\max(v^{+}-a)-\max(v^{+}-a)_{I^{-}}\ge-\rho(T),
-\]
-(and the same results hold for the distance to $S^0$), hence the margin is at least $-\rho(T)$ (which is always positive in the separable case, as shown in \cite{Allamigeon2018}, making our sufficient condition for separability also necessary).
-
-Moreover, when $T^{\pm}$
-are tropical projections, for  $i\in I^{-}$, we can
-find $x^+\in X^{+}$ such that  $x^+_{i}-\max(v-a) = T^{+}(a)_{i},$ giving us 
-$x^+_{i}-a_{i}-\max(x^+-a)=\rho(T).$ Maximizing over all $i\in I^{-}$ gives that $x^+$ is at distance $-\rho(T)$ of $\mathcal{S}^-$, hence the margin.
-
-Finally, combining Equation \ref{eq:Collatz} and Lemma \ref{lemma:LinkSepShapleyBinary}, $-\rho(T)$ is the optimal margin in the binary setting.
-\end{proof}
-
-\begin{rem}\label{rem:UnreachedSectors}
-To save on calculations, especially in large dimensions, we do not evaluate the coordinates associated with unassigned sectors $I^0$.
-
-We can also prove similarly to above that if $i$ is a positive sector, there is a witness point $x$ from positive class at distance at most $-\rho(T)$ from sector $i$. In a context of learning, this shows that excluding sectors of $I^\pm$ that do not contain training data points can be unsafe as we have no guarantee that no testing points can fall into such sectors, or that a noise, even smaller than $-\rho(T)$, might move points there. By contrast, we do have the guarantee that excluding sectors $i$ that do not belong to $I^+$ or $I^-$ is safe, as no training data point lies at distance less than $-\rho(T)$ from such sectors.
-
-
-Ignoring some sectors in our classifier is equivalent to setting corresponding apex coordinates to $+\infty$, which only increases the margin. For example, for $x^+\in X^+$, and $i$ a sector not assigned to the positive class, $$d_H(\mathcal{S}^i, x^+)=\max(x^+-a) - (x^+_i - a_i)$$ is an increasing quantity in $a_i$, as the $\max$ is not reached in the $i$ coordinate. 
-Lastly, this also applies to the multiclass case presented in Section \ref{section:MultiClass}.
-\end{rem}
-
-
-
-%Let $x\in X^+$. If we note $I^+$ and $I^-$ the sectors defined by $H_{\alpha}$, then, by definition, 
-%    $\text{argmax} \left ( x-\alpha \right )\in I^+$ and for any $i\in I^-,$ $d_H(S^i,x) = \max (x-\alpha) - (x-\alpha)_i \ge - \mu,$ which can be rewritten as $x_i - \max(x-\alpha) \le \alpha_i + \mu$. Maximizing over all $x\in X^+$ then yields $T^+(\alpha)_i \le \alpha_i + \mu.$ We conclude by symmetry and according to  Remark \ref{rem:UnreachedSectors} that $T(\alpha)\le \alpha + \mu.$
-
-%
-To build a practical algorithm, we still need to compute the spectral
-radius of $T$ and its corresponding eigenvector. As it amounts to solving mean-payoff games, we can apply the Krasnoselskii-Mann iteration scheme described in Algorithm \ref{RVI}.
-\begin{algorithm}[h!]
-\caption{Krasnoselskii-Mann iteration scheme for finding Shapley eigenpairs}\label{RVI}
-\begin{algorithmic}[1]
-  \State \Input: A Shapley operator $T$ and a relative convergence criterion $\eta>0$.
-\State $ x \coloneqq  \mathbf{1}_d \in \mathbb{R}_{\max}^d $
-%
-\Repeat \State $z \coloneqq  \left(x + T(x)\right)/2$
-\State $x \coloneqq z - \max(z)\cdot\textbf{1}_d$
-%
-\Until { relative change of $x$ is lower than $\eta$ }
-\State $a \coloneqq  x-\overline{x}; \, \lambda \coloneqq 2 \max(z)$\\
-
-\Return $(a, \lambda)$
-\end{algorithmic}
-\end{algorithm}
-
-\todo{quote a reference \& talk about efficiency}
-
-\subsection{Geometric approach for soft-margin SVM}
-
-We seek to classify convex hulls $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$.
-Assuming that the data overlap, we want to have a sense of their
-non-separability. Using the operator $T$ we previously defined,  $\rho(T)$ is the
-(positive) inner radius of $\mathcal{S}(T)$, i.e. the supremum of
-the radii of the Hilbert balls contained in the intersection between
-$\mathcal{V}^{+}$ and $\mathcal{V}^{-}$, as shown by Allamigeon et al. (2018) \cite{Allamigeon2018} and as seen in Figure \ref{fig:softmargin_ex}.
-
-\begin{figure}[!h]
-    \centering
-    \begin{subfigure}{0.5\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.2\width{} 0.2\height{} 0.2\width{} 0.2\height{}}{\input{figures/non_separable_case.pgf}}
-        }
-    \end{subfigure}
-    
-    \caption{The spectral radius is the inner radius of the intersection between tropical spans}
-    \label{fig:softmargin_ex}
-\end{figure}
-
-The next Proposition shows
-us that this measure can be interpreted geometrically, in the case
-where $\mathcal{V}^{+}$ and $\mathcal{V}^{-}$ are generated by point
-clouds $X^{+}$ and $X^{-}$:
-\begin{prop}\label{prop:BinarySoftMargin}
-By moving some points from $X^{+}$ and $X^{-}$ by a distance of
-at most $\rho(T)$, we can nullify the interior of the intersection
-of the tropical spans.
-
-More specifically, we note $a\in\mathbb{R}_{\max}^{d}$ the eigenvector
-corresponding to $\rho(T)$, and $\mathcal{H}_a$ the (unparameterized) tropical hyperplane as defined by equation \ref{eq:unsigned}. We project all points of $X^{+}$ and
-$X^{-}$ whose distance to $\mathcal{H}_{a}$ is less than $\rho(T)$,
-onto $\mathcal{H}_{a}$. Then the intersection of new convex hulls
-is of empty interior.
-\end{prop}
-
-\begin{proof}
-The distance between any point $x$ in $\mathbb{R}_{\max}^d$ and the tropical hyperplane of apex $a$ is:
-\[ d_H(x, \mathcal{H}_a) \coloneqq \max(x-a) - \text{max}_2 (x-a), \]
-where $\max_2$ stands for the second maximal value of any vector.
-
-Considering $X$ the cloud consisting of all points (regardless of
-sign), and for $x_{j}\in X$, we note $s_{j}$
-its sector and $d_{j}$ the second argmax of $(x_{j}-a)$. For each
-point $x_{j}=X_{\cdot j}\in X$ at distance less than $\rho(T)$ of
-$\mathcal{H}_{a}$, the transformation described above consists in setting 
-\[
-W_{kj}\coloneqq\begin{cases}
-X_{kj} & \text{if \ensuremath{k\ne s_{j}}}\\
-X_{s_{j}j}-d_H(x_{j},\mathcal{H}_{a}) & \text{at \ensuremath{s_{j}}}
-\end{cases}
-\]
-so that $w_{j}$ is projected on the hyperplane. As $T^{\pm}$ is
-non-expansive and diagonal-free, Let us remark that for $x^{\pm}\in V^{\pm}$:
-\[
-x_{i}^{\pm}\le T^{\pm}(x^{\pm})_{i}=\left(T^{\pm}(x^{\pm})-T^{\pm}(a)\right)_{i}+T^{\pm}(a)_{i},
-\]
-hence
-\begin{equation}
-\label{eq31}
-x_{i}^{\pm}\le\max(x^{\pm}-a)_{\ne i}+T^{\pm}(a)_{i}. 
-\end{equation}
-Let $1\le i\le d$. If $x_{j}\in X$ is not in the $i$-th sector, then
-for $k$ different from the sector of $x_{j}$, by definition: 
-\[
-(w_{j}-a)_{k}\le(x_{j}-a)_{d_{j}}\le(w_{j}-a)_{s_{j}},
-\]
-hence 
-\[
-W_{ij}-\max_{k\ne i}\left(W_{kj}-a_{k}\right)\le a_{i}.
-\]
-Otherwise, $x_{j}$ is in the $i$-th sector and: 
-\[
-\max_{k\ne i}\left(W_{kj}-a_{k}\right)=X_{d_{j}j}-a_{d_{j}},
-\]
-thus 
-\[
-W_{ij}-\max_{\ne i}\left(w_{j}-a\right)=\left(w_{j}-a\right)_{s_{j}}-\left(x_{j}-a\right)_{d_{j}}+a_{s_{j}}\ge a_{s_{j}}=a_{i},
-\]
-with equality iff $d_H(x_{j},\mathcal{H}_{a})\leq\rho(T)$.
-
-Suppose by symmetry that $T(a)_{i}=T^{+}(a)_{i}=\rho(T)+a_{i}.$ We
-also have $T^{-}(a)_{i}\ge\rho(T)+a_{i}$. Then, using the proof of
-Theorem 22 in \cite{Akian2021TropicalLR}, we know that there is
-$j^{+}$, $j^{-}$ in $\{1,\ldots, p\}$ such that $x_{j^{+}}\in X^{+}$ and $x_{j^{-}}\in X^{-}$
-are in sector $i$, with $x_{j^{+}}$ being at distance $\rho(T)$
-from $\mathcal{H}_{a}$ and $x_{j^{-}}$ at distance greater than $\rho(T)$.
-Therefore, $W_{ij^{+}}-\max_{\ne i}\left(w_{j^{+}}-a\right)=a_{i}$
-and $W_{ij^{-}}-\max_{\ne i}\left(w_{j^{-}}-a\right)\geq a_{i}$.
-Moreover, for any $j$ such that $x_{j}\in X^{+}$ is in sector $i$,
-equation \ref{eq31} gives $d_H(x_{j},\mathcal{H}_{a})\leq\rho(T)$.
-
-Let $Q^{\pm}$ be the \emph{diagonal-free} projections over transformed
-point clouds, and $Q=\inf(Q^{+}, Q^{-}).$ We have just shown that $Q(a)_{i}=Q^{+}(a)_{i}=a_{i}$,
-and finally $Q(a)=a$.
-\end{proof}
-%
-Thus, the spectral radius can be interpreted as a bound on the distance
-under which some points have to be moved to separate the interiors of convex hulls.
-
-As $a$ is the center of the inner ball of $\mathcal{V}^{+}\cap\mathcal{V}^{-}$,
-we also have a purely geometric heuristic for determining a
-hyperplane in the non-separable case: we simply take the hyperplane
-$\mathcal{H}$ of apex $a$ and then assign the sectors based on dominant
-population, for instance.
-
-
-\section{Multiclass classification}\label{section:MultiClass}
-
-In this section, we consider convex hulls of $n$
-point classes, noted $(\mathcal{V}^{k})_{1\le k\le n}$ and described by Shapley operators
-$T^{k}$. We give a necessary and sufficient condition for these classes to be tropically separable. We then characterize the margin as another spectral radius in this case.
-
-We now consider the Shapley operator
-\[
-T\coloneqq\max_{1\le k<l\le n}\min(T^{k}, T^{l}),
-\]
-
-which can be rewritten, for any $x$ in $\mathbb{R}_{\max}^d$ and $i$ in $\{1,\ldots, d\}$:
-\begin{equation}\label{eq:Max2Form}
-T(x)_i\coloneqq\text{max}_2\, \{T^k(x)_i, \,\, 1\le k\le n\}.
-\end{equation}
-
-
-Morally, we can think of $\mathcal{S}(T)$ as the union of pairwise intersections of data classes, although the max operator does not strictly speaking correspond to a union. We also remark that when $n=2$, $T$ is the same as previously
-defined.
-
-Let $(a,\rho(T))$ be the eigenpair of $T$ approximated by the Kranoselskii-Mann
-algorithm, verifying $T(a)=\rho(T)+a$. We define the sectors:
-\begin{equation}
-I^{k}\coloneqq\{1\le i\le d,\quad T^{k}(a)_{i}>\rho(T)+a_{i}\}.\label{eq:SectorAssign}
-\end{equation}
-
-Given the definition of $T$, it is clear that these sets are disjoint. As in the binary case, $T$ is linked with separating tropical hyperplanes by the following result: 
-
-\begin{lem}
-\label{lemma:LinkSepShapleyMulti}
-    If a tropical hyperplane of apex $\alpha$ separates our finite point clouds with a margin of at least $-\mu > 0,$ then $T(\alpha) \le \alpha  + \mu$.
-\end{lem}
-
-\begin{proof}
-    We consider two different classes $k$ and $\ell$ in $\{1,\ldots, n\}$, and the sectors $\sigma' \coloneqq \{I'^j\}_{1\le j\le n}$ defined by $H_{\alpha}$. Then, by definition, for $x\in X^k$, $(x-\alpha)$ reaches its maximum coordinate in $I'^k$ and for any $i$ in $I'^{\ell},$ 
-    $d_H(S^i,x) \ge - \mu,$ which can be rewritten as $x_i - \max(x-\alpha) \le \alpha_i + \mu.$ Maximizing over all $x$ in $X^k$ then yields $T^k(\alpha)_i \le \alpha_i + \mu.$ As this holds for all $k\ne \ell$ at least, we have $T(\alpha)_i \le \alpha_i + \mu,$ (which also holds for $\ell =0$, i.e when we consider unassigned sectors) we conclude that $T(\alpha)\le \alpha + \mu.$
-\end{proof}
-
-\begin{prop}\label{prop:MultiClass}
-The tropical parameterized hyperplane of apex $a$ and configuration $\sigma$,
-given the configuration $\sigma=\{I^{k}\}_{1\le k\le n}$, separates all point clouds with a margin of at least $-\rho(T)$, if and only if $\rho(T) < 0$.
-Moreover, this margin is optimal among all tropical hyperplanes.
-
-%Moreover, this margin is reached somewhere in the case where all $T^{k}$ are
-%of the form
-%\[
-%T^{k}(x)=P_{\mathcal{V}^{k}}(x)=\sup_{v\in \mathcal{V}^{k}}\left(v_{i}+\min(-v+x)\right),
-%\]
-% which is in particular the case when separating finite point clouds. 
-\end{prop}
-
-\begin{proof}
-We consider class $k\in\{1,\ldots, n\}$ and sector $\mathcal{S}^\ell$ with $\ell \ne k$. For $j \in I^{\ell}$, we have $T^{k}(a)_i\le a_i + \rho(T)$ and therefore can use the same reasoning
-as in the proof of Proposition \ref{prop:BinaryHardMargin} to obtain that for all $v^{k}$ in $\mathcal{V}^{k}$,
-\[
-d_H(\mathcal{S}^\ell,v^{k})=\max(v^{k}-a)-\max_{j\in I^{\ell}}(v^{k}-a)_j\ge-\rho(T),
-\]
-and $v^k$ cannot belong to sector $\mathcal{S}^\ell$, from which, as again, the sectors are well-defined.
-\end{proof}
-
-%In practice, our method tends to maximize the minimum distance among all $d(\mathcal{S}^k, x^\ell)$ for $k\ne \ell$ and $x^\ell$ of class $\ell$. For example, if two classes are very close, and the third is far away, the method will not bother separating the latter from the others as much as possible.
-
-%But do not assume that the margin is reached, even between two classes. Indeed, let $i\in\{1,\ldots, d\}$. As $T(a)=\rho(T)+a$, 
-%when each $T^j$ is a tropical projection, noting $k$ and $\ell$ respectively the second argmax and argmax of the family $\left(T^{j}(a)_{i}\right)_{1\le j\le n}$, Equation \ref{eq:Max2Form} gives
-%$T^{k}(a)_{i} =\lambda+a_{i}$ and $T^{\ell}(a)_{i} >\lambda+a_{i}$, meaning $i\in \mathcal{I}^{\ell}$. When separating finite point clouds, adapting the ideas of Proposition \ref{prop:BinaryHardMargin}, we can find $x^k$ in $X^k$ such that $\max(x^{k}-a)-(x_{i}^{k}-a_{i})\le-\rho(T)$, which means that $d_H\left(\mathcal{V}^{k}, \mathcal{S}^\ell \right) = -\rho(T).$
-
-%So, for every sector (assigned to a certain class), there's a point of a class not assigned to that sector within margin distance. In general, nothing says that this situation will be symmetrical between 2 classes in particular, which would achieve the margin between them. In simple, general cases, more complex relationships can be observed.
-
-Since this method optimizes the worst margin, it works best on previously balanced data. If necessary, it is still possible to use the binary setting of the previous section with one-vs-all approaches, in order to maximize all margins 2 by 2.
-
-
-\begin{rem}\label{rem:SectorAssign}
-According to Remark \ref{rem:UnreachedSectors}, we extend the sector assignment policy as follows in the non-separable case. Relative to some apex $a$, the sector corresponding to the maximum coordinate $i$ is assigned to the class with the greatest number of points at distance $\max(0,-\rho(T))$ from it. Unassigned sectors are removed for more sparsity, which preserves the margin in the separable case.
-\end{rem}
-
-
-\subsection*{Conclusion}
-
-We therefore introduce Algorithm \ref{algo:Final} to solve the tropical linear classification problem.
-
-\begin{algorithm}[h!]
-\caption{Determining tropical linear classifiers by solving mean-payoff games}
-\label{algo:Final}
-\begin{algorithmic}[1]
-  \State \Input: Data classes $X^1,\ldots, X^n$ corresponding to labels $1, \ldots, n$, and a relative convergence criterion $\eta$ for the iteration scheme.
-\State $T\coloneqq\max_2 \left(T^k\right)_{1\le k \le n}$
-\State $(a,\lambda) \coloneqq \textsc{Krasnoselskii-Mann}(T, \eta)$ \label{step:3}
-\State \textbf{assign} sectors $\sigma$ to classes based on Remark \ref{rem:SectorAssign}\\
-\Return classifier $H_a^\sigma$ and margin $\max(0, -\lambda)$
-\end{algorithmic}
-\end{algorithm}
-
-In the separable case, we have margin optimality. In the non-separable case, by Proposition \ref{prop:BinarySoftMargin}, the overlap zone is contained around the (non-parameterized) hyperplane $H_a$ in a tubular envelope of radius $\lambda$, the (positive) eigenvalue approximated by the algorithm.
-
-Let us analyze the complexity of Algorithm \ref{algo:Final}. Step \ref{step:3} typically involves a few dozen iterations, in which $n$ tropical projections have to be calculated each time, for a total cost in $\mathcal{O}(dp)$, where $p$ is the total number of points in the dataset. We therefore have a pseudo-polynomial algorithm for calculating an $\varepsilon$-approximation of the classifier described above.
-
-This gain in efficiency is achieved at the cost that tropical SVMs are ultimately very sensitive to outliers, which count as much as any point in the margin calculation.
-
-\subsection*{Why not tropicalizing classical SVMs?}
-
-Tropical hyperplanes can be obtained as the limit of classical hyperplanes seen on log-log paper, thanks to what we call \emph{Maslov dequantization} \cite{litvinov2005maslov} or Viro's method \cite{viro2000dequantization}. A natural way of doing Tropical SVM is therefore to take our data to the power $\beta > 0$, apply a classical SVM (which would maximize the margin in the new space), then go back to the logarithm. As $\beta$ tends towards infinity, we are approaching some limiting tropical hyperplane. However, this method is a source of significant numerical error, especially when $\beta$ is large. Moreover, it does not guarantee a good margin in the starting space, as illustrated in Figure \ref{fig:LogLog}, where the hypersurface in yellow tends towards the suboptimal tropical one in red.
-
-\begin{figure}[!h]
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/log-log.pgf}}}
-    \end{subfigure}
-
-    \caption{Tropicalized hyperplane tends towards a suboptimal tropical hyperplane}
-    \label{fig:LogLog}
-\end{figure}
-
-
-\section{Tropical Polynomials as Piecewise Linear Classifiers}
-
-In this section, we extend our previous approach to piecewise linear
-fitting, using tropical polynomials. 
-
-A \emph{tropical polynomial} \emph{function} over $\mathbb{R}_{\max}^{d}$
-is defined by
-\[
-f(x)=\bigoplus_{\alpha\in\mathbb{Z}^{d}}f_{\alpha}x^{\alpha}=\max_{\alpha\in\mathbb{Z}^{d}}\left(f_{\alpha}+\langle x,\alpha\rangle\right),
-\]
-where $f_{\alpha}=-\infty$ except for finitely many values of $\alpha$,
-and with $\langle x,\alpha\rangle=\sum_{i}x_{i}\cdot\alpha_{i}$ under
-the convention $(-\infty)\cdot0=0$. The \emph{tropical hypersurface} associated with $f$ is the set of points from
-$\mathbb{R}_{\max}^{d}$ where the maximum in $f$ is attained twice.
-Tropical hypersurfaces are piecewise linear and divide $\mathbb{R}_{\max}^{d}$
-between sectors corresponding to the maximal monomial: they can perform
-more complex classification.
-
-If $\mathcal{A}\subset\mathbb{Z}^{d}$ is a set of vectors, we define
-the \emph{Veronese embedding} of $x$ as:
-\[
-\text{ver}_{\mathcal{A}}(x)\coloneqq\left(\langle x,\alpha\rangle\right)_{\alpha\in\mathcal{A}}\in\mathbb{R}_{\max}^{\mathcal{A}},
-\]
-allowing us to map our point space into a larger space, made up of
-various integer combinations of features. To take a fairly exhaustive
-subset of monomials, we consider the integer combinations defined
-by the integer points of the dilated simplex. Noting $s\in\mathbb{N}^{*}$
-a scale parameter, we define
-\[
-\mathcal{A}_{s}\coloneqq\left\{x\in\mathbb{N}^{d},\quad x_{1}+\cdots+x_{d}=s\right\},
-\]
-which grows polynomially with $s$. Note that we choose homogeneous monomials to preserve the translation invariance property in the base space. The Veronese embedding defined
-by $\mathcal{A}_{s}$ is invertible and if $\mathcal{H}_a$ is a tropical
-hyperplane of apex $a$ in $\mathbb{R}_{\max}^{\mathcal{A}}$, $\text{ver}_{\mathcal{A}_{s}}^{-1}(\mathcal{H}_a)$
-is a tropical polynomial hypersurface in the initial space, corresponding to the polynomial
-\[ f_{-a, \mathcal{A}_s}(x)=\bigoplus_{\alpha\in \mathcal{A}_s} (-a_\alpha)x^\alpha \]
-Hence, $\text{ver}_{\mathcal{A}_{s}}$ is a feature map
-enabling us to perform piecewise linear classification in $\mathbb{R}_{\max}^{d}$. This brings us close to the framework of neural networks with piecewise linear activations, e.g. relaxed linear units \cite{zhang2018tropical}. $\mathcal{A}_1$ corresponds to tropical hyperplanes: we are generalizing the approach previously developed.
-
-The initial metric can be easily linked to the metric in the augmented space: for $x\in\mathbb{R}_{\max}^d$, noting $V$ the (injective) Veronese embedding, we have
-\[
-\lVert (V^TV)^{-1} V^T \rVert_{\text{op},\infty}^{-1} \le \frac{\lVert\text{ver}(x)\rVert_{H,\mathbb{R}^{\mathcal{A}_s}_{\max}}}{\lVert x\rVert_{H,\mathbb{R}_{\max}^d}} \le \lVert V \rVert_{\text{op},\infty},
-\]
-
-which gives, using $\mathcal{A}_s$, according to Appendix \ref{appendix:NormEquivalence}:
-\[
-\left[\frac{d}{s+d}+\frac{sd^{2}}{(s+d)^{2}}\right]^{-1} \le \frac{\lVert\text{ver}(x)\rVert_{H,\mathbb{R}^{\mathcal{A}_s}_{\max}}}{\lVert x\rVert_{H,\mathbb{R}_{\max}^d}} \le s.
-\]
-
-We deduce the following result:
-\begin{prop}
-Noting $(a, \rho(T))$ the eigenpair of $T$ applied to new point clouds in $\mathbb{R}_{\max}^\mathcal{A}$, data is separable in the initial space by the tropical hypersurface of $f_{-a,\mathcal{A}}$ with a margin of at least $-\rho(T)/\lVert V \rVert_{\text{op},\infty}$, if and only if $\rho(T) < 0$.
-\end{prop}
-
-In Figures \ref{fig:moon}, \ref{fig:circular} and \ref{fig:toy_reverse}, we visualize the decision boundaries of the piecewise linear classifier using monomials from $\mathcal{A}_3$. Dotted lines in light gray indicate merged sectors after assignment, and margin lower estimation is represented by the Hilbert balls around each point. These methods obviously work in higher dimensions, but we can only visualize them in lower ones.
-
-\subsection*{Complexity analysis}
-
-The learning speed depends essentially on the dimension of the feature space, i.e. the starting dimension and the number of monomials considered. Although our iteration scheme is efficient, given that $$|\mathcal{A}^s| = \binom{s+d-1}{s},$$ the complexity grows very quickly, opening the way to feature selection questions for directly learning \emph{sparse} polynomials.
-
-On the other hand, when the tropical polynomial is trained, since only active monomials are kept, inference is in $\mathcal{O}(rd)$ only, where $r$ is the number of monomials kept. $r$ is always lower than the number of data points, and it is equal to it when every sector contains exactly one point.
-
-\subsection*{Feature selection}
-
-A heuristic for adaptive monomial choice might be to sample pairs of points of different classes, and make perpendicular slopes admissible. In many cases, this gives better results (and even better margins), as we can see in Figure \ref{fig:featureeng}, in which we allow for homogeneous positive real monomials. Here, points are sampled randomly, but we may perform better by choosing a more representative sample, with points relatively distant from each other, for example.
-
-\begin{figure}[hbtp]
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/circular_3.pgf}}}
-        \caption{Using $\mathcal{A}_3$}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.1(\height{}}{\input{figures/circular_3_feature_eng.pgf}}}
-        
-        \caption{Sampling $10$ points from each class}
-    \end{subfigure}
-    
-    \bigskip
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/moon_3.pgf}}}
-        \caption{Using $\mathcal{A}_3$}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \centering
-        \resizebox{\linewidth}{!}{%
-        \centering
-            \clipbox{0.2\width{} 0.3\height{} 0.2\width{} 0.3\height{}}{\input{figures/moon_10_feature_eng.pgf}}}
-        
-        \caption{Sampling $5$ points from each class}
-    \end{subfigure}
-    \caption{Feature engineering might yield better results}
-    \label{fig:featureeng}
-\end{figure}
-
-\section{Concluding remarks}
-
-We have formulated a pseudo-polynomial algorithm to determine a classifying tropical hyperplane, with geometric guarantees. It would be interesting to conduct further work on monomial selection heuristics, to better separate complex datasets in the real world.
-
-\bigskip
-\bigskip
-\bibliographystyle{unsrt}
-\bibliography{ea}
-\bigskip
-\bigskip
-
-\appendix
-\section{Norm equivalence between Veronese and starting spaces}\label{appendix:NormEquivalence}
-Firstly,
-\begin{align*}
-\lVert\text{ver}(x)\rVert_{H,\mathbb{R}^{\mathcal{A}_s}_{\max}}&=\max_{\alpha\in\mathcal{A}_{s}}\sum_{i}\alpha_{i}x_{i}-\min_{\alpha\in\mathcal{A}^{s}}\sum_{i}\alpha_{i}x_{i}\\&\le s(\max x-\min x)=s\lVert x\rVert_{H,\mathbb{R}_{\max}^d}.
-\end{align*}
-
-In general, using
-\[
-\lVert Y\rVert_{H}=2\inf_{\alpha\in\mathbb{R}}\lVert Y+\alpha e\rVert_{\infty},
-\]
-and denoting $V$ the Veronese (linear) embedding, knowing that
-\[
-\lVert VY\rVert_{\infty}\le \lVert V\rVert_{\text{op},\infty} \, \lVert Y \rVert_\infty,
-\]
-we have the first side.
-
-The other inequality is obtained using the pseudo-inverse of (non-square) $V$.
-
-$V$ is a $\ell_{s,d}\times n$ matrix, where $\ell_{s,d}$ is the
-cardinal of $\mathcal{A}^{s}$, i.e. the number of homogenous polynomials
-of degree $d$ with $n$ variables:
-\[
-\ell_{s,d}=\binom{s+d-1}{d-1}.
-\]
-
-Rows of $V$ are points from the external face of the dilated simplex.
-As the latter is invariant by permutating axes, we have
-\[
-V^{T}V=(V_{\cdot i}^{T}V_{\cdot j})_{ij}=\begin{pmatrix}\alpha+\beta &  & \beta\\
- & \ddots\\
-\beta &  & \alpha+\beta
-\end{pmatrix}=\alpha I_{d\times d}+\beta\mathbf{1}_{d\times d},
-\]
-
-where $\alpha+\beta=\lVert V_{\cdot1}\rVert^{2}$ and $\beta=\langle V_{\cdot1},V_{\cdot2}\rangle$. We find that:
-\[
-\alpha=\binom{s+d}{s-1}\qquad\text{and}\qquad\beta=\binom{s+d-1}{s-2},
-\]
-
-\todo{give a PROOF (combinatorial if possible)}
-
-and as $\mathbf{1}_{d\times d}$ is of rank $1$, $V^{T}V$ is easy
-to invert, and
-\[
-(V^{T}V)^{-1}=\alpha^{-1}\left(I-\beta\alpha^{-1}(1+d\beta\alpha^{-1})^{-1}\mathbf{1}_{d\times d}\right),
-\]
-As $\mathbf{1}_{d\times d}V^{T}=s\mathbf{1}_{d\times\ell_{s,d}}$,
-\[
-M\coloneqq(V^{T}V)^{-1}V^{T}=\alpha^{-1}\left(I-B\mathbf{1}_{d\times\ell_{s,d}}\right),
-\]
-where
-\[
-B=s\cdot\beta\alpha^{-1}(1+d\beta\alpha^{-1})^{-1}=\frac{s-1}{d+1}.
-\]
-is a $d\times\ell_{s,d}$ matrix whose lines are permutations of each
-other. Hence, their $L^{1}$ norms are equal and:
-\[
-\lVert M\rVert_{\text{op,\ensuremath{\infty}}}=\alpha^{-1}\sum_{i=1}^{d}\left|V_{i1}-B\right|=\alpha^{-1}\sum_{k=0}^{s}\ell_{s-k,d-1}\left|k-B\right|.
-\]
-Splitting this sum with respect to the sign of $k-B$ yields, noting
-$b=\lfloor B\rfloor$:
-\begin{align*}
-\lVert M\rVert_{\text{op,\ensuremath{\infty}}} & =\alpha^{-1}\left(\sum_{k=0}^{b}\ell_{s-k,d-1}(B-k)+\sum_{k=b+1}^{s}\ell_{s-k,d-1}(k-B)\right)\\
- & \le\alpha^{-1}\left(\sum_{k=0}^{b}\binom{s-k+d-2}{d-2}B+\sum_{k=b+1}^{s}\binom{s-k+d-2}{d-2}(s-B)\right)
-\end{align*}
-
-Choosing $p+1$ items among $q+1$ ones amounts to first choosing
-the maximum, and then the $n$ remaining elements below it. Hence
-\[
-\sum_{k=p}^{q}\binom{k}{p}=\binom{q+1}{p+1},
-\]
-and 
-\[
-\sum_{b+1\le k\le s}\binom{s-k+d-2}{d-2}=\binom{s-b+d-2}{d-1},
-\]
-and similarly
-\[
-\sum_{0\le k\le b}\binom{s-k+d-2}{d-2}=\ell_{s,d}-\binom{s+d-b-2}{d-1}.
-\]
-Hence
-\[
-\lVert M\rVert_{\text{op},\infty}\le\alpha^{-1}\left[B\ell_{s,d}+(s-2B)\binom{s-b+d-2}{d-1}\right],
-\]
-but
-\[
-B\alpha^{-1}\ell_{s,d}=\frac{(s-1)d}{s(s+d)},\qquad s-2B=\frac{s(d-1)+2}{d+1},
-\]
-and
-\begin{align*}
-\frac{\binom{s-b+d-2}{d-1}}{\binom{s+d}{d+1}} & =d(d+1)\frac{(s-b+d-2)(s-b+d-3)\cdots(s-b)}{(s+d)(s+d-1)\cdots(s+1)s}\\
- & =\frac{d(d+1)}{(s+d-1)(s+d)}\frac{s-b}{s}\frac{s+1-b}{s+1}\cdots\frac{s+d-2-b}{s+d-2}\\
- & \le\frac{d(d+1)}{(s+d-1)(s+d)},
-\end{align*}
-as $b\le s$. Finally, for $s\ge2$:
-\begin{align*}
-\lVert(V^{T}V)^{-1}V^{T}\rVert_{\text{op},\infty} & \le\frac{(s-1)d}{s(s+d)}+\frac{d(s(d-1)+2)}{(s+d-1)(s+d)}\\
- & \le\frac{d}{s+d}+\frac{sd^{2}}{(s+d)^{2}}
-\end{align*}
 
 \end{document}

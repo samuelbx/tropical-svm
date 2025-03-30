@@ -22,8 +22,8 @@ def plot_point(ax, x, length, color, linestyle="-", marker=None, ignored_branch=
 
 def plot_classes(ax, data_classes, L = 0, features=None, show_lines=False) -> float:
   """Plot multiple classes of points (maximum 3 for now) and return plot characteristic size"""
-  colors = ['#FF934F', '#2D3142', '#058ED9', '#cc2d35']
-  markers = ['o', 'v', '+', '*']
+  colors = ['#FF934F', '#2D3142', '#058ED9', '#cc2d35', '#4CAF50', '#9C27B0', '#FFC107', '#00ACC1']
+  markers = ['o', 'v', '+', '*', '.', 'D', 'x', '^']
   linestyles = ['dotted', 'dashed', 'dashdot', 'dotted']
   min_array = np.array([np.inf, np.inf, np.inf])
   max_array = np.array([-np.inf, -np.inf, -np.inf])
@@ -38,7 +38,7 @@ def plot_classes(ax, data_classes, L = 0, features=None, show_lines=False) -> fl
     for col in clas.T:
       min_array = np.minimum(min_array, col - col.mean())
       max_array = np.maximum(max_array, col - col.mean())
-      plot_point(ax, col, L, colors[i], ls, markers[i])
+      plot_point(ax, col, L, colors[i] if i < len(colors) else None, ls, markers[i] if i < len(colors) else None)
     
   # Automatic size for graph
   max_range = np.max(max_array - min_array)
@@ -72,9 +72,54 @@ def init_ax(fig, config: Union[int, list[int]], L: float = 10, mode_3d: bool = F
   return ax
 
 
-def plot_hyperplane_3d(ax, x: np.ndarray, margin: float, L: int, sector_indicator: np.ndarray = None) -> None:
+def plot_hyperplane_3d(ax, x: np.ndarray, margin: float, L: int, sector_indicator: np.ndarray = None, 
+                      data_classes=None) -> None:
   """Plot a tropical hyperplane as a 2D projection of a 3D hypersurface"""
-  plot_polynomial_hypersurface_3d(ax, np.eye(x.shape[0]), -x, L, sector_indicator, margin = margin)
+  plot_polynomial_hypersurface_3d(ax, np.eye(x.shape[0]), -x, L, sector_indicator, 
+                                 margin=margin, data_classes=data_classes)
+
+
+def format_monomial(monomial, vars=('x', 'y', 'z')):
+  """Format a monomial vector as a LaTeX expression"""
+  terms = []
+  for i, coef in enumerate(monomial):
+    if coef == 0:
+      continue
+    elif coef == 1:
+      terms.append(vars[i])
+    else:
+      terms.append(f"{int(coef) if coef.is_integer() else coef}{vars[i]}")
+  
+  if not terms:
+    return "$0$"
+  return "$" + "+".join(terms) + "$"
+
+
+def compute_sector_centroids(data_classes, sector_assignments, monomials, coeffs):
+  centroids = {}
+  sector_points = {}
+  
+  # Initialize empty lists for each sector
+  for sector in range(len(sector_assignments)):
+    sector_points[sector] = []
+  
+  # Group points by sector and class
+  for class_idx, class_data in enumerate(data_classes):
+    for point in class_data.T:  # Each column is a point
+      # Determine which sector this point belongs to by evaluating monomials
+      val = evaluate_3d(monomials, coeffs, point)
+      dominant_sector = np.argmax(val)
+      
+      # If this point belongs to the class assigned to this sector, add it
+      if sector_assignments[dominant_sector] == class_idx:
+        sector_points[dominant_sector].append(point)
+  
+  # Compute centroids only for points that belong to the correct class AND sector
+  for sector, points in sector_points.items():
+    if points:
+      centroids[sector] = np.mean(points, axis=0)
+  
+  return centroids
 
 
 def draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=None, simplified_mode=False, margin=None):
@@ -132,15 +177,54 @@ def evaluate_3d(monomials: np.ndarray, coeffs: np.ndarray, point: tuple[float]) 
   return coeffs + np.sum(monomials * np.array(point), axis=1)
 
 
-def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=None, simplified_mode=False, margin=0):
+def identify_sector_monomials(monomials, coeffs, points):
+  """Identify which monomial is maximal for each point"""
+  results = []
+  for point in points:
+    val = evaluate_3d(monomials, coeffs, point)
+    idx = np.argmax(val)
+    results.append(idx)
+  return results
+
+
+def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=None, simplified_mode=False, 
+                                   margin=0, data_classes=None, feature_names=None):
+  """Plot a tropical polynomial hypersurface with sector annotations"""
+  if feature_names is None:
+    feature_names = ['x', 'y', 'z']
+    
   nodes = hypersurface_nodes(monomials, coeffs, 3)
+  
+  # Draw the hypersurface
   for i, node in enumerate(nodes):
     if not simplified_mode:
       plot_point(ax, node[0], 2*L, 'black', linestyle="None", marker='.', maxplus=True)
-    draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=sector_indicator, simplified_mode=simplified_mode, margin=margin)
+    draw_segments(ax, monomials, coeffs, nodes, i, sector_indicator=sector_indicator, 
+                 simplified_mode=simplified_mode, margin=margin)
     for idx1, idx2 in [(0, 1), (0, 2), (1, 2)]:
-      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=sector_indicator, simplified_mode=simplified_mode, margin=margin)
-
+      draw_rays(ax, monomials, coeffs, nodes, i, idx1, idx2, L, sector_indicator=sector_indicator,
+               simplified_mode=simplified_mode, margin=margin)
+  
+  # Add sector annotations if data is provided
+  if data_classes is not None and sector_indicator is not None:
+    # Compute centroids for each sector based on points that actually belong to that sector
+    centroids = compute_sector_centroids(data_classes, sector_indicator, monomials, coeffs)
+    
+    # For each sector with a centroid, display the dominant monomial
+    for sector_idx, centroid in centroids.items():
+      monomial_str = format_monomial(monomials[sector_idx], vars=feature_names)
+      if coeffs[sector_idx] != 0:
+        constant = np.round(coeffs[sector_idx], 2)
+        sign = "+" if constant > 0 else ""
+        # Include the constant term inside the LaTeX delimiter
+        if monomial_str.endswith("$"):
+            monomial_str = monomial_str[:-1] + f"{sign}{constant}$"
+      
+      # Add a text label at the centroid location
+      ax.text(centroid[0], centroid[1], centroid[2], monomial_str, 
+             color='black', fontsize=10, ha='center', va='center',
+             bbox=dict(facecolor='white', alpha=0.8, edgecolor='black', pad=3),
+             usetex=True)  # Enable LaTeX rendering
 
 def draw_margin(ax, start, end, margin, color="#FFE4C9", alpha=1):
   if np.isclose(margin, 0):

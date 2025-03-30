@@ -1,0 +1,130 @@
+\begin{thebibliography}{10}
+
+\bibitem{akian2020}
+Marianne Akian, St{\'e}phane Gaubert, and Antoine Hochart.
+\newblock A game theory approach to the existence and uniqueness of nonlinear {Perron-Frobenius} eigenvectors.
+\newblock {\em Discrete and Continuous Dynamical Systems}, 40(1):207--231, 2020.
+
+\bibitem{allamigeon2025}
+Xavier Allamigeon, St{\'e}phane Gaubert, Ricardo~D. Katz, and Mateusz Skomra.
+\newblock Universal complexity bounds based on value iteration for stochastic mean payoff games and entropy games.
+\newblock {\em Information and Computation}, 302:105236, 2025.
+
+\bibitem{waveform_database_generator_(version_1)_107}
+L.~Breiman and C.J. Stone.
+\newblock {Waveform Database Generator (Version 1)}.
+\newblock UCI Machine Learning Repository, 1984.
+\newblock {DOI}: https://doi.org/10.24432/C5CS3C.
+
+\bibitem{cohen2004}
+Guy Cohen, St{\'e}phane Gaubert, and Jean-Pierre Quadrat.
+\newblock Duality and separation theorems in idempotent semimodules.
+\newblock {\em Linear Algebra and Its Applications}, 379:395--422, 2004.
+\newblock Special Issue on the Tenth ILAS Conference (Auburn, 2002).
+
+\bibitem{MNIST}
+Li~Deng.
+\newblock The mnist database of handwritten digit images for machine learning research [best of the web].
+\newblock {\em IEEE Signal Processing Magazine}, 29(6):141--142, 2012.
+
+\bibitem{develin2004}
+Mike Develin and Bernd Sturmfels.
+\newblock Tropical convexity.
+\newblock {\em Documenta Mathematica}, 9:1--27, 2004.
+
+\bibitem{fotopoulos2024}
+Konstantinos Fotopoulos, Petros Maragos, and Panagiotis Misiakos.
+\newblock Tropnnc: Structured neural network compression using tropical geometry.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, 46(5):5027--5037, 2024.
+
+\bibitem{gartner2008}
+Bernd G{\"a}rtner and Martin Jaggi.
+\newblock Tropical support vector machines.
+\newblock Technical Report ACS-TR-362502-01, MPI, 2008.
+
+\bibitem{gaubert2004}
+St{\'e}phane Gaubert and Jeremy Gunawardena.
+\newblock The {Perron-Frobenius} theorem for homogeneous, monotone functions.
+\newblock {\em Transactions of the American Mathematical Society}, 356(12):4931--4950, 2004.
+
+\bibitem{gaubert2011}
+St{\'e}phane Gaubert and Sergei Sergeev.
+\newblock Cyclic projectors and separation theorems in idempotent convex geometry.
+\newblock {\em Journal of Mathematical Sciences}, 155(6):815--829, 2011.
+
+\bibitem{kolokoltsov1992}
+Vassili Kolokoltsov.
+\newblock On linear, additive, and homogeneous operators in idempotent analysis.
+\newblock In Victor Maslov and Semen Samborski{\u\i}, editors, {\em Idempotent Analysis}, volume~13, pages 87--102. American Mathematical Society, Providence, Rhode Island, 1992.
+
+\bibitem{kolokoltsov1997}
+Vassili~N. Kolokoltsov and Victor~P. Maslov.
+\newblock Idempotent analysis.
+\newblock In Vassili~N. Kolokoltsov and Victor~P. Maslov, editors, {\em Idempotent Analysis and Its Applications}, pages 1--44. Springer Netherlands, Dordrecht, 1997.
+
+\bibitem{maclagan2015}
+Diane Maclagan and Bernd Sturmfels.
+\newblock {\em Introduction to Tropical Geometry}, volume 161 of {\em Graduate Studies in Mathematics}.
+\newblock American Mathematical Society, Providence, Rhode Island, 2015.
+
+\bibitem{maragos2021}
+Petros Maragos, Vasileios Charisopoulos, and Emmanouil Theodosis.
+\newblock Tropical geometry and machine learning.
+\newblock {\em Proceedings of the IEEE}, 109(5):728--755, 2021.
+
+\bibitem{monod2022}
+Anthea Monod, Bo~Lin, Ruriko Yoshida, and Qiwen Kang.
+\newblock Tropical geometry of phylogenetic tree space: A statistical perspective.
+\newblock {\em Bulletin of Mathematical Biology}, 84(2):1--26, 2022.
+
+\bibitem{nussbaum1986}
+Roger~D. Nussbaum.
+\newblock Convexity and log convexity for the spectral radius.
+\newblock {\em Linear Algebra and Its Applications}, 73:59--122, 1986.
+
+\bibitem{scikit-learn}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel, M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, J.~Vanderplas, A.~Passos, D.~Cournapeau, M.~Brucher, M.~Perrot, and E.~Duchesnay.
+\newblock Scikit-learn: Machine learning in {P}ython.
+\newblock {\em Journal of Machine Learning Research}, 12:2825--2830, 2011.
+
+\bibitem{scholkopf2002}
+Bernhard Sch{\"o}lkopf and Alexander~J. Smola.
+\newblock {\em Learning with Kernels: Support Vector Machines, Regularization, Optimization, and Beyond}.
+\newblock The MIT Press, 2002.
+
+\bibitem{shapley1953}
+Lloyd~S. Shapley.
+\newblock Stochastic games.
+\newblock {\em Proceedings of the National Academy of Sciences}, 39(10):1095--1100, 1953.
+
+\bibitem{tang2020}
+Xiaoxian Tang, Houjie Wang, and Ruriko Yoshida.
+\newblock Tropical support vector machine and its applications to phylogenomics.
+\newblock {\em SIAM Journal on Applied Algebra and Geometry}, 4(4):620--640, 2020.
+
+\bibitem{vapnik1999}
+Vladimir~N. Vapnik.
+\newblock An overview of statistical learning theory.
+\newblock {\em IEEE Transactions on Neural Networks}, 10(5):988--999, 1999.
+
+\bibitem{viro2001}
+Oleg Viro.
+\newblock Dequantization of real algebraic geometry on logarithmic paper.
+\newblock In Carles Casacuberta, Rosa~Maria Mir{\'o}-Roig, Joan Verdera, and Sebasti{\`a} Xamb{\'o}-Descamps, editors, {\em European Congress of Mathematics}, pages 135--146. Birkh{\"a}user Basel, Basel, 2001.
+
+\bibitem{yoshida2019}
+Ruriko Yoshida, Leon Zhang, and Xu~Zhang.
+\newblock Tropical principal component analysis and its application to phylogenetics.
+\newblock {\em Bulletin of Mathematical Biology}, 81(2):568--597, 2019.
+
+\bibitem{zhang2018}
+Liwen Zhang, Gregory Naitzat, and Lek-Heng Lim.
+\newblock Tropical geometry of deep neural networks.
+\newblock In {\em Proceedings of the 35th International Conference on Machine Learning}, volume~80 of {\em Proceedings of Machine Learning Research}, pages 5824--5832. PMLR, 2018.
+
+\bibitem{zwick1996}
+Uri Zwick and Mike Paterson.
+\newblock The complexity of mean payoff games on graphs.
+\newblock {\em Theoretical Computer Science}, 158(1):343--359, 1996.
+
+\end{thebibliography}

@@ -26,5 +26,4 @@ if __name__ == "__main__":
   ax.set_title(
     f"using mean payoff games, degree 1\n (apex = {np.round(model._apex, 2)}, {'margin' if model._eigval <= 0 else 'inrad(intersection)'} = {np.round(np.abs(model._eigval), 2)})"
   )
-
   plt.show()
