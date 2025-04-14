@@ -7,6 +7,12 @@ Marianne Akian, St{\'e}phane Gaubert, and Antoine Hochart.
 \newblock {\em Discrete and Continuous Dynamical Systems}, 40(1):207--231,
   2020.
 
+\bibitem{akiangaubertqisaadi}
+Marianne Akian, St{\'{e}}phane Gaubert, Yang Qi, and Omar Saadi.
+\newblock Tropical linear regression and mean payoff games: Or, how to measure
+  the distance to equilibria.
+\newblock {\em {SIAM} J. Disc. Math.}, 37(2):632--674, May 2023.
+
 \bibitem{akianmfcs}
 Marianne Akian, Stéphane Gaubert, Ulysse Naepels, and Basile Terver.
 \newblock Solving irreducible stochastic mean-payoff games and entropy games by
@@ -20,6 +26,14 @@ Xavier Allamigeon, St{\'e}phane Gaubert, Ricardo~D. Katz, and Mateusz Skomra.
 \newblock Universal complexity bounds based on value iteration for stochastic
   mean payoff games and entropy games.
 \newblock {\em Information and Computation}, 302:105236, 2025.
+
+\bibitem{baillonbruck}
+J.~B. Baillon and R.~E. Bruck.
+\newblock Optimal rates of asymptotic regularity for averaged nonexpansive
+  mappings.
+\newblock In K.~K. Tan, editor, {\em Proceedings of the Second International
+  Conference on Fixed Point Theory and Applications}, pages 27--66. World
+  Scientific Press, 1992.
 
 \bibitem{waveform_database_generator_(version_1)_107}
 L.~Breiman and C.J. Stone.
