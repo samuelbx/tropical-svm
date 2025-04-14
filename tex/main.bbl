@@ -7,6 +7,14 @@ Marianne Akian, St{\'e}phane Gaubert, and Antoine Hochart.
 \newblock {\em Discrete and Continuous Dynamical Systems}, 40(1):207--231,
   2020.
 
+\bibitem{akianmfcs}
+Marianne Akian, Stéphane Gaubert, Ulysse Naepels, and Basile Terver.
+\newblock Solving irreducible stochastic mean-payoff games and entropy games by
+  relative krasnoselskii-mann iteration.
+\newblock In {\em 48th International Symposium on Mathematical Foundations of
+  Computer Science (MFCS 2023)}. Schloss Dagstuhl - Leibniz-Zentrum f\"{u}r
+  Informatik, 2023.
+
 \bibitem{allamigeon2025}
 Xavier Allamigeon, St{\'e}phane Gaubert, Ricardo~D. Katz, and Mateusz Skomra.
 \newblock Universal complexity bounds based on value iteration for stochastic

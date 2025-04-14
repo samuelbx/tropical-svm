@@ -58,14 +58,16 @@
 \citation{gaubert2004}
 \citation{zwick1996}
 \citation{allamigeon2025}
+\citation{akianmfcs}
+\citation{allamigeon2025}
 \@writefile{toc}{\contentsline {paragraph}{Previous Work on Tropical SVMs.}{2}{section*.6}\protected@file@percent }
 \@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: I am not sure it is a quality (less stable than L1), perhaps just mention that this is an elegant geometric approach to multiclass problem.}{2}{section*.7}\protected@file@percent }
 \pgfsyspdfmark {pgfid22}{23784062}{44775833}
 \pgfsyspdfmark {pgfid25}{35988437}{44703971}
 \pgfsyspdfmark {pgfid26}{38101972}{44554650}
 \@writefile{toc}{\contentsline {paragraph}{From Game Theory to Machine Learning.}{2}{section*.7}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG Delete (we need a broader state of the art -- and the theorem there only concerns approximating $\rho $ in $1/\epsilon $, here we need to approximate the eigenvector which is in $1/\epsilon ^2$): Importantly, recent advances in solving these games efficiently \cite  {allamigeon2025} provide efficient algorithms that we can apply to tropical classification.}{2}{section*.8}\protected@file@percent }
-\pgfsyspdfmark {pgfid27}{20112833}{34943344}
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG Delete (we need a broader state of the art -- and the theorem there only concerns approximating $\rho $ in $1/\epsilon $, here we need to approximate the eigenvector which is in $1/\epsilon ^2$): Importantly, recent advances in solving these games efficiently \cite  {allamigeon2025} provide efficient algorithms that we can apply to tropical classification. -- Indeed, we need instead to use the relative KM algorithm analyzed in\nobreakspace  {}\cite  {akianmfcs}, with a complexity in $1/\epsilon ^2$, but this algorithm provides the eigenvector. \cite  {allamigeon2025} does not. The termination condition should be changed in the algo below to $\|T(x)-x\|_H\leq \epsilon $.}{2}{section*.8}\protected@file@percent }
+\pgfsyspdfmark {pgfid27}{20112833}{34508424}
 \@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.8}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Tropical Geometry Preliminaries}{2}{section.2}\protected@file@percent }
 \newlabel{sec:prelim}{{2}{2}{Tropical Geometry Preliminaries}{section.2}{}}
@@ -85,7 +87,7 @@
 \citation{kolokoltsov1992}
 \citation{nussbaum1986}
 \@writefile{toc}{\contentsline {paragraph}{Tropical Convexity and Projections.}{4}{equation.2.5}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{red!30}{\leavevmode {\color  {red!30}o}}\ This is the projection on a cone, not on a convex set, perhaps we need to speak only of cones (modulo passing to the projective space), then this is ok. For a convex set, the max may be taken over a nonempty set}{4}{section*.11}\protected@file@percent }
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{red!30}{\leavevmode {\color  {red!30}o}}\ SG. This is the projection on a cone, not on a convex set, perhaps we need to speak only of cones (modulo passing to the projective space), then this is ok. For a convex set, the max may be taken over a nonempty set}{4}{section*.11}\protected@file@percent }
 \pgfsyspdfmark {pgfid34}{20112833}{33671057}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Spectral Framework for Tropical SVMs}{4}{section.3}\protected@file@percent }
 \newlabel{sec:spectral}{{3}{4}{Spectral Framework for Tropical SVMs}{section.3}{}}
@@ -133,32 +135,33 @@
 \newlabel{fig:maslov_dequantization}{{4}{9}{Comparison of tropical hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral tropical classifier (black).\relax }{figure.caption.14}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Discussion and Future work}{9}{section.7}\protected@file@percent }
 \newlabel{sec:discussion}{{7}{9}{Discussion and Future work}{section.7}{}}
-\bibcite{allamigeon2025}{{2}{}{{}}{{}}}
-\bibcite{waveform_database_generator_(version_1)_107}{{3}{}{{}}{{}}}
-\bibcite{cohen2004}{{4}{}{{}}{{}}}
-\bibcite{MNIST}{{5}{}{{}}{{}}}
-\bibcite{develin2004}{{6}{}{{}}{{}}}
-\bibcite{fotopoulos2024}{{7}{}{{}}{{}}}
-\bibcite{gartner2008}{{8}{}{{}}{{}}}
-\bibcite{gaubert2004}{{9}{}{{}}{{}}}
-\bibcite{gaubert2011}{{10}{}{{}}{{}}}
-\bibcite{kolokoltsov1992}{{11}{}{{}}{{}}}
-\bibcite{kolokoltsov1997}{{12}{}{{}}{{}}}
-\bibcite{maclagan2015}{{13}{}{{}}{{}}}
-\bibcite{maragos2021}{{14}{}{{}}{{}}}
-\bibcite{maragos2020}{{15}{}{{}}{{}}}
-\bibcite{monod2022}{{16}{}{{}}{{}}}
-\bibcite{montufar}{{17}{}{{}}{{}}}
-\bibcite{nussbaum1986}{{18}{}{{}}{{}}}
-\bibcite{scikit-learn}{{19}{}{{}}{{}}}
-\bibcite{scholkopf2002}{{20}{}{{}}{{}}}
-\bibcite{shapley1953}{{21}{}{{}}{{}}}
-\bibcite{tang2020}{{22}{}{{}}{{}}}
-\bibcite{vapnik1999}{{23}{}{{}}{{}}}
-\bibcite{viro2001}{{24}{}{{}}{{}}}
-\bibcite{yoshida2019}{{25}{}{{}}{{}}}
-\bibcite{zhang2018}{{26}{}{{}}{{}}}
-\bibcite{zwick1996}{{27}{}{{}}{{}}}
+\bibcite{akianmfcs}{{2}{}{{}}{{}}}
+\bibcite{allamigeon2025}{{3}{}{{}}{{}}}
+\bibcite{waveform_database_generator_(version_1)_107}{{4}{}{{}}{{}}}
+\bibcite{cohen2004}{{5}{}{{}}{{}}}
+\bibcite{MNIST}{{6}{}{{}}{{}}}
+\bibcite{develin2004}{{7}{}{{}}{{}}}
+\bibcite{fotopoulos2024}{{8}{}{{}}{{}}}
+\bibcite{gartner2008}{{9}{}{{}}{{}}}
+\bibcite{gaubert2004}{{10}{}{{}}{{}}}
+\bibcite{gaubert2011}{{11}{}{{}}{{}}}
+\bibcite{kolokoltsov1992}{{12}{}{{}}{{}}}
+\bibcite{kolokoltsov1997}{{13}{}{{}}{{}}}
+\bibcite{maclagan2015}{{14}{}{{}}{{}}}
+\bibcite{maragos2021}{{15}{}{{}}{{}}}
+\bibcite{maragos2020}{{16}{}{{}}{{}}}
+\bibcite{monod2022}{{17}{}{{}}{{}}}
+\bibcite{montufar}{{18}{}{{}}{{}}}
+\bibcite{nussbaum1986}{{19}{}{{}}{{}}}
+\bibcite{scikit-learn}{{20}{}{{}}{{}}}
+\bibcite{scholkopf2002}{{21}{}{{}}{{}}}
+\bibcite{shapley1953}{{22}{}{{}}{{}}}
+\bibcite{tang2020}{{23}{}{{}}{{}}}
+\bibcite{vapnik1999}{{24}{}{{}}{{}}}
+\bibcite{viro2001}{{25}{}{{}}{{}}}
+\bibcite{yoshida2019}{{26}{}{{}}{{}}}
+\bibcite{zhang2018}{{27}{}{{}}{{}}}
+\bibcite{zwick1996}{{28}{}{{}}{{}}}
 \citation{akian2020}
 \@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}\ref  {thm:spectral_separability} (Spectral Separability)}{12}{appendix.A}\protected@file@percent }
 \newlabel{appendix:proofs}{{A}{12}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Separability)}{appendix.A}{}}
