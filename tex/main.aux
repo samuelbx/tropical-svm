@@ -58,7 +58,7 @@
 \citation{gaubert2004}
 \citation{zwick1996}
 \citation{allamigeon2025}
-\citation{akianmfcs}
+\citation{akiangaubertqisaadi}
 \citation{allamigeon2025}
 \@writefile{toc}{\contentsline {paragraph}{Previous Work on Tropical SVMs.}{2}{section*.6}\protected@file@percent }
 \@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: I am not sure it is a quality (less stable than L1), perhaps just mention that this is an elegant geometric approach to multiclass problem.}{2}{section*.7}\protected@file@percent }
@@ -66,8 +66,8 @@
 \pgfsyspdfmark {pgfid25}{35988437}{44703971}
 \pgfsyspdfmark {pgfid26}{38101972}{44554650}
 \@writefile{toc}{\contentsline {paragraph}{From Game Theory to Machine Learning.}{2}{section*.7}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG Delete (we need a broader state of the art -- and the theorem there only concerns approximating $\rho $ in $1/\epsilon $, here we need to approximate the eigenvector which is in $1/\epsilon ^2$): Importantly, recent advances in solving these games efficiently \cite  {allamigeon2025} provide efficient algorithms that we can apply to tropical classification. -- Indeed, we need instead to use the relative KM algorithm analyzed in\nobreakspace  {}\cite  {akianmfcs}, with a complexity in $1/\epsilon ^2$, but this algorithm provides the eigenvector. \cite  {allamigeon2025} does not. The termination condition should be changed in the algo below to $\|T(x)-x\|_H\leq \epsilon $.}{2}{section*.8}\protected@file@percent }
-\pgfsyspdfmark {pgfid27}{20112833}{34508424}
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG Delete (we need a broader state of the art on mean-payoff games -- and the theorem there only concerns approximating $\rho $ in $1/\epsilon $, here we need to approximate the eigenvector which is in $1/\epsilon ^2$): Importantly, recent advances in solving these games efficiently \cite  {allamigeon2025} provide efficient algorithms that we can apply to tropical classification. -- Indeed, we need instead to use the relative KM algorithm along the lines of\nobreakspace  {}\cite  {akiangaubertqisaadi}, with a complexity in $1/\epsilon ^2$, but this algorithm provides the eigenvector. \cite  {allamigeon2025} does not (only the eigenvalue is approximated, we can get sub and super eigenvectors however with a preoprocessing). The termination condition should be changed in the algo below to $\|T(x)-x\|_H\leq \epsilon $.}{2}{section*.8}\protected@file@percent }
+\pgfsyspdfmark {pgfid27}{20112833}{34272363}
 \@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.8}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Tropical Geometry Preliminaries}{2}{section.2}\protected@file@percent }
 \newlabel{sec:prelim}{{2}{2}{Tropical Geometry Preliminaries}{section.2}{}}
@@ -94,8 +94,9 @@
 \@writefile{toc}{\contentsline {paragraph}{Shapley Operators and Their Spectral Theory.}{4}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Constructing the Classification Operator.}{4}{equation.3.8}\protected@file@percent }
 \citation{gartner2008}
-\citation{akian2020}
 \@writefile{toc}{\contentsline {paragraph}{Main Theorem: Spectral Separability.}{5}{equation.3.8}\protected@file@percent }
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: does not some part of the theorem (the last one?) requires to use the diagonal free variant? }{5}{section*.12}\protected@file@percent }
+\pgfsyspdfmark {pgfid35}{20112833}{44964539}
 \newlabel{thm:spectral_separability}{{1}{5}{Spectral Separability Criterion}{theorem.1}{}}
 \@writefile{toc}{\contentsline {paragraph}{Benefits of the Spectral Approach.}{5}{theorem.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Limitations.}{5}{theorem.1}\protected@file@percent }
@@ -103,6 +104,7 @@
 \newlabel{sec:algorithm}{{4}{5}{Algorithm and Implementation}{section.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{Efficient Computation of Tropical Projections.}{5}{section.4}\protected@file@percent }
 \newlabel{subsec:computing_projections}{{4}{5}{Efficient Computation of Tropical Projections}{section.4}{}}
+\citation{akian2020}
 \citation{nussbaum1986,gaubert2004}
 \citation{allamigeon2025}
 \@writefile{toc}{\contentsline {paragraph}{Computing the Spectral Radius with Krasnoselskii-Mann Iterations.}{6}{section.4}\protected@file@percent }
@@ -121,18 +123,18 @@
 \@writefile{toc}{\contentsline {paragraph}{Classification with Tropical Polynomials.}{7}{Item.8}\protected@file@percent }
 \newlabel{subsec:poly_classification}{{5}{7}{Classification with Tropical Polynomials}{Item.8}{}}
 \@writefile{toc}{\contentsline {paragraph}{Margin Guarantees for Tropical Polynomials.}{7}{Item.12}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Multi-class classification using a cubic tropical polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho (T)/3$ due to our theoretical results.\relax }}{8}{figure.caption.12}\protected@file@percent }
-\newlabel{fig:homogeneous_selection}{{2}{8}{Multi-class classification using a cubic tropical polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho (T)/3$ due to our theoretical results.\relax }{figure.caption.12}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Visualization of a tropical polynomial classifier using the adaptive monomial selection strategy described in Section\nobreakspace  {}\ref  {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }}{8}{figure.caption.13}\protected@file@percent }
-\newlabel{fig:adaptive_polynomial}{{3}{8}{Visualization of a tropical polynomial classifier using the adaptive monomial selection strategy described in Section~\ref {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Multi-class classification using a cubic tropical polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho (T)/3$ due to our theoretical results.\relax }}{8}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:homogeneous_selection}{{2}{8}{Multi-class classification using a cubic tropical polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho (T)/3$ due to our theoretical results.\relax }{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Visualization of a tropical polynomial classifier using the adaptive monomial selection strategy described in Section\nobreakspace  {}\ref  {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }}{8}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:adaptive_polynomial}{{3}{8}{Visualization of a tropical polynomial classifier using the adaptive monomial selection strategy described in Section~\ref {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }{figure.caption.14}{}}
 \citation{viro2001}
 \bibstyle{plain}
 \bibdata{references}
 \bibcite{akian2020}{{1}{}{{}}{{}}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Connection to Classical SVMs}{9}{section.6}\protected@file@percent }
 \newlabel{sec:maslov}{{6}{9}{Connection to Classical SVMs}{section.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Comparison of tropical hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral tropical classifier (black).\relax }}{9}{figure.caption.14}\protected@file@percent }
-\newlabel{fig:maslov_dequantization}{{4}{9}{Comparison of tropical hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral tropical classifier (black).\relax }{figure.caption.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Comparison of tropical hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral tropical classifier (black).\relax }}{9}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:maslov_dequantization}{{4}{9}{Comparison of tropical hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral tropical classifier (black).\relax }{figure.caption.15}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Discussion and Future work}{9}{section.7}\protected@file@percent }
 \newlabel{sec:discussion}{{7}{9}{Discussion and Future work}{section.7}{}}
 \bibcite{akianmfcs}{{2}{}{{}}{{}}}
@@ -168,22 +170,22 @@
 \newlabel{lemma:hyperplane_to_operator}{{2}{12}{}{theorem.2}{}}
 \newlabel{lemma:operator_to_hyperplane}{{3}{12}{}{theorem.3}{}}
 \citation{gaubert2011}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }}{13}{figure.caption.15}\protected@file@percent }
-\newlabel{fig:non_separable}{{5}{13}{Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }}{13}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:non_separable}{{5}{13}{Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }{figure.caption.16}{}}
 \newlabel{lemma:perturbation}{{4}{13}{}{theorem.4}{}}
 \citation{akian2020}
 \citation{scikit-learn,waveform_database_generator_(version_1)_107}
 \newlabel{eq:major}{{24}{14}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Separability)}{equation.A.24}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {B}Empirical Evaluation}{14}{appendix.B}\protected@file@percent }
 \newlabel{appendix:empirical}{{B}{14}{Empirical Evaluation}{appendix.B}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.9\% to 9.6\%. \#C: number of classes; \#S: number of samples.\relax }}{14}{table.caption.16}\protected@file@percent }
-\newlabel{tab:benchmark_results}{{1}{14}{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.9\% to 9.6\%. \#C: number of classes; \#S: number of samples.\relax }{table.caption.16}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.9\% to 9.6\%. \#C: number of classes; \#S: number of samples.\relax }}{14}{table.caption.17}\protected@file@percent }
+\newlabel{tab:benchmark_results}{{1}{14}{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.9\% to 9.6\%. \#C: number of classes; \#S: number of samples.\relax }{table.caption.17}{}}
 \citation{MNIST}
-\newlabel{fig:pca_degree_scaling}{{6a}{15}{Training time vs. number of monomials\relax }{figure.caption.17}{}}
-\newlabel{sub@fig:pca_degree_scaling}{{a}{15}{Training time vs. number of monomials\relax }{figure.caption.17}{}}
-\newlabel{fig:sample_size_scaling}{{6b}{15}{Training time vs. size of training set\relax }{figure.caption.17}{}}
-\newlabel{sub@fig:sample_size_scaling}{{b}{15}{Training time vs. size of training set\relax }{figure.caption.17}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Performance scaling analysis of tropical SVM on MNIST data\relax }}{15}{figure.caption.17}\protected@file@percent }
-\newlabel{fig:scaling_analysis}{{6}{15}{Performance scaling analysis of tropical SVM on MNIST data\relax }{figure.caption.17}{}}
+\newlabel{fig:pca_degree_scaling}{{6a}{15}{Training time vs. number of monomials\relax }{figure.caption.18}{}}
+\newlabel{sub@fig:pca_degree_scaling}{{a}{15}{Training time vs. number of monomials\relax }{figure.caption.18}{}}
+\newlabel{fig:sample_size_scaling}{{6b}{15}{Training time vs. size of training set\relax }{figure.caption.18}{}}
+\newlabel{sub@fig:sample_size_scaling}{{b}{15}{Training time vs. size of training set\relax }{figure.caption.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Performance scaling analysis of tropical SVM on MNIST data\relax }}{15}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:scaling_analysis}{{6}{15}{Performance scaling analysis of tropical SVM on MNIST data\relax }{figure.caption.18}{}}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
 \gdef \@abspage@last{22}

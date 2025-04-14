@@ -73,7 +73,7 @@ It has been successfully applied to linear regression \cite{maragos2020,akian202
 
 \paragraph{Previous Work on Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work demonstrated that tropical hyperplanes provide improved locality in decision boundaries, where only nearby support vectors influence classification, unlike classical SVMs where all support vectors contribute globally.\todo{SG: I am not sure it is a quality (less stable than L1), perhaps just mention that this is an elegant geometric approach to multiclass problem.} Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leading to exponential worst-case complexity. This computational barrier has severely limited practical applications. Tang et al.~\cite{tang2020} later developed specialized algorithms for binary classification cases where data points from the same category stay in the same sector, showing promising results in computational biology for analyzing evolutionary trees.
 
-\paragraph{From Game Theory to Machine Learning.} Our approach uses concepts from game theory—specifically, Shapley operators from stochastic games \cite{shapley1953} and their adaptation to tropical algebra \cite{kolokoltsov1997}. The spectral properties of these operators have been extensively studied for analyzing fixed points and convergence in nonlinear systems \cite{gaubert2004}. Mean-payoff games, a class of two-player zero-sum games, are closely linked to the spectral radius of such operators \cite{zwick1996}. \todo[inline]{SG Delete (we need a broader state of the art -- and the theorem there only concerns approximating $\rho$ in $1/\epsilon$, here we need to approximate the eigenvector which is in $1/\epsilon^2$): Importantly, recent advances in solving these games efficiently \cite{allamigeon2025} provide efficient algorithms that we can apply to tropical classification. -- Indeed, we need instead to use the relative KM algorithm analyzed in~\cite{akianmfcs}, with a complexity in $1/\epsilon^2$, but this algorithm provides the eigenvector. \cite{allamigeon2025} does not. The termination condition should be changed in the algo below to $\|T(x)-x\|_H\leq \epsilon$.}
+\paragraph{From Game Theory to Machine Learning.} Our approach uses concepts from game theory—specifically, Shapley operators from stochastic games \cite{shapley1953} and their adaptation to tropical algebra \cite{kolokoltsov1997}. The spectral properties of these operators have been extensively studied for analyzing fixed points and convergence in nonlinear systems \cite{gaubert2004}. Mean-payoff games, a class of two-player zero-sum games, are closely linked to the spectral radius of such operators \cite{zwick1996}. \todo[inline]{SG Delete (we need a broader state of the art on mean-payoff games -- and the theorem there only concerns approximating $\rho$ in $1/\epsilon$, here we need to approximate the eigenvector which is in $1/\epsilon^2$): Importantly, recent advances in solving these games efficiently \cite{allamigeon2025} provide efficient algorithms that we can apply to tropical classification. -- Indeed, we need instead to use the relative KM algorithm along the lines of~\cite{akiangaubertqisaadi}, with a complexity in $1/\epsilon^2$, but this algorithm provides the eigenvector. \cite{allamigeon2025} does not (only the eigenvalue is approximated, we can get sub and super eigenvectors however with a preoprocessing). The termination condition should be changed in the algo below to $\|T(x)-x\|_H\leq \epsilon$.}
 
 \paragraph{Contributions.} We reformulate tropical classification using mean-payoff games, addressing the fundamental computational limitations of previous approaches:
 
@@ -186,7 +186,7 @@ T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}
 where $\operatorname{\max}_2$ denotes the second-largest value among the outputs. For binary classification ($K=2$), this simplifies to $T(x)=\min\{T^1(x), T^2(x)\}$.
 
 \paragraph{Main Theorem: Spectral Separability.}
-Our central result establishes the connection between tropical separability and the spectral radius:
+Our central result establishes the connection between tropical separability and the spectral radius:\todo[inline]{SG: does not some part of the theorem (the last one?) requires to use the diagonal free variant? }
 
 \begin{theorem}[Spectral Separability Criterion]\label{thm:spectral_separability}
 Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the classification operator defined above. Then:
@@ -235,7 +235,7 @@ This formulation can be viewed as a mean-payoff game \cite{akian2020} and comput
 
 \paragraph{Computing the Spectral Radius with Krasnoselskii-Mann Iterations.}
 \label{subsec:spectral_computation}
-To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we apply a Krasnoselskii-Mann iteration scheme \cite{nussbaum1986, gaubert2004}, outlined in Algorithm~\ref{alg:km_iteration}.
+To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we apply a Krasnoselskii-Mann iteration scheme \cite{nussbaum1986, gaubert2004}, outlined in Algorithm~\ref{alg:km_iteration}.\todo{SG: very good to quote \cite{nussbaum1986,gaubert2004} but KM is not there, we should rather quote the original works of Baillon and Bruck~\cite{baillonbruck} and perhaps followup by cominetti et al, and see~\cite{akiangaubertqisaadi,akianmfcs} for the relative KM which we use here.}
 
 \begin{algorithm}
 \caption{Krasnoselskii--Mann Iteration for Tropical SVM}\label{alg:km_iteration}
@@ -253,7 +253,7 @@ To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we
 \STATE \textbf{Return:} $\rho(T) \approx \lambda^{(\text{final})}$, $a \approx x^{(\text{final})} - \frac{1}{d}\sum_{i=1}^d x_i^{(\text{final})} \cdot \mathbf{1}_d$
 \end{algorithmic}
 \end{algorithm}
-
+\todo[inline]{SG: to be updated}
 Recent results by Allamigeon et al. \cite{allamigeon2025} show that this iteration achieves an $\varepsilon$-approximation in $O(1/\varepsilon)$ iterations. By avoiding the combinatorial exploration of sector assignments, our method runs in pseudo-polynomial time—specifically $O\bigl(\frac{nd}{\varepsilon}\bigr)$ for $n$ data points in $d$ dimensions.
 
 \paragraph{The Complete Tropical SVM Algorithm.}\label{subsec:complete_algorithm}
