@@ -24,6 +24,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{definition}{Definition}
 \newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}{Remark}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Rmax}{\mathbb{R}_{\max}}
@@ -182,6 +183,12 @@ P_X(y) = \max\{z \in \text{cone}_{\max}(X) : z \leq y\}
 Tropical convexity generalizes the idea of conventional convexity to the max-plus setting. A conical tropical convex hull contains all tropical linear combinations of vectors. Moreover, the projection finds a ``closest'' point in the conical convex hull~\cite{AGNS10}.% that doesn't exceed our target point in any coordinate.
 \todo{SG: cite also Chepoi}
 
+We also define diagonal-free ``projections'' \cite{gaubert2011}:
+ \begin{align}
+ P_X^{\text{DF}}(y)_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{k \neq i} (-X_{kj} + y_k)\right\}.
+ \end{align}
+ Note that both $P$ and $P^\text{DF}$ have identical fixed-point sets.
+
 These tropical projections will play a central role in our classification framework. We will use them to build class-specific operators that characterize the separability of data.
 
 \section{Spectral Framework for Tropical SVMs}\label{sec:spectral}
@@ -208,8 +215,10 @@ satisfying $T(u) \leq \lambda + u$ \cite{nussbaum1986,AGGut10,akiangaubertqisaad
 \paragraph{Constructing the Classification Operator.}
 Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \trop^d$. We define an operator $T^k$ for each class $k$ by taking the tropical projection onto the convex hull of points in that class:
 \[
-T^k(x) = P_{X^k}(x)
+T^k(x) = P_{X^k}^{\text{DF}}(x)
 \]
+
+Note that here we rather use the diagonal-free version as it allows a unified approach for both the separable and non-separable cases, but the non diagonal-free version of the operators can be used in the separable case.
 
 We then combine these operators into a single classification operator $T$ defined coordinatewise as:
 \[
@@ -218,7 +227,7 @@ T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}
 where $\operatorname{\max}_2$ denotes the second-largest value among the outputs. For binary classification ($K=2$), this simplifies to $T(x)=\min\{T^1(x), T^2(x)\}$.
 
 \paragraph{Main Theorem: Spectral Separability.}
-Our central result establishes the connection between tropical separability and the spectral radius:\todo[inline]{SG: does not some part of the theorem (the last one?) requires to use the diagonal free variant? }
+Our central result establishes the connection between tropical separability and the spectral radius:
 \todo{check whether everything works with DF and that teh satrt with any $P$ such that $x\leq Px$ if x fixed point. Then restate}
 \begin{theorem}[Spectral Separability Criterion]\label{thm:spectral_separability}
 Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the classification operator defined above. Then:
@@ -240,6 +249,8 @@ Conversely, if $\rho(T)<0$, we can find an eigenvector $a$ satisfying $T(a)=\rho
 For the non-separable case, we show that $\rho(T)$ quantifies the minimum perturbation required to make the data separable by constructing an explicit perturbation of magnitude $\rho(T)$.
 
 A complete proof is provided in Appendix~\ref{appendix:proofs}.
+
+\begin{remark} Lemmas used in the appendix for the proof allow us to derive results of theorem $1$ from slightly lighter assumptions. Namely, results $(1)$ and $(2)$ hold if we define $T$ with the non diagonal-free projections. We can also build a separating tropical hyperplane with margin at least $-\rho(T')$ if $T'$ is of the form  $T'(x)_i = \operatorname{\max}_2\{T'^1(x)_i, \dots, T'^K(x)_i\}$ with $T'^1, \ldots, T'^K$ being only Shapley operators and $-\rho(T)<0$, as long as $S(T') = S(T)$.
 
 \paragraph{Benefits of the Spectral Approach.} 
 Our framework advances the tropical SVM foundation established by Gärtner and Jaggi \cite{gartner2008}. Their work showed that tropical SVM could be formulated as finding a point of maximum margin within a tropical polytope defined by sector constraints, but required exhaustive exploration of sector assignments—leading to exponential complexity.
@@ -431,7 +442,7 @@ If the hyperplane $\mathcal{H}_a$ separates point clouds $X^1,\ldots,X^K$ with a
 \begin{proof}
 Consider two different classes $k$ and $\ell$. Let $I^k$ denote the set of coordinates assigned to class $k$. For any point $x \in X^k$, the margin condition implies
 \begin{align}
-d_H(x, S^{\ell}) = \max_i(x_i - a_i) - \max_{j \in I^{\ell}}(x_j - a_j) \geq \gamma.
+d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i) \geq \gamma.
 \end{align}
 
 This can be rewritten as: for all $i \in I^{\ell}$,
@@ -439,9 +450,11 @@ This can be rewritten as: for all $i \in I^{\ell}$,
 x_i - a_i \leq \max_j(x_j - a_j) - \gamma.
 \end{align}
 
+Note that $ \max_j(x_j - a_j) = \max_{j\neq i}(x_j - a_j) $ since $\gamma >0$.
+
 Taking the maximum over all $x \in X^k$, we get
 \begin{align}
-\max_{x \in X^k}(x_i - a_i) \leq \max_{x \in X^k}(\max_j(x_j - a_j)) - \gamma.
+\max_{x \in X^k}(x_i - a_i) \leq \max_{x \in X^k}(\max_{j\neq i}(x_j - a_j)) - \gamma.
 \end{align}
 
 By the definition of $T^k$, this implies
