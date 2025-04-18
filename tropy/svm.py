@@ -148,18 +148,19 @@ def fit_tropicalized_linear_SVM(data_classes: np.ndarray, beta: float = 1) -> tu
   return model, w
 
 
-KM_TIME = 0
+KM_TIME, KM_ITER = 0, 0
 def _krasnoselskii_mann(op: callable, N: int,
                         x: np.ndarray, tol: float = 1e-3) -> tuple[np.ndarray, float]:
   """Compute the eigenpair of a Shapley operator using Krasnoselskii-Mann iterations"""
-  global KM_TIME
+  global KM_TIME, KM_ITER
   z = None
   t1 = time.time()
   for i in range(N):
-    z = (x + op(x)) / 2
+    op_eval = op(x)
+    z = (x + op_eval) / 2
     new_x = z - np.max(z)
-    if np.linalg.norm(new_x - x) < tol * np.linalg.norm(new_x):
-      
+    criterion = op_eval - x
+    if np.max(criterion) - np.min(criterion) < tol * (np.max(x) - np.min(x)):
       x = new_x
       break
     x = new_x
@@ -168,13 +169,17 @@ def _krasnoselskii_mann(op: callable, N: int,
   else:
     print(f"KM converged in {i+1} iterations")
   t2 = time.time()
-  KM_TIME = t2-t1
+  KM_TIME, KM_ITER = t2 - t1, i
   return x - x.mean(), 2 * np.max(z)
 
 
 def get_km_time():
   global KM_TIME
   return KM_TIME
+
+def get_km_iter():
+  global KM_ITER
+  return KM_ITER
 
 
 def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20) -> tuple[np.ndarray, float]:

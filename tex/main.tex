@@ -24,7 +24,6 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{definition}{Definition}
 \newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{remark}{Remark}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Rmax}{\mathbb{R}_{\max}}
@@ -58,13 +57,12 @@
 \begin{document}
 
 \maketitle
-\todo[inline]{SG :title is very good. I hesitated with Scalable Tropical SVMs via Mean-Payoff Games? but perhaps effficient is stronger.}
 \begin{abstract}
    In 2006, Gärtner and Jaggi introduced a tropical analogue of support vector machines, using a single tropical hyperplane in dimension $n$ to separate $n$ classes of points. Efficiently computing tropical separators has remained an open problem.
    We introduce an algorithm for Tropical Support Vector Machines that overcomes the combinatorial explosion of previous approaches.
    Our main result shows that the spectral radius of a specially constructed Shapley operator fully characterizes separability and margin, and gives a sense for data overlap in the non-separable case.
    This provides a reduction to mean-payoff games, a well studied class of problems in algorithmic game theory.
-   This approach enables computing of an optimal separating hyperplane via scalable iterative algorithms -- with a complexity linear in the size of the data set and pseudo-polynomial in the desired precision.\todo{SG: added linearity (otherwise pseudo may look a bit weak)}
+   This approach enables computing of an optimal separating hyperplane via scalable iterative algorithms -- with a complexity linear in the size of the data set and pseudo-polynomial in the desired precision.
    Finally, we combine tropical classifiers with linear feature maps to construct piecewise-linear classifiers.
 \end{abstract}
 
@@ -72,28 +70,25 @@
 
 Classification is a fundamental task in machine learning, and Support Vector Machines (SVMs) have been a cornerstone method for decades. Traditional SVMs create decision boundaries using affine hyperplanes, which provide maximum-margin separation with strong generalization guarantees \cite{vapnik1999}. However, these linear boundaries become limiting when faced with complex, nonlinear data patterns, typically requiring kernel methods or feature engineering \cite{scholkopf2002}.
 
-\paragraph{Motivation: Beyond Linear Boundaries.} We build on\todo{SG: explore $\to$ build on?} tropical algebra, a framework where standard addition becomes the maximum operation, and multiplication becomes addition \cite{maclagan2015}. This leads to different geometric structures with attractive properties for machine learning: (1) instead of creating binary partitions, tropical hyperplanes divide space into multiple sectors, making them naturally suited for multi-class problems; (2) their piecewise-linear nature captures more complex patterns while maintaining interpretability; (3) the resulting decision boundaries coincide with those created by modern deep learning models with ReLU activations~\cite{zhang2018}.\todo{SG: reinforced ``coincide''} These properties provide richer, yet interpretable, decision boundaries that can capture nonlinear patterns in data while maintaining computational tractability \cite{maragos2021}.
+\paragraph{Motivation: Beyond Linear Boundaries.} We build on tropical algebra, a framework where standard addition becomes the maximum operation, and multiplication becomes addition \cite{maclagan2015}. This leads to different geometric structures with attractive properties for machine learning: (1) instead of creating binary partitions, tropical hyperplanes divide space into multiple sectors, making them naturally suited for multi-class problems; (2) their piecewise-linear nature captures more complex patterns while maintaining interpretability; (3) the resulting decision boundaries coincide with those created by modern deep learning models with ReLU activations~\cite{zhang2018}. These properties provide richer, yet interpretable, decision boundaries that can capture nonlinear patterns in data while maintaining computational tractability \cite{maragos2021}.
 
 Tropical geometry has emerged as a powerful tool for modeling piecewise-linear phenomena in machine learning. Together with polyhedral geometry,
-it has been used to bound the number of linearity regions ot functions realized by these networks~\cite{zhang2018,montufar}.\todo{SG: added this}
-It has been successfully applied to linear regression \cite{maragos2020,akian2020},\todo{SG added \cite{maragos2020}} principal component analysis \cite{yoshida2019}, neural network analysis \cite{maragos2021}, and clustering \cite{monod2022}. Related work by Fotopoulos et al.~\cite{fotopoulos2024}\todo{quote all or none} has explored neural network compression through tropical geometry, demonstrating the broader utility of these techniques.
+it has been used to bound the number of linearity regions ot functions realized by these networks~\cite{zhang2018,montufar}.
+It has been successfully applied to linear regression \cite{maragos2020,akian2020}, principal component analysis \cite{yoshida2019}, neural network analysis \cite{maragos2021}, and clustering \cite{monod2022}.
 
 \paragraph{Previous Work on Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multiclass problems, since a single tropical hyperplane in dimension $d$ partitions the space in $d$ regions.
-%% partiidemonstrated that tropical hyperplanes provide improved locality in decision boundaries, where only nearby support vectors influence classification, unlike classical SVMs where all support vectors contribute globally.\todo{SG: I am not sure it is a quality (less stable than L1), perhaps just mention that this is an elegant geometric approach to multiclass problem.}
 Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leadi
 ng to exponential worst-case complexity. This computational barrier has limited practical applications.
 Tang et al.~\cite{tang2020} and Monot et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category stay in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\todo{quote lavishly yoshida}
 
-\paragraph{From Game Theory to Machine Learning.} Our approach uses concepts from game theory—specifically, Shapley operators from zero-sum dynamic games. Shapley introduced and ``operator appraoch'' to solve discounted games~\cite{shapley1953}, the operators we use here arise in the study of games in infinite horizon in which the objective function is a mean-payoffper time unit \cite{zwick1996}.\todo{SG: quote gillette version mean payoff}
-%~\cite{kolokoltsov1997}.
-The spectral properties of these operators have been extensively studied for analyzing fixed points and convergence in nonlinear systems~\cite{kolokoltsov1997,gaubert2004}. In particular, the spectral radius coincides with the value of the associated mean-payoff game. Mean-payoff games belong to the complexity class NP $\cap$ coNP and their
-membership to P is a long standing open problem. However, huge instances of mean-payoff games
-can be solved by fast iterative methods, like relative Krasnoselskii-Mann
-iteration, whose complexity is bounded by $O(L/\epsilon^2)$, {\em linearly} in the input size $L$,
-and pseudopolynomially in the requested precision $\epsilon$. 
-%which have a linear complexity in the input size, Whereas the existence of a polynomial-time algort
-%, a class of two-player zero-sum games, are closely linked to the spectral radius of such operators \cite{zwick1996}.
-\todo[inline]{SG Delete (we need a broader state of the art on mean-payoff games -- and the theorem there only concerns approximating $\rho$ in $1/\epsilon$, here we need to approximate the eigenvector which is in $1/\epsilon^2$): Importantly, recent advances in solving these games efficiently \cite{allamigeon2025} provide efficient algorithms that we can apply to tropical classification. -- Indeed, we need instead to use the relative KM algorithm along the lines of~\cite{akiangaubertqisaadi}, with a complexity in $1/\epsilon^2$, but this algorithm provides the eigenvector. \cite{allamigeon2025} does not (only the eigenvalue is approximated, we can get sub and super eigenvectors however with a preoprocessing). The termination condition should be changed in the algo below to $\|T(x)-x\|_H\leq \epsilon$.}
+\paragraph{Background on mean‐payoff games.}
+Our approach uses concepts from game theory--specifically, Shapley operators arising in zero-sum dynamic games.
+Shapley introduced an ``operator approach'' for discounted stochastic games~\cite{shapley1953}, and Gillette later formulated the undiscounted, infinite-horizon variant now known as mean-payoff games~\cite{gillette1957}.
+The Shapley operators we employ encode the one-step payoffs and transitions in such games, whose objective is the long-run average reward per time unit~\cite{zwick1996}. 
+The spectral properties of these operators have been extensively studied to characterize fixed points and convergence in nonlinear systems~\cite{kolokoltsov1997,gaubert2004}.
+In particular, the spectral radius of a Shapley operator equals the game's value.
+Mean-payoff games lie in NP $\cap$ coNP, but no polynomial-time algorithm is known.
+Nonetheless, large instances can be solved efficiently by iterative schemes such as relative Krasnoselskii-Mann iteration, which require $O(L/\varepsilon^2)$ operator evaluations, which is \emph{linear} in input size $L$ for a precision $\varepsilon$.
 
 \paragraph{Contributions.} We develop a new approach to tropical classification using mean-payoff games,
 overcoming the computational limitations of previous approaches:
@@ -103,9 +98,9 @@ overcoming the computational limitations of previous approaches:
     
     \item We prove that when data are separable, the optimal margin equals $-\rho(T)$. Moreover, in the binary non-separable case, $\rho(T)$ quantifies exactly how much the data points would need to be perturbed to achieve separability.
     
-    \item We develop an algorithm based on mean-payoff games and Krasnoselskii--Mann iteration that computes the optimal classifier in a time that is linear in the input size. %pseudo-polynomial time rather than exponential time.
+    \item We develop an algorithm based on mean-payoff games and Krasnoselskii--Mann iteration that computes the optimal classifier in a time that is linear in the input size.
     
-    \item We extend our framework to tropical polynomial classifiers, enabling more expressive decision boundaries while preserving theoretical margin guarantees.\todo{Say more bout piecewise linear / feature map, useful in application}
+    \item We extend our framework to tropical polynomial classifiers, enabling more expressive piecewise linear decision boundaries (see Figure~\ref{fig:tropical_poly}) while preserving theoretical margin guarantees.
 \end{enumerate}
 
 This work makes tropical SVMs tractable for real-world applications, enabling natural multi-class classification, and opening new directions for piecewise-linear methods that balance expressivity, interpretability, and computational efficiency.
@@ -114,7 +109,7 @@ This work makes tropical SVMs tractable for real-world applications, enabling na
     \centering
     \resizebox{0.99\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
     \caption{Visualization of a degree-2 tropical polynomial classifier. Each region corresponds to a sector where a specific affine combination of the features dominate, creating an interpretable piecewise-linear decision boundary. Inference remains computationally efficient, requiring only the evaluation of the dominant monomial at each test point.}
-    \label{fig:tropical_hyperplane}
+    \label{fig:tropical_poly}
 \end{figure}
 
 The remainder of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how tropical separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to tropical polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions. The code to reproduce our figures and experiments is available at \url{https://github.com/samuelbx/tropical-svm}.
@@ -143,18 +138,18 @@ This transformation makes our classifier invariant to shifts—adding the same c
 \paragraph{Tropical Hyperplanes and Sectors.}
 A tropical hyperplane with apex $a \in \trop^d$ is defined as:
 \begin{align}
-\mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i + a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}
+\mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i + a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
 \end{align}
 
 This hyperplane divides the space into at most $d$ sectors. The $i$-th sector contains points where the maximum of $x + a$ occurs at the $i$-th coordinate:\todo{include a picture of tropical hyperplane in the body}
 \begin{align}
-S_i(a) = \{x \in \trop^d : i \in \underset{j}{\arg\max} (x_j + a_j)\}
+S_i(a) = \left\{x \in \trop^d : i \in \underset{j}{\arg\max} (x_j + a_j)\right\}.
 \end{align}
 
 Unlike classical hyperplanes that create two half-spaces, tropical hyperplanes create multiple sectors—one for each dimension. They naturally support multi-class classification, where we can assign different sectors to different classes.
 
 \paragraph{Hilbert Seminorm and Tropical Distance.}
-The Hilbert seminorm\todo{SG: I would delete ``in tropical geometry''} measures the ``spread'' of coordinates:
+The Hilbert seminorm measures the ``spread'' of coordinates:
 \begin{align}
 \|x\|_H = \max_i x_i - \min_i x_i
 \end{align}
@@ -163,7 +158,6 @@ This induces a projective distance $d_H(x,y) = \|x - y\|_H$ that remains invaria
 
 \paragraph{Tropical Convexity and Projections.}
 A set $C \subset \trop^d$ is a \emph{tropical convex cone} if for all $x,y$ in $C$ and coefficients $\lambda,\mu$ in $\trop$,
-%with $\lambda \oplus \mu = 0$ (meaning $\max(\lambda,\mu)=0$),
 the point $(\lambda \odot x) \oplus (\mu \odot y)$ is also in $C$ \cite{cohen2004,develin2004}.
 The tropical convex hull of points $\{x_1,\ldots,x_p\}$ is defined as:
 \begin{align}
@@ -175,14 +169,8 @@ The tropical projection $P_X(y)$ of a point $y$ onto this convex hull is:
 P_X(y) = \max\{z \in \text{cone}_{\max}(X) : z \leq y\}
 \end{align}
 \todo[inline,color=red!30]{SG. This is the projection on a cone, not on a convex set, perhaps we need to speak only of cones (modulo passing to the projective space), then this is ok. For a convex set, the max may be taken over a nonempty set}
-Tropical convexity generalizes the idea of conventional convexity to the max-plus setting. A conical tropical convex hull contains all tropical linear combinations of vectors. Moreover, the projection finds a ``closest'' point in the conical convex hull~\cite{AGNS10}.% that doesn't exceed our target point in any coordinate.
+Tropical convexity generalizes the idea of conventional convexity to the max-plus setting. A conical tropical convex hull contains all tropical linear combinations of vectors. Moreover, the projection finds a ``closest'' point in the conical convex hull~\cite{AGNS10}.
 \todo{SG: cite also Chepoi}
-
-We also define diagonal-free ``projections'' \cite{gaubert2011}:
- \begin{align}
- P_X^{\text{DF}}(y)_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{k \neq i} (-X_{kj} + y_k)\right\}.
- \end{align}
- Note that both $P$ and $P^\text{DF}$ have identical fixed-point sets.
 
 These tropical projections will play a central role in our classification framework. We will use them to build class-specific operators that characterize the separability of data.
 
@@ -197,33 +185,31 @@ A Shapley operator $T: \R^d \to \R^d$ satisfies two fundamental properties \cite
     \item \textit{Additive homogeneity:} For any constant $\alpha \in \R$, $T(\alpha + x) = \alpha + T(x)$,
       where $\alpha +x$ denotes the vector obtained by adding $\alpha$ to every entry of $x$.
 \end{enumerate}
-It admits a unique continuous extension $\T^d\to \T^d$, also denoted by $T$.\todo{cite Sparrow (Akian,gaubert,guterman 2012)} Then, the spectral radius of $T$ is defined as:
+It admits a unique continuous extension $\T^d\to \T^d$, also denoted by $T$ \cite{akian_correspondence_2011}. Then, the spectral radius of $T$ is defined as:
 \begin{align}
-\rho(T) = \max\{\lambda \in \R : \exists u \neq -\infty \text{ with } T(u) = \lambda + u\} \enspace,
+\rho(T) = \max\left\{\lambda \in \R : \exists u \neq -\infty \text{ with } T(u) = \lambda + u\right\},
 \end{align}
 where $-\infty\in \T^n$ denotes the all $-\infty$ vector -- in other words, the ``tropical zero'' vector.
 The maximum is always achieved.
 
 Equivalently, $\rho(T)$ is the smallest value of $\lambda\in \R$ for which there exists a vector $u\in\R^d$
-satisfying $T(u) \leq \lambda + u$ \cite{nussbaum1986,AGGut10,akiangaubertqisaadi}.\todo{quote akian...}
+satisfying $T(u) \leq \lambda + u$ \cite{nussbaum1986,AGGut10,akiangaubertqisaadi}.
 
 \paragraph{Constructing the Classification Operator.}
-Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \trop^d$. We define an operator $T^k$ for each class $k$ by taking the tropical projection onto the convex hull of points in that class:
+Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \trop^d$. We define an operator $T^k$ for each class $k$ by taking the diagonal-free variant of the tropical projection onto the convex hull of points in that class:
 \[
 T^k(x) = P_{X^k}^{\text{DF}}(x)
 \]
-
-Note that here we rather use the diagonal-free version as it allows a unified approach for both the separable and non-separable cases, but the non diagonal-free version of the operators can be used in the separable case.
+This diagonal-free variant is defined in Section~\ref{sec:algorithm}.
 
 We then combine these operators into a single classification operator $T$ defined coordinatewise as:
 \[
-T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}
+T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}\label{eq:single_operator}
 \]
 where $\operatorname{\max}_2$ denotes the second-largest value among the outputs. For binary classification ($K=2$), this simplifies to $T(x)=\min\{T^1(x), T^2(x)\}$.
 
 \paragraph{Main Theorem: Spectral Separability.}
 Our central result establishes the connection between tropical separability and the spectral radius:
-\todo{check whether everything works with DF and that teh satrt with any $P$ such that $x\leq Px$ if x fixed point. Then restate}
 \begin{theorem}[Spectral Separability Criterion]\label{thm:spectral_separability}
 Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the classification operator defined above. Then:
 
@@ -235,19 +221,9 @@ Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the cl
 
 Moreover, both $\rho(T)$ and an associated apex vector $a$ satisfying $T(a) = \rho(T)+a$ can be computed in pseudo-polynomial time using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).
 \end{theorem}
-
-\emph{Proof Sketch.}
-The proof follows two main directions. First, if there exists a tropical hyperplane $\mathcal{H}_a$ separating the classes with margin $\gamma>0$, then using the monotonicity and homogeneity properties of the operator, we can show $T(a) \leq a - \gamma$. This implies $\rho(T) \leq -\gamma < 0$.
-
-Conversely, if $\rho(T)<0$, we can find an eigenvector $a$ satisfying $T(a)=\rho(T)+a$. Using this apex, we can construct a separating hyperplane by assigning sectors based on which class operator dominates at each coordinate. This hyperplane achieves a margin of exactly $-\rho(T)$.
-
-For the non-separable case, we show that $\rho(T)$ quantifies the minimum perturbation required to make the data separable by constructing an explicit perturbation of magnitude $\rho(T)$.
-
-A complete proof is provided in Appendix~\ref{appendix:proofs}.
-
-\begin{remark}
-Lemmas used in the appendix for the proof allow us to derive results of theorem $1$ from slightly lighter assumptions. Namely, results $(1)$ and $(2)$ hold if we define $T$ with the non diagonal-free projections. We can also build a separating tropical hyperplane with margin at least $-\rho(T')$ if $T'$ is of the form  $T'(x)_i = \operatorname{\max}_2\{T'^1(x)_i, \dots, T'^K(x)_i\}$ with $T'^1, \ldots, T'^K$ being only Shapley operators and $-\rho(T)<0$, as long as $S(T') = S(T)$.
-\end{remark}
+A complete proof is provided in Appendix~\ref{appendix:proofs}, where we will see that some of these results remain with more general assumptions.
+It is organized as follows: first, Lemma~\ref{lemma:hyperplane_to_operator} states that for tropical projections (or their diagonal-free counterpart), $-\rho(T)$ is a lower bound on the margin.
+Then, Lemma~\ref{lemma:operator_to_hyperplane} gives a construction for a separating hyperplane of margin $-\rho(T)$ in the separable case. Finally, Lemma~\ref{lemma:perturbation} handles the binary overlapping case.
 
 \paragraph{Benefits of the Spectral Approach.} 
 Our framework advances the tropical SVM foundation established by Gärtner and Jaggi \cite{gartner2008}. Their work showed that tropical SVM could be formulated as finding a point of maximum margin within a tropical polytope defined by sector constraints, but required exhaustive exploration of sector assignments—leading to exponential complexity.
@@ -272,10 +248,21 @@ P_X(y)_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{1 \leq k \leq d} \left(-
 where $p$ is the number of points in $X$ and $X_{ij}$ is the $i$-th coordinate of the $j$-th point.
 
 This formulation can be viewed as a mean-payoff game \cite{akian2020} and computed in $\mathcal{O}(pd)$ time—linear in both the number of points and dimensions.
+There are two players, ``Max'' and ``Min'' (the maximizer
+and the minimizer), who alternate their actions. Starting on node
+$i$, Player Max chooses to move to node $j$, and receives $X_{ij}$
+from Player Min. Similarily, Player Min in turn chooses a node $k$
+and has to pay $-X_{kj}$ to Player Max.
+
+This enables us to define diagonal-free ``projections'' \cite{gaubert2011}:
+\begin{align}
+P_X^{\text{DF}}(y)_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{k \neq i} (-X_{kj} + y_k)\right\}.
+\end{align}
+In this modified game, the opponent is prevented from replying eye-for-an-eye.
 
 \paragraph{Computing the Spectral Radius with Krasnoselskii-Mann Iterations.}
 \label{subsec:spectral_computation}
-To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we apply a Krasnoselskii-Mann iteration scheme \cite{nussbaum1986, gaubert2004}, outlined in Algorithm~\ref{alg:km_iteration}.\todo{SG: very good to quote \cite{nussbaum1986,gaubert2004} but KM is not there, we should rather quote the original works of Baillon and Bruck~\cite{baillonbruck} and perhaps followup by cominetti et al, and see~\cite{akiangaubertqisaadi,akianmfcs} for the relative KM which we use here.}
+To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we apply a Krasnoselskii-Mann iteration scheme \cite{baillonbruck}, outlined in Algorithm~\ref{alg:km_iteration}.
 
 \begin{algorithm}
 \caption{Krasnoselskii--Mann Iteration for Tropical SVM}\label{alg:km_iteration}
@@ -283,18 +270,18 @@ To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we
 \STATE \textbf{Input:} Shapley operator $T$, convergence threshold $\varepsilon > 0$
 \STATE \textbf{Initialize:} $x^{(0)} \in \R^d$ (typically set to $\mathbf{1}_d$), $\lambda^{(0)} = 0$
 \FOR{$k = 0, 1, 2, \ldots$ until convergence}
-  \STATE $z^{(k+1)} \leftarrow \frac{1}{2}\bigl(x^{(k)} + T(x^{(k)})\bigr)$ \COMMENT{Average the current point with its image to stabilize}
-  \STATE $x^{(k+1)} \leftarrow z^{(k+1)} - \max\bigl(z^{(k+1)}\bigr)\,\mathbf{1}_d$ \COMMENT{Project onto the tropical projective space}
-  \STATE $\lambda^{(k+1)} \leftarrow 2\max\bigl(z^{(k+1)}\bigr) - \max\bigl(x^{(k)}\bigr)$ \COMMENT{Estimate the current spectral radius}
-  \IF{$|\lambda^{(k+1)} - \lambda^{(k)}| < \varepsilon$ \COMMENT{Check if the spectral radius has stabilized}}
+  \STATE $z^{(k+1)} \leftarrow \frac{1}{2}\bigl(x^{(k)} + T(x^{(k)})\bigr)$
+  \STATE $x^{(k+1)} \leftarrow z^{(k+1)} - \max\bigl(z^{(k+1)}\bigr)\,\mathbf{1}_d$ 
+  \STATE $\lambda^{(k+1)} \leftarrow 2\max\bigl(z^{(k+1)}\bigr) - \max\bigl(x^{(k)}\bigr)$
+  \IF{$\left\|T(x^{(k)})-x^{(k)}\right\|_H\leq \varepsilon$}
     \STATE \textbf{break}
   \ENDIF
 \ENDFOR
 \STATE \textbf{Return:} $\rho(T) \approx \lambda^{(\text{final})}$, $a \approx x^{(\text{final})} - \frac{1}{d}\sum_{i=1}^d x_i^{(\text{final})} \cdot \mathbf{1}_d$
 \end{algorithmic}
 \end{algorithm}
-\todo[inline]{SG: to be updated}
-Recent results by Allamigeon et al. \cite{allamigeon2025} show that this iteration achieves an $\varepsilon$-approximation in $O(1/\varepsilon)$ iterations. By avoiding the combinatorial exploration of sector assignments, our method runs in pseudo-polynomial time—specifically $O\bigl(\frac{nd}{\varepsilon}\bigr)$ for $n$ data points in $d$ dimensions.
+Recent results by Allamigeon et al. \cite{allamigeon2025} show that this iteration achieves an $\varepsilon$-approximation in $O(1/\varepsilon)$ iterations. By avoiding the combinatorial exploration of sector assignments, our method runs in pseudo-polynomial time—specifically $O\bigl(\frac{nd}{\varepsilon^2}\bigr)$ for $n$ data points in $d$ dimensions.
+\todo{[Samuel] true source?}
 
 \paragraph{The Complete Tropical SVM Algorithm.}\label{subsec:complete_algorithm}
 Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SVM classification.
@@ -306,13 +293,13 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
 \STATE \textbf{Construct Operators:}
   \STATE \quad For each class $k$, compute the tropical projection operator $T^k(x) = P_{X^k}(x)$
   \STATE \quad Combine via $T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}$ for each coordinate $i$
-\STATE \textbf{Compute Spectral Properties:}
+\STATE \textbf{Compute Eigenpair:}
   \STATE \quad Run Algorithm~\ref{alg:km_iteration} to obtain $\rho(T)$ and apex $a$
 \STATE \textbf{Assign Sectors to Classes:}
   \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
-    \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$ \COMMENT{Assignment based on dominant operator}
+    \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$
   \ELSE
-    \STATE Use a heuristic (e.g., majority vote) for non-separable data \COMMENT{Fall back to best-effort assignment}
+    \STATE Use a heuristic (e.g., majority vote) for non-separable data
   \ENDIF
 \STATE \textbf{Output:} Apex $a$, margin $-\rho(T)$ (if separable), and sector assignments for classification
 \end{algorithmic}
@@ -432,8 +419,13 @@ TBD
 \section{Proof of Theorem~\ref{thm:spectral_separability} (Spectral Separability)}\label{appendix:proofs}
 We provide a complete proof of our main result on spectral separability.
 
-\begin{lemma}\label{lemma:hyperplane_to_operator}
-If the hyperplane $\mathcal{H}_a$ separates point clouds $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, then $T(a) \leq -\gamma + a$.
+For any Shapley operator $T$, we define its fixed-point set as $\mathcal{S}(T) = \{x \in \trop^d : x \leq T(x)\}$. An important property is that any tropically convex set $V$ can be written as $V = S(P_V)$.
+Both $P$ and $P^\text{DF}$ have identical fixed-point sets and can serve as the class operators $T^k$ in our framework. We first characterize the maximal possible value for the margin.
+
+\begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
+Let $T^k$ be tropical projections on finite point clouds or their diagonal-free equivalents, and $T$ defined as the $\max_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
+If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, then $T(a) \leq -\gamma + a$.
+Therefore, if we have an eigenpair $(\rho(T),a)$ of $T$, necessarily $\gamma \le -\rho(T)$.
 \end{lemma}
 
 \begin{proof}
@@ -451,7 +443,7 @@ Note that $ \max_j(x_j - a_j) = \max_{j\neq i}(x_j - a_j) $ since $\gamma >0$.
 
 Taking the maximum over all $x \in X^k$, we get
 \begin{align}
-\max_{x \in X^k}(x_i - a_i) \leq \max_{x \in X^k}(\max_{j\neq i}(x_j - a_j)) - \gamma.
+\max_{x \in X^k}(x_i - a_i) \leq \max_{x \in X^k}\left(\max_{j\neq i}(x_j - a_j)\right) - \gamma.
 \end{align}
 
 By the definition of $T^k$, this implies
@@ -460,21 +452,22 @@ T^k(a)_i \leq -\gamma + a_i.
 \end{align}
 
 Since this holds for all $i \in I^{\ell}$ and all classes $k \neq \ell$, we have $T(a)_i \leq -\gamma + a_i$ for all $i$, which gives us $T(a) \leq -\gamma + a$.
+Finally, if $T(a)=\rho(T)+a$, then $\rho(T)\le -\gamma$.
 \end{proof}
 
-\begin{lemma}\label{lemma:operator_to_hyperplane}
-If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the data with a margin of at least $-\rho(T)$.
+\begin{lemma}[Max-margin hyperplane]\label{lemma:operator_to_hyperplane}
+Let $T^k$ be Shapley operators, and $T$ defined as before. If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.
 \end{lemma}
 
 \begin{proof}
-Since $\rho(T) < 0$, there exists $a \in \R^d$ such that $T(a) = \rho(T) + a$. We define the sectors as
+Since $\rho(T) < 0$, there exists $a \in \R^d$ such that $T(a) = \rho(T) + a$. In Algorithm \ref{alg:tropical_svm}, we defined the sectors as
 \begin{align}
-I^k = \{i : T^k(a)_i > \rho(T) + a_i\}.
+I^k = \left\{i : T^k(a)_i > \rho(T) + a_i\right\}.
 \end{align}
 
 First, we show these sectors are disjoint. If $i \in I^k \cap I^{\ell}$ for $k \neq \ell$, then $T^k(a)_i > \rho(T) + a_i$ and $T^{\ell}(a)_i > \rho(T) + a_i$. But then the second-largest value among $\{T^1(a)_i,\ldots,T^K(a)_i\}$ would exceed $\rho(T) + a_i$, contradicting $T(a)_i = \rho(T) + a_i$.
 
-Next, we show that each point belongs to its assigned sector. For $x \in X^k$ and $i \not\in I^k$, we have
+Next, we show that each point belongs to its assigned sector. For $x \in \mathcal{S}(T^k)$ and $i \not\in I^k$, we have
 \begin{align}
 x_i \leq T^k(x)_i = (T^k(x) - T^k(a))_i + T^k(a)_i.
 \end{align}
@@ -486,7 +479,7 @@ x_i - a_i \leq \max_j(x_j - a_j) + \rho(T).
 
 With $\rho(T) < 0$, this implies $x_i - a_i < \max_j(x_j - a_j)$, meaning $i$ cannot be the $\arg\max$ of $x - a$. Therefore, the $\arg\max$ must lie in $I^k$, placing $x$ in its correct sector.
 
-Finally, for the margin, consider $x \in X^k$ and sector $S^{\ell}$ with $\ell \neq k$. The distance is.
+Finally, for the margin, consider $x \in \mathcal{S}(T^k)$ and sector $S^{\ell}$ with $\ell \neq k$. The distance is
 \begin{align}
 d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
 \end{align}
@@ -494,9 +487,7 @@ d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
 Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
 \end{proof}
 
-For any Shapley operator $T$, we define its fixed-point set as $S(T) = \{x \in \trop^d : x \leq T(x)\}$. An important property is that any tropically convex set $V$ can be written as $V = S(P_V)$. 
-
-In the binary case where data overlaps, we have $T = \min(T^1, T^2)$, hence $S(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020}, this implies that $\rho(T)$ equals the inner radius of this intersection, measuring the extent of overlap. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of $V1+ \cap V^2$.
+In the binary case where data overlaps, we have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020}, this implies that $\rho(T)$ equals the inner radius of this intersection, measuring the extent of overlap. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
 \begin{align}
@@ -511,15 +502,9 @@ Intuitively, this can be thought of as representing the union of pairwise inters
     \label{fig:non_separable}
 \end{figure}
 
-Before moving to the next proof, we define diagonal-free ``projections'' \cite{gaubert2011}:
-\begin{align}
-P_X^{\text{DF}}(y)_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{k \neq i} (-X_{kj} + y_k)\right\}.
-\end{align}
-Both $P$ and $P^\text{DF}$ have identical fixed-point sets and can serve as the class operators $T^k$ in our framework.
 
-
-\begin{lemma}\label{lemma:perturbation}
-For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
+\begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
+Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
 \end{lemma}
 
 \begin{proof}
@@ -575,10 +560,10 @@ We have just shown that $\tilde{T}(a)_{i}=\tilde{T}^{1}(a)_{i}=a_{i}$,
 and finally $\tilde{T}(a)=a$.
 \end{proof}
 
-We summarize the proof of the Main Theorem:
+We summarize the proof of the Main Theorem, which holds when $T^k$ are diagonal-free projections:
 
 \begin{proof}[Proof of Theorem~\ref{thm:spectral_separability}]
-For part 1 (Separability Criterion): If the data are separable with margin $\gamma > 0$, then by Lemma~\ref{lemma:hyperplane_to_operator}, $\rho(T) \leq -\gamma < 0$. Conversely, if $\rho(T) < 0$, then by Lemma~\ref{lemma:operator_to_hyperplane}, the data are separable.
+For part 1 (Separability Criterion): If we have an eigenpair $(\rho(T),a)$ such that the data are separable with margin $\gamma > 0$, then by Lemma~\ref{lemma:hyperplane_to_operator}, $\rho(T) \leq -\gamma < 0$. Conversely, if $\rho(T) < 0$, then by Lemma~\ref{lemma:operator_to_hyperplane}, the data are separable.
 
 For part 2 (Margin Optimality): Lemma~\ref{lemma:hyperplane_to_operator} shows that no hyperplane can achieve a margin larger than $-\rho(T)$, while Lemma~\ref{lemma:operator_to_hyperplane} provides a construction achieving exactly this margin.
 
@@ -587,31 +572,33 @@ For part 3 (Soft-Margin Interpretation): Lemma~\ref{lemma:perturbation} shows th
 
 \section{Empirical Evaluation}\label{appendix:empirical}
 
-To validate our theoretical complexity analysis, we evaluated both standard tropical SVM and an enhanced tropical polynomial implementation (with $k=4$ sampling points per class) against scikit-learn's LinearSVC on benchmark datasets \cite{scikit-learn,waveform_database_generator_(version_1)_107}. All experiments used 5-fold cross-validation with standardized features. We compare training times for a fixed convergence threshold. All experiments were conducted on a MacBook Air M2.
+To validate our theoretical complexity analysis, we evaluated both standard tropical SVM and an enhanced tropical polynomial implementation (with $k=4$ sampling points per class) against scikit-learn's LinearSVC on benchmark datasets \cite{scikit-learn,waveform_database_generator_(version_1)_107}. All experiments used 5-fold cross-validation with standardized features. We compare training times for a fixed convergence threshold. All experiments were conducted on a MacBook Air M2 with 16GB RAM using NumPy \cite{harris2020array}.
 
 \begin{table}[h]
 \centering
 \footnotesize
-\begin{tabular}{@{}l@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 8pt}cc@{\hskip 8pt}cc@{\hskip 8pt}cc@{}}
+\begin{tabular}{@{}l@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 8pt}cc@{\hskip 4pt}c@{\hskip 8pt}ccc@{\hskip 8pt}cc@{}}
 \toprule
-\multirow{3}{*}{\textbf{Dataset}} & \multirow{3}{*}{\textbf{\#C}} & \multirow{3}{*}{\textbf{\#S}} & \multicolumn{6}{c}{\textbf{Accuracy (\%) / Training Time (s)}} \\
-\cmidrule(lr){4-9}
-& & & \multicolumn{2}{c}{\textbf{Tropical SVM}} & \multicolumn{2}{c}{\textbf{Tropical Poly}} & \multicolumn{2}{c}{\textbf{Linear SVC}} \\
-\cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
-& & & Acc & Time & Acc & Time & Acc & Time \\
+\multirow{3}{*}{\textbf{Dataset}} & \multirow{3}{*}{\textbf{\#C}} & \multirow{3}{*}{\textbf{\#S}} & \multicolumn{8}{c}{\textbf{Accuracy (\%) / Training Time (s) / \#KM Iter}} \\
+\cmidrule(lr){4-11}
+& & & \multicolumn{3}{c}{\textbf{Tropical SVM}} & \multicolumn{3}{c}{\textbf{Tropical Poly}} & \multicolumn{2}{c}{\textbf{Linear SVC}} \\
+\cmidrule(lr){4-6} \cmidrule(lr){7-9} \cmidrule(lr){10-11}
+& & & Acc & Time & \#KM & Acc & Time & \#KM & Acc & Time \\
 \midrule
-Iris & 3 & 150 & 66.7 & 0.0004 & 93.3 & 0.038 & 92.7 & 0.0003 \\
-Wine & 3 & 178 & 73.7 & 0.0008 & 92.7 & 0.036 & 97.8 & 0.0004 \\
-Breast Cancer & 2 & 569 & 82.6 & 0.0025 & 91.7 & 0.174 & 96.7 & 0.0006 \\
-Waveform & 3 & 5000 & 50.5 & 0.021 & 63.7 & 3.571 & 86.7 & 0.0147 \\
+Iris & 3 & 150 & 66.7 & 0.0006 & 11.2 & 94.0 & 0.102 & 108.6 & 92.7 & 0.0004 \\
+Wine & 3 & 178 & 74.2 & 0.0019 & 25.0 & 93.3 & 0.115 & 113.6 & 97.8 & 0.0006 \\
+Breast Cancer & 2 & 569 & 82.1 & 0.0081 & 32.6 & 91.7 & 0.596 & 432.6 & 96.7 & 0.0008 \\
+Waveform & 3 & 5000 & 49.9 & 0.0756 & 23.0 & 64.4 & 9.330 & 319.8 & 86.7 & 0.0246 \\
 \bottomrule
 \end{tabular}
 \vspace{0.5em}
-\caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.9\% to 9.6\%. \#C: number of classes; \#S: number of samples.}
+\caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.7\% to 9.1\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii-Mann iterations.
+Chosen convergence threshold $\varepsilon$ is $10^{-3}$ times the the characteristic variation scale of the considered data.}
 \label{tab:benchmark_results}
-\end{table}
+\end{table}    
 
 The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets, demonstrating practical computational feasibility. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
+Tropical SVM indeed fails to seprarate these datasets and thus performs poorly, while polynomials make the data separable.
 
 Notably, the spectral radius values closely align with our theoretical predictions: datasets yielding negative spectral radius values (Wine: -7.53, Breast Cancer: -1.76, Iris: -0.97) exhibited the highest tropical polynomial accuracy, while the non-separable Waveform dataset (spectral radius: 0.87) proved more challenging.
 
@@ -619,15 +606,13 @@ As expected, the number of monomials increases from $d+1$ in standard tropical S
 
 \begin{figure}[htbp]
     \centering
-    % First subfigure
     \begin{subfigure}{0.48\textwidth}
         \centering
         \resizebox{0.95\textwidth}{!}{\input{figures/pca_degree_scaling.pgf}}
         \caption{Training time vs. number of monomials}
         \label{fig:pca_degree_scaling}
     \end{subfigure}
-    \hfill  % Adds horizontal spacing between subfigures
-    % Second subfigure
+    \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \resizebox{0.95\textwidth}{!}{\input{figures/sample_size_scaling.pgf}}
@@ -639,6 +624,8 @@ As expected, the number of monomials increases from $d+1$ in standard tropical S
 \end{figure}
 
 Figure~\ref{fig:scaling_analysis} reveals that the tropical SVM algorithm exhibits linear scaling behavior both with respect to the number of effective monomials and the training set size. We used a Python script that systematically varies PCA dimensions, polynomial degrees, and sample sizes on MNIST data \cite{MNIST}.
+
+\todo{Fix algorithm. Regen figures and tables. Add KM iterations vs. $1/\varepsilon$.}
 
 \newpage
 \section*{NeurIPS Paper Checklist}

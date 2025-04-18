@@ -16,7 +16,7 @@ import traceback
 warnings.filterwarnings('ignore')
 
 # Import tropical SVM components
-from tropy.svm import TropicalSVC, get_km_time
+from tropy.svm import TropicalSVC, get_km_time, get_km_iter
 
 def get_memory_usage():
     """Get current memory usage in MB"""
@@ -54,6 +54,7 @@ def compare_models(X, y, feature_selection=None, cv_folds=5, random_state=42, ma
         'tropical_accuracies': [],
         'linear_accuracies': [],
         'tropical_times': [],
+        'tropical_iters': [],
         'linear_times': [],
         'tropical_n_monomials': [],
         'spectral_radiuses': []
@@ -88,25 +89,19 @@ def compare_models(X, y, feature_selection=None, cv_folds=5, random_state=42, ma
         
         # Train and evaluate Tropical SVM
         try:
-            tropical_start_time = time.time()
             tropical_model = TropicalSVC()
             
-            # Add timeout protection
-            try:
-                tropical_model.fit(train_classes, poly_degree=1, native_tropical_data=False, 
-                                  feature_selection=feature_selection)
-                tropical_time = get_km_time() or (time.time() - tropical_start_time)
-                
-                # Check if taking too long
-                if tropical_time > max_time:
-                    print(f"    Skipping - exceeded time limit ({tropical_time:.1f}s > {max_time}s)")
-                    continue
-            except KeyboardInterrupt:
-                raise
-            except Exception as e:
-                print(f"    Error during training: {e}")
+            tropical_model.fit(train_classes, poly_degree=1, native_tropical_data=False, 
+                                feature_selection=feature_selection)
+            tropical_time = get_km_time()
+            
+            # Check if taking too long
+            if tropical_time > max_time:
+                print(f"    Skipping - exceeded time limit ({tropical_time:.1f}s > {max_time}s)")
                 continue
             
+            tropical_iter = get_km_iter()
+
             # Get number of monomials
             n_monomials = len(tropical_model._monomials) if hasattr(tropical_model, '_monomials') else 0
             
@@ -123,6 +118,7 @@ def compare_models(X, y, feature_selection=None, cv_folds=5, random_state=42, ma
             results['tropical_accuracies'].append(tropical_acc)
             results['linear_accuracies'].append(linear_acc)
             results['tropical_times'].append(tropical_time)
+            results['tropical_iters'].append(tropical_iter)
             results['linear_times'].append(linear_time)
             results['tropical_n_monomials'].append(n_monomials)
             results['spectral_radiuses'].append(spectral_radius)
@@ -147,6 +143,7 @@ def compare_models(X, y, feature_selection=None, cv_folds=5, random_state=42, ma
             'linear_ci_lower': np.mean(results['linear_accuracies']) - 1.96 * np.std(results['linear_accuracies']) / np.sqrt(n_folds),
             'linear_ci_upper': np.mean(results['linear_accuracies']) + 1.96 * np.std(results['linear_accuracies']) / np.sqrt(n_folds),
             'tropical_mean_time': np.mean(results['tropical_times']),
+            'tropical_km_iterations': np.mean(results['tropical_iters']),
             'linear_mean_time': np.mean(results['linear_times']),
             'tropical_mean_monomials': np.mean(results['tropical_n_monomials']),
             'feature_selection': feature_selection,
@@ -256,6 +253,7 @@ def run_benchmark():
                 print(f"Linear SVC:   {result['linear_mean_acc']:.4f} ± {result['linear_std_acc']:.4f}")
                 print(f"Average number of monomials: {result['tropical_mean_monomials']:.1f}")
                 print(f"Tropical training time: {result['tropical_mean_time']:.4f}s")
+                print(f"Tropical #KM iterations: {result['tropical_km_iterations']:.4f}")
                 print(f"Linear training time: {result['linear_mean_time']:.4f}s")
                 print(f"Mean spectral radius: {result['mean_spectral_radius']:.6f}")
     
@@ -278,6 +276,7 @@ def create_csv_results(all_results):
                 'Linear Accuracy': result['linear_mean_acc'],
                 'Linear Std Dev': result['linear_std_acc'],
                 'Tropical Time': result['tropical_mean_time'],
+                'Tropical #KM iterations': result['tropical_km_iterations'],
                 'Linear Time': result['linear_mean_time'],
                 'Num Monomials': result['tropical_mean_monomials'],
                 'Spectral Radius': result['mean_spectral_radius']
@@ -322,6 +321,7 @@ def main():
                 'Tropical Accuracy': r['tropical_mean_acc'],
                 'Linear Accuracy': r['linear_mean_acc'],
                 'Tropical Time': r['tropical_mean_time'],
+                'Tropical #KM iterations': r['tropical_km_iterations'],
                 'Linear Time': r['linear_mean_time'],
                 'Num Monomials': r['tropical_mean_monomials'],
                 'Spectral Radius': r['mean_spectral_radius']

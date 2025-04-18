@@ -408,7 +408,7 @@ def plot_pca_degree_results(results, save_pgf=True, save_path='mnist_results/pca
                 y_line = coefficient * x_line  # y = e^c * x
                 
                 # Add the regression line to the plot
-                ax1.plot(x_line, y_line, 'r--', label=f'linear fit (coefficient: {coefficient:.2e})')
+                ax1.plot(x_line, y_line, 'r--', label=f'linear fit (slope: {coefficient:.2e})')
                 print(f"Added log-log regression line: y = {coefficient:.4e}x, R²={r_squared:.2f}")
             else:
                 print("Not enough unique values for regression")
@@ -543,17 +543,21 @@ def main():
     # Load MNIST dataset (only for initial checkpoints, won't run experiments)
     print("Checking for MNIST dataset checkpoint...")
     mnist_data = checkpoint_mgr.load_checkpoint("mnist_data")
-    
     if mnist_data is None:
-        print("MNIST dataset checkpoint not found. Creating a small placeholder dataset.")
-        # Create dummy data just to avoid errors, won't actually be used for training
-        X = np.random.rand(100, 784)
-        y = np.random.randint(0, 10, 100)
-        # Save to checkpoint
-        checkpoint_mgr.save_checkpoint((X, y), "mnist_data")
-    else:
-        X, y = mnist_data
-        print(f"MNIST dataset checkpoint loaded: {X.shape[0]} samples, {X.shape[1]} features")
+        print("MNIST dataset checkpoint not found. Downloading dataset...")
+        # Try using sklearn to fetch MNIST
+        from sklearn.datasets import fetch_openml
+        mnist = fetch_openml('mnist_784', version=1, cache=True)
+        X = mnist.data.astype('float32') / 255.0  # Scale to [0,1]
+        y = mnist.target.astype('int')
+        
+        print(f"MNIST dataset downloaded: {X.shape[0]} samples, {X.shape[1]} features")
+        
+        mnist_data = (X, y)
+        checkpoint_mgr.save_checkpoint(mnist_data, "mnist_data")
+
+    X, y = mnist_data
+    print(f"MNIST dataset checkpoint loaded: {X.shape[0]} samples, {X.shape[1]} features")
     
     # Load and visualize experiment results
     print("\n==== VISUALIZING EXPERIMENT 1: PCA Dimensions and Polynomial Degrees ====")
@@ -561,7 +565,7 @@ def main():
         X, y, 
         pca_dimensions=[10, 20, 30, 40, 50],
         degrees=[1, 2, 3],
-        skip_experiments=True
+        skip_experiments=False
     )
     
     print("\n==== VISUALIZING EXPERIMENT 2: Sample Size Scaling ====")
@@ -569,8 +573,8 @@ def main():
         X, y,
         pca_dim=10,
         degree=3,
-        sample_percentages=[10, 20, 30, 50, 75, 100],
-        skip_experiments=True
+        sample_percentages=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        skip_experiments=False
     )
     
 if __name__ == "__main__":
