@@ -62,14 +62,10 @@
 \begin{abstract}
    In 2006, Gärtner and Jaggi introduced a tropical analogue of support vector machines, using a single tropical hyperplane in dimension $n$ to separate $n$ classes of points. Efficiently computing tropical separators has remained an open problem.
    We introduce an algorithm for Tropical Support Vector Machines that overcomes the combinatorial explosion of previous approaches.
-   %Tropical hyperplanes partition the input space into multiple sectors, naturally supporting multi-class classification.
-Our main result shows that the spectral radius of a specially constructed Shapley operator fully characterizes separability and margin: data are tropically separable if and only if the spectral radius is negative, with an optimal margin, both in the separable and inseparable case, is determined by this spectral
-   raidus. This provides a reduction to mean-payoff games, a well studied class of problems in algorithmic game theory.
-   %% case  equal to the negative of this radius.
-   %% In the non-separable setting, the spectral radius characterizes the overlap between classes. 
+   Our main result shows that the spectral radius of a specially constructed Shapley operator fully characterizes separability and margin, and gives a sense for data overlap in the non-separable case.
+   This provides a reduction to mean-payoff games, a well studied class of problems in algorithmic game theory.
    This approach enables computing of an optimal separating hyperplane via scalable iterative algorithms -- with a complexity linear in the size of the data set and pseudo-polynomial in the desired precision.\todo{SG: added linearity (otherwise pseudo may look a bit weak)}
    Finally, we combine tropical classifiers with linear feature maps to construct piecewise-linear classifiers.
-   %% We extend this framework to tropical polynomials, enabling more flexible decision boundaries while maintaining margin guarantees.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -171,8 +167,7 @@ A set $C \subset \trop^d$ is a \emph{tropical convex cone} if for all $x,y$ in $
 the point $(\lambda \odot x) \oplus (\mu \odot y)$ is also in $C$ \cite{cohen2004,develin2004}.
 The tropical convex hull of points $\{x_1,\ldots,x_p\}$ is defined as:
 \begin{align}
-  \text{cone}_{\max}(X) = \left\{\bigoplus_{i=1}^p \lambda_i \odot x_i : \lambda_i \in \trop\} \enspace .
-%  ,\, \bigoplus_{i=1}^p \lambda_i = 0 \right\}
+  \text{cone}_{\max}(X) = \left\{\bigoplus_{i=1}^p \lambda_i \odot x_i : \lambda_i \in \trop\} \right\}
 \end{align}
 
 The tropical projection $P_X(y)$ of a point $y$ onto this convex hull is:
@@ -250,7 +245,9 @@ For the non-separable case, we show that $\rho(T)$ quantifies the minimum pertur
 
 A complete proof is provided in Appendix~\ref{appendix:proofs}.
 
-\begin{remark} Lemmas used in the appendix for the proof allow us to derive results of theorem $1$ from slightly lighter assumptions. Namely, results $(1)$ and $(2)$ hold if we define $T$ with the non diagonal-free projections. We can also build a separating tropical hyperplane with margin at least $-\rho(T')$ if $T'$ is of the form  $T'(x)_i = \operatorname{\max}_2\{T'^1(x)_i, \dots, T'^K(x)_i\}$ with $T'^1, \ldots, T'^K$ being only Shapley operators and $-\rho(T)<0$, as long as $S(T') = S(T)$.
+\begin{remark}
+Lemmas used in the appendix for the proof allow us to derive results of theorem $1$ from slightly lighter assumptions. Namely, results $(1)$ and $(2)$ hold if we define $T$ with the non diagonal-free projections. We can also build a separating tropical hyperplane with margin at least $-\rho(T')$ if $T'$ is of the form  $T'(x)_i = \operatorname{\max}_2\{T'^1(x)_i, \dots, T'^K(x)_i\}$ with $T'^1, \ldots, T'^K$ being only Shapley operators and $-\rho(T)<0$, as long as $S(T') = S(T)$.
+\end{remark}
 
 \paragraph{Benefits of the Spectral Approach.} 
 Our framework advances the tropical SVM foundation established by Gärtner and Jaggi \cite{gartner2008}. Their work showed that tropical SVM could be formulated as finding a point of maximum margin within a tropical polytope defined by sector constraints, but required exhaustive exploration of sector assignments—leading to exponential complexity.
@@ -857,6 +854,5 @@ Figure~\ref{fig:scaling_analysis} reveals that the tropical SVM algorithm exhibi
     \end{itemize}
 
 \end{enumerate}
-
 
 \end{document}
