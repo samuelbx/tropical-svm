@@ -30,8 +30,8 @@ def generate_toy_data(dataset: str) -> tuple[list[np.ndarray], bool]:
     elif 'mixed' in dataset:
       Xplus[2, :] += 3
       Xminus[2, :] -= 3
-    apply_noise(Xplus, seed=2024, mu=0.2)
-    apply_noise(Xminus, seed=2024, mu=0.2)
+    apply_noise(Xplus, seed=2025, mu=0.5)
+    apply_noise(Xminus, seed=2024, mu=0.5)
     data_classes = [Xplus, Xminus]
   elif dataset == 'moons':
     native_tropical = False
@@ -115,6 +115,34 @@ def main(args):
   L = plot_classes(ax, model._data_classes)
   plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L, sector_indicator=model._sector_indicator, data_classes=(model._data_classes if args.equations else None), simplified_mode=simplified, margin=(model.margin() if log_linear_beta is None else 0))
 
+  if args.show_axes:
+    colors = ['#FF9999', '#99CCFF', '#99DD99']
+    apex = -model._coeffs[0:3] if len(model._coeffs) >= 3 else np.zeros(3)
+    axis_length = L / 5
+    
+    for i in range(3):
+        direction = np.zeros(3)
+        direction[i] = axis_length
+        
+        ax.quiver(apex[0], apex[1], apex[2], 
+                 direction[0], direction[1], direction[2],
+                 color=colors[i], linewidth=2, arrow_length_ratio=0.1)
+        
+        text_offset = direction * 1.1
+        ax.text(apex[0] + text_offset[0], 
+                apex[1] + text_offset[1], 
+                apex[2] + text_offset[2], 
+                f'${["x", "y", "z"][i]}$', 
+                color=colors[i], fontsize=14, fontweight='bold',
+                ha='center', va='center')
+    
+    label_offset = np.array([0, 0, -axis_length/4])
+    ax.text(apex[0] + label_offset[0], 
+            apex[1] + label_offset[1], 
+            apex[2] + label_offset[2], 
+            f'$\\mathrm{{Apex}} = ({apex[0]:.2f}, {apex[1]:.2f}, {apex[2]:.2f})$', 
+            color='black', fontsize=11, ha='center')
+
   if save is not None:
     if save == '__DEFAULT__':
       plt.savefig(f'{dataset}_{degree}.svg')
@@ -132,6 +160,7 @@ if __name__ == '__main__':
   parser.add_argument("--beta", type=float, default=None, help="If specified, Beta value for using 'linear SVM on log paper' trick")
   parser.add_argument("--simplified", action="store_true", help="Provide a simplified view of the hypersurface, with the decision boundary only")
   parser.add_argument("--equations", action="store_true", help="Show the equations for each monomial")
+  parser.add_argument("--show-axes", action="store_true", help="Show the x, y, z axes")
   parser.add_argument("--feature-selection", type=int, metavar='no_features', help="Experimental: heuristic to generate more relevant monomials based on data. Specify the number of points to sample per class if wanted. Bypasses degree option.")
 
   if len(sys.argv) == 1:

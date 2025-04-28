@@ -43,4 +43,4 @@ def build_toy_tropical_data(n_points: int, n_features: int, n_positive_sectors: 
   if noise:
     apply_noise(Cplus, seed=seed)
     apply_noise(Cminus, seed=seed)
-  return Cplus, Cminus
+  return Cplus.copy(), Cminus.copy()

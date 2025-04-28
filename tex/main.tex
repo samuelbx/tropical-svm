@@ -107,9 +107,19 @@ This work makes tropical SVMs tractable for real-world applications, enabling na
 
 \begin{figure}[h]
     \centering
-    \resizebox{0.99\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
-    \caption{Visualization of a degree-2 polynomial classifier. Each region corresponds to a sector where a specific affine combination of the features dominate, creating an interpretable piecewise-linear decision boundary. Inference remains computationally efficient, requiring only the evaluation of the dominant monomial at each test point.}
-    \label{fig:tropical_poly}
+    \begin{subfigure}[b]{0.58\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
+        \label{fig:tropical_poly}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.38\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\clipbox{0.20\width{} 0.20\height{} 0.20\width{} 0.20\height{}}{\input{figures/example.pgf}}}
+        \label{fig:hyperplane_example}
+    \end{subfigure}
+    \caption{Left: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary. Right: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex.}
+    \label{fig:combined}
 \end{figure}
 
 The remainder of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions. The code to reproduce our figures and experiments is available at \url{https://github.com/samuelbx/tropical-svm}.
@@ -141,7 +151,7 @@ A tropical hyperplane with apex $a \in \trop^d$ is defined as:
 \mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i + a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
 \end{align}
 
-This hyperplane divides the space into at most $d$ sectors. The $i$-th sector contains points where the maximum of $x + a$ occurs at the $i$-th coordinate:\todo{include a picture of tropical hyperplane in the body}
+This hyperplane divides the space into at most $d$ sectors. The $i$-th sector contains points where the maximum of $x + a$ occurs at the $i$-th coordinate:
 \begin{align}
 S_i(a) = \left\{x \in \trop^d : i \in \underset{j}{\arg\max} (x_j + a_j)\right\}.
 \end{align}
@@ -149,7 +159,7 @@ S_i(a) = \left\{x \in \trop^d : i \in \underset{j}{\arg\max} (x_j + a_j)\right\}
 Unlike classical hyperplanes that create two half-spaces, tropical hyperplanes create multiple sectors—one for each dimension. They naturally support multi-class classification, where we can assign different sectors to different classes.
 
 \paragraph{Hilbert Seminorm.}
-The Hilbert seminorm measures the ``spread'' of coordinates:
+The Hilbert seminorm measures the spread of coordinates:
 \begin{align}
 \|x\|_H = \max_i x_i - \min_i x_i
 \end{align}
@@ -370,21 +380,21 @@ This approach maintains the core theoretical guarantees of the hyperplane formul
 
 \newpage
 
-\vspace*{2em}
+\vspace*{3em}
 \begin{figure}[ht!]
     \centering
-    \resizebox{0.9\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
+    \resizebox{0.7\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
     \caption{Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho(T)/3$ due to our theoretical results.}
     \label{fig:homogeneous_selection}
 \end{figure}
 \vspace*{4em}
 \begin{figure}[ht!]
     \centering
-    \resizebox{0.9\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
+    \resizebox{0.7\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
     \caption{Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref{sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.}
     \label{fig:adaptive_polynomial}
 \end{figure}
-\vspace*{2em}
+\vspace*{3em}
 
 
 \newpage
