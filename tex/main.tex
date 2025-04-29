@@ -76,12 +76,12 @@ Classification is a fundamental task in machine learning, and Support Vector Mac
 
 Tropical geometry has emerged as a powerful tool for modeling piecewise-linear phenomena in machine learning. Together with polyhedral geometry,
 it has been used to bound the number of linearity regions ot functions realized by these networks~\cite{zhang2018,montufar}.
-It has been successfully applied to linear regression \cite{maragos2020,akian2020}, principal component analysis \cite{yoshida2019}, neural network analysis \cite{maragos2021}, and clustering \cite{monod2022}.
+It has been successfully applied to linear regression \cite{maragos2020,akian2020}, principal component analysis \cite{yoshida2019} and neural network analysis \cite{maragos2021}.
 
 \paragraph{Previous Work on Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multiclass problems, since a single tropical hyperplane in dimension $d$ partitions the space in $d$ regions.
 Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leadi
 ng to exponential worst-case complexity. This computational barrier has limited practical applications.
-Tang et al.~\cite{tang2020} and Monot et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category stay in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\todo{quote lavishly yoshida}
+Tang et al.~\cite{tang2020} later developed specialized algorithms for binary classification cases where data points from the same category stay in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\todo{quote lavishly yoshida}
 
 \paragraph{Background on mean‐payoff games.}
 Our approach uses concepts from game theory--specifically, Shapley operators arising in zero-sum dynamic games.

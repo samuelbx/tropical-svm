@@ -2,19 +2,19 @@ import csv
 import numpy as np
 import pandas as pd
 from .ops import proj, veronese
-from .utils import count_points_sectors, max_max2_idx
+from .utils import max_max2_idx
 from .veronese import map_to_exponential_space, simplex_lattice_points, newton_polynomial
-from itertools import combinations
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
 import time
 
 
 class TropicalSVC():
   
-  _monomials, _coeffs = None, None
+  _monomials, _coeffs, _scaler = None, None, None
 
-  def fit(self, data_classes: list[np.ndarray], poly_degree: int = 1, native_tropical_data: bool = False, log_linear_beta: bool = None, feature_selection: int = None) -> None:
+  def fit(self, data_classes: list[np.ndarray], poly_degree: int = 1, native_tropical_data: bool = False, log_linear_beta: bool = None, feature_selection: int = None, standardize: bool = False) -> None:
     """Fit the model according to the given training data.
     data_classes: list of classes (2D NumPy arrays whose columns are the data points)
     poly_degree: degree of the tropical polynomial to fit
@@ -24,6 +24,14 @@ class TropicalSVC():
     """
     # By default, map d-dimensional data into subspace H: x1+...+x^{d+1}=0 of R^{d+1}
     data_classes_copy = data_classes.copy()
+
+    if standardize:
+      all_samples = np.hstack(data_classes).T
+      self._scaler = StandardScaler().fit(all_samples)
+      data_classes_copy = [ self._scaler.transform(C.T).T for C in data_classes ]
+    else:
+      self._scaler = None
+
     if not native_tropical_data:
       for i, data in enumerate(data_classes_copy):
         data_classes_copy[i] = np.vstack((-np.sum(data, axis=0), data))
@@ -45,7 +53,7 @@ class TropicalSVC():
       self._apex = np.sign(w) * np.log(np.sign(w) * w)/log_linear_beta
     else:
       # Compute apex
-      self._apex, self._eigval = _inrad_eigenpair(aug_data_classes, N=1000)
+      self._apex, self._eigval = _inrad_eigenpair(aug_data_classes, N=1000, tol=1e-3)
 
     # TODO: use less lines of code
     projections = _tropical_projections(aug_data_classes, self._apex)
@@ -80,6 +88,8 @@ class TropicalSVC():
     """Predict the labels of some data points (as a 2D matrix whose columns are the points)"""
     assert self._monomials is not None, "Model must be trained before prediction"
     data_copy = data.copy()
+    if self._scaler is not None:
+      data_copy = self._scaler.transform(data_copy.T).T
     if not self._tropical_data:
       data_copy = np.vstack((-np.sum(data_copy, axis=0), data_copy))
     evaluation = self._monomials @ data_copy + self._coeffs[:, np.newaxis]
@@ -122,19 +132,20 @@ def _tropical_projections(Clist: list[np.ndarray], x: np.ndarray) -> np.ndarray:
   return projections
 
 
-# TODO: use previous function and max2
 def _inrad_op(Clist: list[np.ndarray]) -> callable:
   """Returns the Shapley operator for tropical linear classification"""
   def op(x):
-    d = Clist[0].shape[0]
-    comb_idxes = list(combinations(range(len(Clist)), 2))
-    projections = np.zeros((len(Clist), d))
-    for i, C in enumerate(Clist):
-      projections[i] = proj(C, x, DF=True)
-    minimums = np.zeros((len(comb_idxes), d))
-    for k, (i, j) in enumerate(comb_idxes):
-      minimums[k] = np.minimum(projections[i], projections[j])
-    return np.maximum.reduce(minimums, axis=0)
+    if len(Clist) == 1:
+      return proj(Clist[0], x, DF=True)
+    max1, max2 = proj(Clist[0], x, DF=True), proj(Clist[1], x, DF=True)
+    mask = max1 < max2
+    max1, max2 = np.where(mask, max2, max1), np.where(mask, max1, max2)
+    for i in range(2, len(Clist)):
+      proj_i = proj(Clist[i], x, DF=True)
+      new_max1 = np.maximum(max1, proj_i)
+      max2 = np.where(proj_i > max1, max1, np.maximum(max2, proj_i))
+      max1 = new_max1
+    return max2
   return op
 
 
@@ -155,17 +166,19 @@ def _krasnoselskii_mann(op: callable, N: int,
   global KM_TIME, KM_ITER
   z = None
   t1 = time.time()
+  err = 0
   for i in range(N):
     op_eval = op(x)
     z = (x + op_eval) / 2
     new_x = z - np.max(z)
     criterion = op_eval - x
-    if np.max(criterion) - np.min(criterion) < tol * (np.max(x) - np.min(x)):
+    err = np.max(criterion) - np.min(criterion)
+    if err < tol:
       x = new_x
       break
     x = new_x
   if i == N-1:
-    print(f"WARN: KM did not converge in {N} iterations")
+    print(f"WARN: KM did not converge in {N} iterations (last error: {err:2f})")
   else:
     print(f"KM converged in {i+1} iterations")
   t2 = time.time()
@@ -182,9 +195,9 @@ def get_km_iter():
   return KM_ITER
 
 
-def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20) -> tuple[np.ndarray, float]:
+def _inrad_eigenpair(Clist: list[np.ndarray], N: int = 20, tol: float = 1e-3) -> tuple[np.ndarray, float]:
   """Compute the eigenpair of the multi-class inner radius operator"""
-  return _krasnoselskii_mann(_inrad_op(Clist), N, np.ones(Clist[0].shape[0]))
+  return _krasnoselskii_mann(_inrad_op(Clist), N, np.ones(Clist[0].shape[0]), tol=tol)
 
 
 def _experimental_feature_selection(X: list[np.ndarray], d: int, no_samples: int):
