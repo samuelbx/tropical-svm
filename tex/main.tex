@@ -78,10 +78,9 @@ Tropical geometry has emerged as a powerful tool for modeling piecewise-linear p
 it has been used to bound the number of linearity regions ot functions realized by these networks~\cite{zhang2018,montufar}.
 It has been successfully applied to linear regression \cite{maragos2020,akian2020}, principal component analysis \cite{yoshida2019}, neural network analysis \cite{maragos2021}, and clustering \cite{monod2022}.
 
-\paragraph{Previous Work on Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multiclass problems, since a single tropical hyperplane in dimension $d$ partitions the space in $d$ regions.
+\paragraph{Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multiclass problems, since a single tropical hyperplane in dimension $d$ partitions the space in $d$ regions.
 Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leadi
 ng to exponential worst-case complexity. This computational barrier has limited practical applications.
-Tang et al.~\cite{tang2020} and Monot et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category stay in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\todo{quote lavishly yoshida}
 
 \paragraph{Background on mean‐payoff games.}
 Our approach uses concepts from game theory--specifically, Shapley operators arising in zero-sum dynamic games.
@@ -106,6 +105,12 @@ overcoming the computational limitations of previous approaches:
 \end{enumerate}
 
 This work makes tropical SVMs tractable for real-world applications, enabling natural multi-class classification, and opening new directions for piecewise-linear methods that balance expressivity, interpretability, and computational efficiency.
+
+\paragraph{Related work}
+Tang et al.~\cite{tang2020} and Monot et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category stay in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\todo{quote lavishly yoshida}
+
+\todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely}
+
 
 \begin{figure}[h]
     \centering
@@ -188,8 +193,10 @@ P_X(y) = \max\{z \in \text{tcone}(X) : z \leq y\}\label{e-canonical}
 %% \]
 %% where $p$ is the number of points of the set $X$ and $X_{ij}$ is the $i$-th coordinate of the $j$-th point.
 %% %% \todo[inline,color=red!30]{SG. This is the projection on a cone, not on a convex set, perhaps we need to speak only of cones (modulo passing to the projective space), then this is ok. For a convex set, the max may be taken over a nonempty set}
-The projection finds a ``closest'' point in the conical convex hull~\cite{AGNS10}. One can verify
-the triviality of the intersection of two tropical cones by projecting alternatively on
+The projection finds a ``closest'' point in the conical convex hull~\cite{AGNS10}.
+\todo[inline]{Compare with \cite{gaubert2011}}
+%% One can verify
+%% the triviality of the intersection of two tropical cones by projecting alternatively on
 
 %\todo{SG: cite also Chepoi}
 
@@ -202,7 +209,8 @@ Projection operators will play a central role in our classification framework. W
 Actually, we shall need the following ``diagonal-free'' variant of the canonical projection~\eqref{e-canonical},
 introduced in~\cite{akiangaubertqisaadi}:
 \begin{align}
-[P_X^{\text{DF}}(y)]_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{1\leq k\leq d,\; k \neq i} (-X_{kj} + y_k)\right\},
+  [P_X^{\text{DF}}(y)]_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{1\leq k\leq d,\; k \neq i} (-X_{kj} + y_k)\right\},
+  \label{e-def-DF}
 \end{align}
 where $p$ is the number of points of the set $X$ and $X_{ij}$ is the $i$-th coordinate of the $j$-th point.
 If one omits the constraints that $k\neq i$ in the expression of $[P_X^{\text{DF}}(y)]_i$, one gets
@@ -342,7 +350,7 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
 \STATE \textbf{Output:} Apex $a$, margin $-\rho(T)$ (if separable), and sector assignments for classification
 \end{algorithmic}
 \end{algorithm}
-Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{},
+Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{e-def-DF},
 where $p_k$ denotes the cardinality of the set $X_k$. Hence, $T$ can be evaluated in
 $\mathcal{O}(pd)$ time, where $p=p_1+\dots+p_K$ is the total number of points.
 Hence, Algorithm~\ref{alg:tropical_svm} terminates in $O(pd/\epsilon^2)$ time. Observe
