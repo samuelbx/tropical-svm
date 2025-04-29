@@ -23,216 +23,166 @@
 \citation{maragos2021}
 \citation{zhang2018,montufar}
 \citation{maragos2020,akian2020}
-\citation{maragos2020}
-\citation{maragos2020}
 \citation{yoshida2019}
 \citation{maragos2021}
 \citation{monod2022}
-\citation{fotopoulos2024}
-\citation{gartner2008}
-\citation{tang2020}
-\citation{monod2022}
 \providecommand \oddpage@label [2]{}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG :title is very good. I hesitated with Scalable Tropical SVMs via Mean-Payoff Games? but perhaps effficient is stronger.}{1}{section*.2}\protected@file@percent }
-\pgfsyspdfmark {pgfid1}{20112833}{36235690}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: added linearity (otherwise pseudo may look a bit weak)}{1}{section*.3}\protected@file@percent }
-\pgfsyspdfmark {pgfid2}{14029179}{24758458}
-\pgfsyspdfmark {pgfid5}{35988437}{24686596}
-\pgfsyspdfmark {pgfid6}{38101972}{24537275}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
 \@writefile{toc}{\contentsline {paragraph}{Motivation: Beyond Linear Boundaries.}{1}{section.1}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: explore $\to $ build on?}{1}{section*.4}\protected@file@percent }
-\pgfsyspdfmark {pgfid7}{22887409}{15914165}
-\pgfsyspdfmark {pgfid10}{35988437}{15842303}
-\pgfsyspdfmark {pgfid11}{38101972}{15692982}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: reinforced ``coincide''}{1}{section*.5}\protected@file@percent }
-\pgfsyspdfmark {pgfid12}{24871266}{11608451}
-\pgfsyspdfmark {pgfid15}{35988437}{11536589}
-\pgfsyspdfmark {pgfid16}{38101972}{11387268}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: added this}{1}{section*.6}\protected@file@percent }
-\pgfsyspdfmark {pgfid17}{24483949}{7659908}
-\pgfsyspdfmark {pgfid20}{35988437}{7588046}
-\pgfsyspdfmark {pgfid21}{38101972}{7438725}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG added \cite  {maragos2020}}{1}{section*.7}\protected@file@percent }
-\pgfsyspdfmark {pgfid22}{14408954}{6942289}
-\pgfsyspdfmark {pgfid25}{35988437}{6440128}
-\pgfsyspdfmark {pgfid26}{38101972}{6290807}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ quote all or none}{1}{section*.8}\protected@file@percent }
-\pgfsyspdfmark {pgfid27}{21810091}{6224670}
-\pgfsyspdfmark {pgfid30}{35988437}{5223168}
-\pgfsyspdfmark {pgfid31}{38101972}{5073847}
+\citation{gartner2008}
+\citation{tang2020}
+\citation{monod2022}
 \citation{shapley1953}
+\citation{gillette1957}
 \citation{zwick1996}
 \citation{kolokoltsov1997,gaubert2004}
-\citation{allamigeon2025}
-\citation{akiangaubertqisaadi}
-\citation{allamigeon2025}
-\@writefile{toc}{\contentsline {paragraph}{Previous Work on Tropical SVMs.}{2}{section*.8}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ quote lavishly yoshida}{2}{section*.9}\protected@file@percent }
-\pgfsyspdfmark {pgfid32}{27043539}{41905357}
-\pgfsyspdfmark {pgfid35}{35988437}{41833495}
-\pgfsyspdfmark {pgfid36}{38101972}{41684174}
-\@writefile{toc}{\contentsline {paragraph}{From Game Theory to Machine Learning.}{2}{section*.9}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: quote gillette version mean payoff}{2}{section*.10}\protected@file@percent }
-\pgfsyspdfmark {pgfid37}{31869402}{38228494}
-\pgfsyspdfmark {pgfid40}{35988437}{38156632}
-\pgfsyspdfmark {pgfid41}{38101972}{38007311}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG Delete (we need a broader state of the art on mean-payoff games -- and the theorem there only concerns approximating $\rho $ in $1/\epsilon $, here we need to approximate the eigenvector which is in $1/\epsilon ^2$): Importantly, recent advances in solving these games efficiently \cite  {allamigeon2025} provide efficient algorithms that we can apply to tropical classification. -- Indeed, we need instead to use the relative KM algorithm along the lines of\nobreakspace  {}\cite  {akiangaubertqisaadi}, with a complexity in $1/\epsilon ^2$, but this algorithm provides the eigenvector. \cite  {allamigeon2025} does not (only the eigenvalue is approximated, we can get sub and super eigenvectors however with a preoprocessing). The termination condition should be changed in the algo below to $\|T(x)-x\|_H\leq \epsilon $.}{2}{section*.11}\protected@file@percent }
-\pgfsyspdfmark {pgfid42}{20112833}{30623705}
-\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.11}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ Say more bout piecewise linear / feature map, useful in application}{2}{section*.12}\protected@file@percent }
-\pgfsyspdfmark {pgfid43}{27306361}{18798307}
-\pgfsyspdfmark {pgfid46}{35988437}{18726445}
-\pgfsyspdfmark {pgfid47}{38101972}{18577124}
+\@writefile{toc}{\contentsline {paragraph}{Previous Work on Tropical SVMs.}{2}{section.1}\protected@file@percent }
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ quote lavishly yoshida}{2}{section*.2}\protected@file@percent }
+\pgfsyspdfmark {pgfid1}{27043539}{39732884}
+\pgfsyspdfmark {pgfid4}{35988437}{39661022}
+\pgfsyspdfmark {pgfid5}{38101972}{39511701}
+\@writefile{toc}{\contentsline {paragraph}{Background on mean‐payoff games.}{2}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Tropical Geometry Preliminaries}{2}{section.2}\protected@file@percent }
 \newlabel{sec:prelim}{{2}{2}{Tropical Geometry Preliminaries}{section.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Visualization of a degree-2 tropical polynomial classifier. Each region corresponds to a sector where a specific affine combination of the features dominate, creating an interpretable piecewise-linear decision boundary. Inference remains computationally efficient, requiring only the evaluation of the dominant monomial at each test point.\relax }}{3}{figure.caption.13}\protected@file@percent }
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:tropical_hyperplane}{{1}{3}{Visualization of a degree-2 tropical polynomial classifier. Each region corresponds to a sector where a specific affine combination of the features dominate, creating an interpretable piecewise-linear decision boundary. Inference remains computationally efficient, requiring only the evaluation of the dominant monomial at each test point.\relax }{figure.caption.13}{}}
-\@writefile{toc}{\contentsline {paragraph}{The Max-Plus Semiring.}{3}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Tropical Projective Space.}{3}{equation.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Tropical Hyperplanes and Sectors.}{3}{equation.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The Max-Plus Semiring.}{2}{section.2}\protected@file@percent }
 \citation{cohen2004}
 \citation{cohen2004,develin2004}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:tropical_poly}{{\caption@xref {fig:tropical_poly}{ on input line 115}}{3}{Contributions}{figure.caption.3}{}}
+\newlabel{sub@fig:tropical_poly}{{}{3}{Contributions}{figure.caption.3}{}}
+\newlabel{fig:hyperplane_example}{{\caption@xref {fig:hyperplane_example}{ on input line 121}}{3}{Contributions}{figure.caption.3}{}}
+\newlabel{sub@fig:hyperplane_example}{{}{3}{Contributions}{figure.caption.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Left: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary. Right: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex.\relax }}{3}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:combined}{{1}{3}{Left: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary. Right: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex.\relax }{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Projective Space.}{3}{equation.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Hyperplanes and Sectors.}{3}{equation.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Hilbert Seminorm.}{3}{equation.2.4}\protected@file@percent }
 \citation{AGNS10}
+\citation{gaubert2011}
+\citation{akiangaubertqisaadi}
+\citation{akiangaubertqisaadi}
+\citation{AGGut10}
 \citation{kolokoltsov1992}
+\citation{akian_correspondence_2011}
 \citation{nussbaum1986,AGGut10,akiangaubertqisaadi}
-\@writefile{toc}{\contentsline {paragraph}{Hilbert Seminorm and Tropical Distance.}{4}{equation.2.4}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: I would delete ``in tropical geometry''}{4}{section*.14}\protected@file@percent }
-\pgfsyspdfmark {pgfid49}{25974056}{46928690}
-\pgfsyspdfmark {pgfid52}{35988437}{46856828}
-\pgfsyspdfmark {pgfid53}{38101972}{46707507}
-\@writefile{toc}{\contentsline {paragraph}{Tropical Convexity and Projections.}{4}{equation.2.5}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{red!30}{\leavevmode {\color  {red!30}o}}\ SG. This is the projection on a cone, not on a convex set, perhaps we need to speak only of cones (modulo passing to the projective space), then this is ok. For a convex set, the max may be taken over a nonempty set}{4}{section*.15}\protected@file@percent }
-\pgfsyspdfmark {pgfid54}{20112833}{30687157}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: cite also Chepoi}{4}{section*.16}\protected@file@percent }
-\pgfsyspdfmark {pgfid55}{21058883}{27675406}
-\pgfsyspdfmark {pgfid58}{35988437}{27603544}
-\pgfsyspdfmark {pgfid59}{38101972}{27454223}
+\@writefile{toc}{\contentsline {paragraph}{Convexity and Projections.}{4}{equation.2.5}\protected@file@percent }
+\newlabel{e-canonical}{{7}{4}{Convexity and Projections}{equation.2.7}{}}
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ Compare with \cite  {gaubert2011}}{4}{section*.4}\protected@file@percent }
+\pgfsyspdfmark {pgfid8}{20112833}{37349614}
+\newlabel{e-def-DF}{{8}{4}{Convexity and Projections}{equation.2.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Spectral Framework for Tropical SVMs}{4}{section.3}\protected@file@percent }
 \newlabel{sec:spectral}{{3}{4}{Spectral Framework for Tropical SVMs}{section.3}{}}
 \@writefile{toc}{\contentsline {paragraph}{Shapley Operators and Their Spectral Theory.}{4}{section.3}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ cite Sparrow (Akian,gaubert,guterman 2012)}{4}{section*.17}\protected@file@percent }
-\pgfsyspdfmark {pgfid60}{25248803}{14532699}
-\pgfsyspdfmark {pgfid63}{35988437}{14460837}
-\pgfsyspdfmark {pgfid64}{38101972}{14311516}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ quote akian...}{4}{section*.18}\protected@file@percent }
-\pgfsyspdfmark {pgfid65}{13501282}{9075274}
-\pgfsyspdfmark {pgfid68}{35988437}{9003412}
-\pgfsyspdfmark {pgfid69}{38101972}{8854091}
-\@writefile{toc}{\contentsline {paragraph}{Constructing the Classification Operator.}{4}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Constructing the Classification Operator.}{4}{equation.3.9}\protected@file@percent }
 \citation{gartner2008}
-\@writefile{toc}{\contentsline {paragraph}{Main Theorem: Spectral Separability.}{5}{section*.18}\protected@file@percent }
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: does not some part of the theorem (the last one?) requires to use the diagonal free variant? }{5}{section*.19}\protected@file@percent }
-\pgfsyspdfmark {pgfid70}{20112833}{40247818}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ check whether everything works with DF. Then stateDF. and state afterthe theorem that the two first parts remain correct with the canonical projector}{5}{section*.20}\protected@file@percent }
-\pgfsyspdfmark {pgfid71}{7104430}{40011516}
-\pgfsyspdfmark {pgfid74}{35988437}{39939654}
-\pgfsyspdfmark {pgfid75}{38101972}{39790333}
+\citation{akianmfcs}
+\citation{akianmfcs}
+\citation{akianmfcs}
+\citation{baillonbruck}
+\citation{akianmfcs}
+\newlabel{eq:single_operator}{{3}{5}{Constructing the Classification Operator}{equation.3.9}{}}
+\@writefile{toc}{\contentsline {paragraph}{Main Theorem: Spectral Separability.}{5}{equation.3.9}\protected@file@percent }
 \newlabel{thm:spectral_separability}{{1}{5}{Spectral Separability Criterion}{theorem.1}{}}
 \@writefile{toc}{\contentsline {paragraph}{Benefits of the Spectral Approach.}{5}{theorem.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Limitations.}{5}{theorem.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Algorithm and Implementation}{5}{section.4}\protected@file@percent }
 \newlabel{sec:algorithm}{{4}{5}{Algorithm and Implementation}{section.4}{}}
-\citation{akian2020}
-\citation{nussbaum1986,gaubert2004}
-\citation{nussbaum1986,gaubert2004}
-\citation{baillonbruck}
-\citation{akiangaubertqisaadi,akianmfcs}
-\citation{nussbaum1986,gaubert2004}
-\citation{baillonbruck}
-\citation{akiangaubertqisaadi,akianmfcs}
-\citation{allamigeon2025}
-\@writefile{toc}{\contentsline {paragraph}{Efficient Computation of Tropical Projections.}{6}{section.4}\protected@file@percent }
-\newlabel{subsec:computing_projections}{{4}{6}{Efficient Computation of Tropical Projections}{section.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{Computing the Spectral Radius with Krasnoselskii-Mann Iterations.}{6}{section.4}\protected@file@percent }
-\newlabel{subsec:spectral_computation}{{4}{6}{Computing the Spectral Radius with Krasnoselskii-Mann Iterations}{section.4}{}}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: very good to quote \cite  {nussbaum1986,gaubert2004} but KM is not there, we should rather quote the original works of Baillon and Bruck\nobreakspace  {}\cite  {baillonbruck} and perhaps followup by cominetti et al, and see\nobreakspace  {}\cite  {akiangaubertqisaadi,akianmfcs} for the relative KM which we use here.}{6}{section*.21}\protected@file@percent }
-\pgfsyspdfmark {pgfid76}{15878974}{38251490}
-\pgfsyspdfmark {pgfid79}{35988437}{38179628}
-\pgfsyspdfmark {pgfid80}{38101972}{38030307}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Krasnoselskii--Mann Iteration for Tropical SVM\relax }}{6}{algorithm.1}\protected@file@percent }
-\newlabel{alg:km_iteration}{{1}{6}{Krasnoselskii--Mann Iteration for Tropical SVM\relax }{algorithm.1}{}}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ SG: to be updated}{6}{section*.22}\protected@file@percent }
-\pgfsyspdfmark {pgfid81}{20112833}{26091482}
-\@writefile{toc}{\contentsline {paragraph}{The Complete Tropical SVM Algorithm.}{6}{section*.22}\protected@file@percent }
-\newlabel{subsec:complete_algorithm}{{4}{6}{The Complete Tropical SVM Algorithm}{section*.22}{}}
+\@writefile{toc}{\contentsline {paragraph}{Computing the Spectral Radius with Krasnoselskii-Mann Iterations.}{5}{section.4}\protected@file@percent }
+\newlabel{subsec:spectral_computation}{{4}{5}{Computing the Spectral Radius with Krasnoselskii-Mann Iterations}{section.4}{}}
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ [Samuel] true source?}{5}{section*.5}\protected@file@percent }
+\pgfsyspdfmark {pgfid9}{13030972}{4957470}
+\pgfsyspdfmark {pgfid12}{35988437}{4885608}
+\pgfsyspdfmark {pgfid13}{38101972}{4736287}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Krasnoselskii--Mann Iteration with Krasnoselskii-Mann Damping\nobreakspace  {}\cite  {akianmfcs}\relax }}{6}{algorithm.1}\protected@file@percent }
+\newlabel{alg:km_iteration}{{1}{6}{Krasnoselskii--Mann Iteration with Krasnoselskii-Mann Damping~\cite {akianmfcs}\relax }{algorithm.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{The Tropical SVM Algorithm.}{6}{section*.5}\protected@file@percent }
+\newlabel{subsec:complete_algorithm}{{4}{6}{The Tropical SVM Algorithm}{section*.5}{}}
 \@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Tropical SVM\relax }}{6}{algorithm.2}\protected@file@percent }
 \newlabel{alg:tropical_svm}{{2}{6}{Tropical SVM\relax }{algorithm.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Empirical Performance Analysis.}{6}{ALC@unique.24}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Tropical Polynomials for Enhanced Expressivity}{7}{section.5}\protected@file@percent }
-\newlabel{sec:polynomials}{{5}{7}{Tropical Polynomials for Enhanced Expressivity}{section.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{Tropical Polynomial Kernel.}{7}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Strategic Monomial Selection.}{7}{equation.5.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Classification with Tropical Polynomials.}{7}{Item.8}\protected@file@percent }
-\newlabel{subsec:poly_classification}{{5}{7}{Classification with Tropical Polynomials}{Item.8}{}}
-\@writefile{toc}{\contentsline {paragraph}{Margin Guarantees for Tropical Polynomials.}{8}{Item.12}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Multi-class classification using a cubic tropical polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho (T)/3$ due to our theoretical results.\relax }}{9}{figure.caption.23}\protected@file@percent }
-\newlabel{fig:homogeneous_selection}{{2}{9}{Multi-class classification using a cubic tropical polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho (T)/3$ due to our theoretical results.\relax }{figure.caption.23}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Visualization of a tropical polynomial classifier using the adaptive monomial selection strategy described in Section\nobreakspace  {}\ref  {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }}{9}{figure.caption.24}\protected@file@percent }
-\newlabel{fig:adaptive_polynomial}{{3}{9}{Visualization of a tropical polynomial classifier using the adaptive monomial selection strategy described in Section~\ref {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }{figure.caption.24}{}}
+\@writefile{toc}{\contentsline {paragraph}{Empirical Performance Analysis.}{6}{ALC@unique.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Tropical Polynomials for Enhanced Expressivity}{6}{section.5}\protected@file@percent }
+\newlabel{sec:polynomials}{{5}{6}{Tropical Polynomials for Enhanced Expressivity}{section.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Tropical Polynomial Kernel.}{6}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Strategic Monomial Selection.}{7}{equation.5.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Classification with Polynomials.}{7}{Item.8}\protected@file@percent }
+\newlabel{subsec:poly_classification}{{5}{7}{Classification with Polynomials}{Item.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Margin Guarantees.}{7}{Item.12}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho (T)/3$ due to our theoretical results.\relax }}{8}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:homogeneous_selection}{{2}{8}{Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho (T)/3$ due to our theoretical results.\relax }{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section\nobreakspace  {}\ref  {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }}{8}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:adaptive_polynomial}{{3}{8}{Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }{figure.caption.7}{}}
 \citation{viro2001}
 \bibstyle{plain}
 \bibdata{references}
-\bibcite{akian2020}{{1}{}{{}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Connection to Classical SVMs}{10}{section.6}\protected@file@percent }
-\newlabel{sec:maslov}{{6}{10}{Connection to Classical SVMs}{section.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Comparison of tropical hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral tropical classifier (black).\relax }}{10}{figure.caption.25}\protected@file@percent }
-\newlabel{fig:maslov_dequantization}{{4}{10}{Comparison of tropical hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral tropical classifier (black).\relax }{figure.caption.25}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion and Future work}{10}{section.7}\protected@file@percent }
-\newlabel{sec:discussion}{{7}{10}{Discussion and Future work}{section.7}{}}
-\bibcite{akiangaubertqisaadi}{{2}{}{{}}{{}}}
-\bibcite{akianmfcs}{{3}{}{{}}{{}}}
-\bibcite{allamigeon2025}{{4}{}{{}}{{}}}
-\bibcite{baillonbruck}{{5}{}{{}}{{}}}
-\bibcite{waveform_database_generator_(version_1)_107}{{6}{}{{}}{{}}}
-\bibcite{cohen2004}{{7}{}{{}}{{}}}
-\bibcite{MNIST}{{8}{}{{}}{{}}}
-\bibcite{develin2004}{{9}{}{{}}{{}}}
-\bibcite{fotopoulos2024}{{10}{}{{}}{{}}}
-\bibcite{gartner2008}{{11}{}{{}}{{}}}
-\bibcite{gaubert2004}{{12}{}{{}}{{}}}
-\bibcite{gaubert2011}{{13}{}{{}}{{}}}
-\bibcite{kolokoltsov1992}{{14}{}{{}}{{}}}
-\bibcite{kolokoltsov1997}{{15}{}{{}}{{}}}
-\bibcite{maclagan2015}{{16}{}{{}}{{}}}
-\bibcite{maragos2021}{{17}{}{{}}{{}}}
-\bibcite{maragos2020}{{18}{}{{}}{{}}}
-\bibcite{monod2022}{{19}{}{{}}{{}}}
-\bibcite{montufar}{{20}{}{{}}{{}}}
-\bibcite{nussbaum1986}{{21}{}{{}}{{}}}
-\bibcite{scikit-learn}{{22}{}{{}}{{}}}
-\bibcite{scholkopf2002}{{23}{}{{}}{{}}}
-\bibcite{shapley1953}{{24}{}{{}}{{}}}
-\bibcite{tang2020}{{25}{}{{}}{{}}}
-\bibcite{vapnik1999}{{26}{}{{}}{{}}}
-\bibcite{viro2001}{{27}{}{{}}{{}}}
-\bibcite{yoshida2019}{{28}{}{{}}{{}}}
-\bibcite{zhang2018}{{29}{}{{}}{{}}}
-\bibcite{zwick1996}{{30}{}{{}}{{}}}
+\bibcite{AGGut10}{{1}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Connection to Classical SVMs}{9}{section.6}\protected@file@percent }
+\newlabel{sec:maslov}{{6}{9}{Connection to Classical SVMs}{section.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Comparison of hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral classifier (black).\relax }}{9}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:maslov_dequantization}{{4}{9}{Comparison of hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral classifier (black).\relax }{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion and Future work}{9}{section.7}\protected@file@percent }
+\newlabel{sec:discussion}{{7}{9}{Discussion and Future work}{section.7}{}}
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ [Samuel] Future work: relationship between trop poly \& ReLU? Hybrid approaches between tropical \& classical SVMs? Generalization bounds for tropical poly wrt degree? Addressing sentivity to outliers? Parallel, efficient algorithms?}{9}{section*.9}\protected@file@percent }
+\pgfsyspdfmark {pgfid17}{20112833}{9217510}
+\bibcite{AGNS10}{{2}{}{{}}{{}}}
+\bibcite{akian2020}{{3}{}{{}}{{}}}
+\bibcite{akiangaubertqisaadi}{{4}{}{{}}{{}}}
+\bibcite{akian_correspondence_2011}{{5}{}{{}}{{}}}
+\bibcite{akianmfcs}{{6}{}{{}}{{}}}
+\bibcite{baillonbruck}{{7}{}{{}}{{}}}
+\bibcite{waveform_database_generator_(version_1)_107}{{8}{}{{}}{{}}}
+\bibcite{cohen2004}{{9}{}{{}}{{}}}
+\bibcite{MNIST}{{10}{}{{}}{{}}}
+\bibcite{develin2004}{{11}{}{{}}{{}}}
+\bibcite{gartner2008}{{12}{}{{}}{{}}}
+\bibcite{gaubert2004}{{13}{}{{}}{{}}}
+\bibcite{gaubert2011}{{14}{}{{}}{{}}}
+\bibcite{gillette1957}{{15}{}{{}}{{}}}
+\bibcite{harris2020array}{{16}{}{{}}{{}}}
+\bibcite{kolokoltsov1992}{{17}{}{{}}{{}}}
+\bibcite{kolokoltsov1997}{{18}{}{{}}{{}}}
+\bibcite{maclagan2015}{{19}{}{{}}{{}}}
+\bibcite{maragos2021}{{20}{}{{}}{{}}}
+\bibcite{maragos2020}{{21}{}{{}}{{}}}
+\bibcite{monod2022}{{22}{}{{}}{{}}}
+\bibcite{montufar}{{23}{}{{}}{{}}}
+\bibcite{nussbaum1986}{{24}{}{{}}{{}}}
+\bibcite{scikit-learn}{{25}{}{{}}{{}}}
+\bibcite{scholkopf2002}{{26}{}{{}}{{}}}
+\bibcite{shapley1953}{{27}{}{{}}{{}}}
+\bibcite{tang2020}{{28}{}{{}}{{}}}
+\bibcite{vapnik1999}{{29}{}{{}}{{}}}
+\bibcite{viro2001}{{30}{}{{}}{{}}}
+\bibcite{yoshida2019}{{31}{}{{}}{{}}}
+\bibcite{zhang2018}{{32}{}{{}}{{}}}
+\bibcite{zwick1996}{{33}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}\ref  {thm:spectral_separability} (Spectral Separability)}{12}{appendix.A}\protected@file@percent }
+\newlabel{appendix:proofs}{{A}{12}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Separability)}{appendix.A}{}}
+\newlabel{lemma:hyperplane_to_operator}{{2}{12}{Upper bound on margin}{theorem.2}{}}
+\newlabel{lemma:operator_to_hyperplane}{{3}{12}{Max-margin hyperplane}{theorem.3}{}}
 \citation{akian2020}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}\ref  {thm:spectral_separability} (Spectral Separability)}{13}{appendix.A}\protected@file@percent }
-\newlabel{appendix:proofs}{{A}{13}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Separability)}{appendix.A}{}}
-\newlabel{lemma:hyperplane_to_operator}{{2}{13}{}{theorem.2}{}}
-\newlabel{lemma:operator_to_hyperplane}{{3}{13}{}{theorem.3}{}}
-\citation{gaubert2011}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }}{14}{figure.caption.26}\protected@file@percent }
-\newlabel{fig:non_separable}{{5}{14}{Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }{figure.caption.26}{}}
-\newlabel{lemma:perturbation}{{4}{14}{}{theorem.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }}{13}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:non_separable}{{5}{13}{Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }{figure.caption.10}{}}
+\newlabel{lemma:perturbation}{{4}{13}{Overlap interpretation}{theorem.4}{}}
 \citation{akian2020}
 \citation{scikit-learn,waveform_database_generator_(version_1)_107}
-\newlabel{eq:major}{{24}{15}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Separability)}{equation.A.24}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Empirical Evaluation}{15}{appendix.B}\protected@file@percent }
-\newlabel{appendix:empirical}{{B}{15}{Empirical Evaluation}{appendix.B}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.9\% to 9.6\%. \#C: number of classes; \#S: number of samples.\relax }}{15}{table.caption.27}\protected@file@percent }
-\newlabel{tab:benchmark_results}{{1}{15}{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.9\% to 9.6\%. \#C: number of classes; \#S: number of samples.\relax }{table.caption.27}{}}
+\citation{harris2020array}
+\newlabel{eq:major}{{24}{14}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Separability)}{equation.A.24}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Empirical Evaluation}{14}{appendix.B}\protected@file@percent }
+\newlabel{appendix:empirical}{{B}{14}{Empirical Evaluation}{appendix.B}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.7\% to 9.1\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii-Mann iterations. Chosen convergence threshold $\varepsilon $ is $10^{-3}$ times the the characteristic variation scale of the considered data.\relax }}{14}{table.caption.11}\protected@file@percent }
+\newlabel{tab:benchmark_results}{{1}{14}{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.7\% to 9.1\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii-Mann iterations. Chosen convergence threshold $\varepsilon $ is $10^{-3}$ times the the characteristic variation scale of the considered data.\relax }{table.caption.11}{}}
 \citation{MNIST}
-\newlabel{fig:pca_degree_scaling}{{6a}{16}{Training time vs. number of monomials\relax }{figure.caption.28}{}}
-\newlabel{sub@fig:pca_degree_scaling}{{a}{16}{Training time vs. number of monomials\relax }{figure.caption.28}{}}
-\newlabel{fig:sample_size_scaling}{{6b}{16}{Training time vs. size of training set\relax }{figure.caption.28}{}}
-\newlabel{sub@fig:sample_size_scaling}{{b}{16}{Training time vs. size of training set\relax }{figure.caption.28}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Performance scaling analysis of tropical SVM on MNIST data\relax }}{16}{figure.caption.28}\protected@file@percent }
-\newlabel{fig:scaling_analysis}{{6}{16}{Performance scaling analysis of tropical SVM on MNIST data\relax }{figure.caption.28}{}}
+\newlabel{fig:pca_degree_scaling}{{6a}{15}{Training time vs. number of monomials\relax }{figure.caption.12}{}}
+\newlabel{sub@fig:pca_degree_scaling}{{a}{15}{Training time vs. number of monomials\relax }{figure.caption.12}{}}
+\newlabel{fig:sample_size_scaling}{{6b}{15}{Training time vs. size of training set\relax }{figure.caption.12}{}}
+\newlabel{sub@fig:sample_size_scaling}{{b}{15}{Training time vs. size of training set\relax }{figure.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Performance scaling analysis of tropical SVM on MNIST data\relax }}{15}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:scaling_analysis}{{6}{15}{Performance scaling analysis of tropical SVM on MNIST data\relax }{figure.caption.12}{}}
+\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{orange}{}{orange!20}{\leavevmode {\color  {orange!20}o}}\ Fix algorithm. Regen figures and tables. Add KM iterations vs. $1/\varepsilon $.}{15}{section*.13}\protected@file@percent }
+\pgfsyspdfmark {pgfid21}{7104430}{21063802}
+\pgfsyspdfmark {pgfid24}{35988437}{20991940}
+\pgfsyspdfmark {pgfid25}{38101972}{20842619}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
-\gdef \@abspage@last{23}
+\gdef \@abspage@last{22}

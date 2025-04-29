@@ -1,5 +1,16 @@
 \begin{thebibliography}{10}
 
+\bibitem{AGGut10}
+M.~Akian, S.~Gaubert, and A.~Guterman.
+\newblock Tropical polyhedra are equivalent to mean payoff games.
+\newblock {\em International Journal of Algebra and Computation}, 22(1):125001
+  (43 pages), 2012.
+
+\bibitem{AGNS10}
+M.~Akian, S.~Gaubert, V.~Nitica, and I.~Singer.
+\newblock Best approximation in max-plus semimodules.
+\newblock {\em Linear Algebra and its Applications}, 435(12):3261--3296, 2011.
+
 \bibitem{akian2020}
 Marianne Akian, St{\'e}phane Gaubert, and Antoine Hochart.
 \newblock A game theory approach to the existence and uniqueness of nonlinear
@@ -13,6 +24,11 @@ Marianne Akian, St{\'{e}}phane Gaubert, Yang Qi, and Omar Saadi.
   the distance to equilibria.
 \newblock {\em {SIAM} J. Disc. Math.}, 37(2):632--674, May 2023.
 
+\bibitem{akian_correspondence_2011}
+Marianne Akian, Stéphane Gaubert, and Alexander Guterman.
+\newblock The correspondence between tropical convexity and mean payoff games.
+\newblock January 2011.
+
 \bibitem{akianmfcs}
 Marianne Akian, Stéphane Gaubert, Ulysse Naepels, and Basile Terver.
 \newblock Solving irreducible stochastic mean-payoff games and entropy games by
@@ -20,12 +36,6 @@ Marianne Akian, Stéphane Gaubert, Ulysse Naepels, and Basile Terver.
 \newblock In {\em 48th International Symposium on Mathematical Foundations of
   Computer Science (MFCS 2023)}. Schloss Dagstuhl - Leibniz-Zentrum f\"{u}r
   Informatik, 2023.
-
-\bibitem{allamigeon2025}
-Xavier Allamigeon, St{\'e}phane Gaubert, Ricardo~D. Katz, and Mateusz Skomra.
-\newblock Universal complexity bounds based on value iteration for stochastic
-  mean payoff games and entropy games.
-\newblock {\em Information and Computation}, 302:105236, 2025.
 
 \bibitem{baillonbruck}
 J.~B. Baillon and R.~E. Bruck.
@@ -58,13 +68,6 @@ Mike Develin and Bernd Sturmfels.
 \newblock Tropical convexity.
 \newblock {\em Documenta Mathematica}, 9:1--27, 2004.
 
-\bibitem{fotopoulos2024}
-Konstantinos Fotopoulos, Petros Maragos, and Panagiotis Misiakos.
-\newblock Tropnnc: Structured neural network compression using tropical
-  geometry.
-\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
-  46(5):5027--5037, 2024.
-
 \bibitem{gartner2008}
 Bernd G{\"a}rtner and Martin Jaggi.
 \newblock Tropical support vector machines.
@@ -81,6 +84,23 @@ St{\'e}phane Gaubert and Sergei Sergeev.
 \newblock Cyclic projectors and separation theorems in idempotent convex
   geometry.
 \newblock {\em Journal of Mathematical Sciences}, 155(6):815--829, 2011.
+
+\bibitem{gillette1957}
+D.~Gillette.
+\newblock {\em Stochastic games with zero stop probabilities}, volume III,
+  chapter~9, pages 179--188.
+\newblock Princeton University Press, 1958.
+
+\bibitem{harris2020array}
+Charles~R. Harris, K.~Jarrod Millman, St{\'{e}}fan~J. van~der Walt, Ralf
+  Gommers, Pauli Virtanen, David Cournapeau, Eric Wieser, Julian Taylor,
+  Sebastian Berg, Nathaniel~J. Smith, Robert Kern, Matti Picus, Stephan Hoyer,
+  Marten~H. van Kerkwijk, Matthew Brett, Allan Haldane, Jaime~Fern{\'{a}}ndez
+  del R{\'{i}}o, Mark Wiebe, Pearu Peterson, Pierre G{\'{e}}rard-Marchant,
+  Kevin Sheppard, Tyler Reddy, Warren Weckesser, Hameer Abbasi, Christoph
+  Gohlke, and Travis~E. Oliphant.
+\newblock Array programming with {NumPy}.
+\newblock {\em Nature}, 585(7825):357--362, September 2020.
 
 \bibitem{kolokoltsov1992}
 Vassili Kolokoltsov.
