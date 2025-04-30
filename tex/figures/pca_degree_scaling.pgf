@@ -1903,7 +1903,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.193558in,y=3.491747in,left,base]{\color{textcolor}\sffamily\fontsize{10.000000}{12.000000}\selectfont linear fit (coefficient: 1.88e-03)}%
+\pgftext[x=1.193558in,y=3.491747in,left,base]{\color{textcolor}\sffamily\fontsize{10.000000}{12.000000}\selectfont linear fit (slope: 1.88e-03)}%
 \end{pgfscope}%
 \end{pgfpicture}%
 \makeatother%

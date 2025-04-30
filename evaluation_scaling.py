@@ -73,9 +73,6 @@ def count_effective_monomials(model):
   if not hasattr(model, '_monomials'):
     return 0
   
-  if hasattr(model, '_coef') and model._coef is not None:
-    return np.sum(model._coef != 0)
-  
   return len(model._monomials)
 
 def run_pca_degree_experiment(X, y, pca_dimensions=[10, 20, 50], degrees=[1, 2, 3], skip_experiments=True):
@@ -279,37 +276,11 @@ def plot_pca_degree_results(results, save_pgf=True, save_path='mnist_results/pca
   ax1 = fig.add_subplot(111)
   
   sns.scatterplot(data=results, x='effective_monomials', y='training_time', s=100, ax=ax1)
-  
-  if len(results) >= 3:
-    try:
-      x = np.array(results['effective_monomials'], dtype=np.float64)
-      y = np.array(results['training_time'], dtype=np.float64)
-      
-      if len(np.unique(x)) >= 3:
-        log_x = np.log(x)
-        log_y = np.log(y)
-        c = np.mean(log_y - log_x)
-        log_yhat = log_x + c
-        log_ybar = np.mean(log_y)
-        ssreg = np.sum((log_yhat - log_ybar)**2)
-        sstot = np.sum((log_y - log_ybar)**2)
-        r_squared = ssreg / sstot if sstot > 0 else 0
-        coefficient = np.exp(c)
-        x_line = np.linspace(min(x), max(x), 100)
-        y_line = coefficient * x_line  # y = e^c * x
-        
-        ax1.plot(x_line, y_line, 'r--', label=f'linear fit (slope: {coefficient:.2e})')
-        print(f"Added log-log regression line: y = {coefficient:.4e}x, R²={r_squared:.2f}")
-      else:
-        print("Not enough unique values for regression")
-    except Exception as e:
-      print(f"Could not add regression line: {e}")
 
   ax1.set_xlabel('number of monomials')
   ax1.set_ylabel('training time (s)')
   ax1.set_xscale('log')
   ax1.set_yscale('log')
-  ax1.legend()
   ax1.grid(True, linestyle='--', alpha=0.7)
   
   plt.tight_layout()
@@ -321,24 +292,6 @@ def plot_pca_degree_results(results, save_pgf=True, save_path='mnist_results/pca
     print(f"Figure saved to {save_path}.png")
   
   plt.close()
-  
-  try:
-    fig = plt.figure(figsize=(10, 6))
-    pivot_acc = results.pivot_table(index='pca_dim', columns='degree', values='accuracy')
-    sns.heatmap(pivot_acc, annot=True, fmt=".4f", cmap="YlGnBu")
-    plt.title('Accuracy for Each Configuration')
-    plt.xlabel('Polynomial Degree')
-    plt.ylabel('PCA Dimensions')
-    
-    acc_path = save_path + '_accuracy'
-    if save_pgf:
-      save_figure_both_formats(fig, acc_path)
-    else:
-      fig.savefig(f"{acc_path}.png", dpi=300, bbox_inches='tight')
-  except Exception as e:
-    print(f"Could not create accuracy heatmap: {e}")
-  finally:
-    plt.close()
 
 def plot_sample_size_results(results, save_pgf=True, save_path='mnist_results/sample_size_scaling'):
   if results.empty:
@@ -355,27 +308,6 @@ def plot_sample_size_results(results, save_pgf=True, save_path='mnist_results/sa
   ax1.set_ylabel('training time (s)')
   ax1.grid(True, linestyle='--', alpha=0.7)
   
-  if len(results) >= 3:
-    try:
-      from scipy.optimize import curve_fit
-      
-      def linear_no_intercept(x, a):
-        return a * x
-      
-      x = results_sorted['n_samples'].values
-      y = results_sorted['training_time'].values
-      
-      popt, _ = curve_fit(linear_no_intercept, x, y)
-      
-      x_line = np.linspace(min(x), max(x), 100)
-      y_line = linear_no_intercept(x_line, *popt)
-      
-      ax1.plot(x_line, y_line, 'r--', 
-          label=f'linear fit (slope: {popt[0]:.2e})')
-      ax1.legend()
-    except Exception as e:
-      print(f"Could not fit linear curve: {e}")
-
   plt.tight_layout()
   
   if save_pgf:
@@ -386,23 +318,6 @@ def plot_sample_size_results(results, save_pgf=True, save_path='mnist_results/sa
   
   plt.close()
   
-  fig = plt.figure(figsize=(10, 6))
-  plt.plot(results_sorted['n_samples'], results_sorted['n_monomials'], 'o-', label='Total Monomials')
-  plt.plot(results_sorted['n_samples'], results_sorted['effective_monomials'], 's-', label='Effective Monomials')
-  plt.xlabel('Number of Training Samples')
-  plt.ylabel('Number of Monomials')
-  plt.title('Monomial Growth vs. Number of Samples')
-  plt.grid(True, linestyle='--', alpha=0.7)
-  plt.legend()
-  
-  mono_path = save_path + '_monomials'
-  if save_pgf:
-    save_figure_both_formats(fig, mono_path)
-  else:
-    fig.savefig(f"{mono_path}.png", dpi=300, bbox_inches='tight')
-  
-  plt.close()
-
 def main():
   print("Starting MNIST scaling experiments visualization...")
   
@@ -430,7 +345,7 @@ def main():
     X, y, 
     pca_dimensions=[10, 20, 30, 40, 50],
     degrees=[1, 2, 3],
-    skip_experiments=True
+    skip_experiments=False
   )
   
   print("\n==== VISUALIZING EXPERIMENT 2: Sample Size Scaling ====")
@@ -439,7 +354,7 @@ def main():
     pca_dim=10,
     degree=3,
     sample_percentages=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-    skip_experiments=True
+    skip_experiments=False
   )
   
 if __name__ == "__main__":

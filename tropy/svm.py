@@ -53,7 +53,7 @@ class TropicalSVC():
       self._apex = np.sign(w) * np.log(np.sign(w) * w)/log_linear_beta
     else:
       # Compute apex
-      self._apex, self._eigval = _inrad_eigenpair(aug_data_classes, N=1000, tol=1e-3)
+      self._apex, self._eigval = _inrad_eigenpair(aug_data_classes, N=2000, tol=1e-3)
 
     # TODO: use less lines of code
     projections = _tropical_projections(aug_data_classes, self._apex)

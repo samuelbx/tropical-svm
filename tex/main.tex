@@ -625,39 +625,37 @@ For part 2 (Margin Optimality): Lemma~\ref{lemma:hyperplane_to_operator} shows t
 For part 3 (Soft-Margin Interpretation): Lemma~\ref{lemma:perturbation} shows that in the binary case, $\rho(T)$ is positive and characterizes the overlap between the tropical convex hulls.
 \end{proof}
 
-\section{Empirical Evaluation}\label{appendix:empirical}
+\section{Proof of Concept}\label{appendix:empirical}
 
-To validate our theoretical complexity analysis, we evaluated both standard tropical SVM and an enhanced tropical polynomial implementation (with $k=4$ sampling points per class) against scikit-learn's LinearSVC on benchmark datasets \cite{scikit-learn,waveform_database_generator_(version_1)_107}. All experiments used 5-fold cross-validation with standardized features. We compare training times for a fixed convergence threshold. All experiments were conducted on a MacBook Air M2 with 16GB RAM using NumPy \cite{harris2020array}.
+To validate our theoretical complexity analysis, we evaluated both standard tropical SVM and an enhanced tropical polynomial implementation (with $k=4$ sampling points per class) against scikit-learn's LinearSVC on benchmark datasets \cite{scikit-learn}. All experiments used 5-fold cross-validation with standardized features. We compare training times for a fixed convergence threshold. All experiments were conducted on a MacBook Air M2 with 16GB RAM using NumPy \cite{harris2020array}.
 
 \begin{table}[h]
-\centering
-\footnotesize
-\begin{tabular}{@{}l@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 8pt}cc@{\hskip 4pt}c@{\hskip 8pt}ccc@{\hskip 8pt}cc@{}}
-\toprule
-\multirow{3}{*}{\textbf{Dataset}} & \multirow{3}{*}{\textbf{\#C}} & \multirow{3}{*}{\textbf{\#S}} & \multicolumn{8}{c}{\textbf{Accuracy (\%) / Training Time (s) / \#KM Iter}} \\
-\cmidrule(lr){4-11}
-& & & \multicolumn{3}{c}{\textbf{Tropical SVM}} & \multicolumn{3}{c}{\textbf{Tropical Poly}} & \multicolumn{2}{c}{\textbf{Linear SVC}} \\
-\cmidrule(lr){4-6} \cmidrule(lr){7-9} \cmidrule(lr){10-11}
-& & & Acc & Time & \#KM & Acc & Time & \#KM & Acc & Time \\
-\midrule
-Iris & 3 & 150 & 66.7 & 0.0006 & 11.2 & 94.0 & 0.102 & 108.6 & 92.7 & 0.0004 \\
-Wine & 3 & 178 & 74.2 & 0.0019 & 25.0 & 93.3 & 0.115 & 113.6 & 97.8 & 0.0006 \\
-Breast Cancer & 2 & 569 & 82.1 & 0.0081 & 32.6 & 91.7 & 0.596 & 432.6 & 96.7 & 0.0008 \\
-Waveform & 3 & 5000 & 49.9 & 0.0756 & 23.0 & 64.4 & 9.330 & 319.8 & 86.7 & 0.0246 \\
-\bottomrule
-\end{tabular}
-\vspace{0.5em}
-\caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.7\% to 9.1\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii-Mann iterations.
-Chosen convergence threshold $\varepsilon$ is $10^{-3}$ times the the characteristic variation scale of the considered data.}
-\label{tab:benchmark_results}
-\end{table}    
+    \centering
+    \footnotesize
+    \begin{tabular}{@{}l@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 8pt}ccc@{\hskip 4pt}c@{\hskip 8pt}cccc@{\hskip 8pt}cc@{}}
+    \toprule
+    \multirow{3}{*}{\textbf{Dataset}} & \multirow{3}{*}{\textbf{\#C}} & \multirow{3}{*}{\textbf{\#S}} & \multicolumn{10}{c}{\textbf{Accuracy (\%) / Training Time (s) / \#KM Iter / $\rho(T)$}} \\
+    \cmidrule(lr){4-13}
+    & & & \multicolumn{4}{c}{\textbf{Tropical SVM}} & \multicolumn{4}{c}{\textbf{Tropical Poly}} & \multicolumn{2}{c}{\textbf{Linear SVC}} \\
+    \cmidrule(lr){4-7} \cmidrule(lr){8-11} \cmidrule(lr){12-13}
+    & & & Acc & Time & \#KM & $\rho(T)$ & Acc & Time & \#KM & $\rho(T)$ & Acc & Time \\
+    \midrule
+    Iris & 3 & 150 & 66.7 & 0.0025 & 49.6 & 0.380 & 94.0 & 0.150 & 167.4 & -0.973 & 92.7 & 0.0004 \\
+    Wine & 3 & 178 & 74.2 & 0.0077 & 118.8 & 0.314 & 92.7 & 0.489 & 476.4 & -7.582 & 97.8 & 0.0005 \\
+    Breast Cancer & 2 & 569 & 82.1 & 0.0510 & 215.4 & 0.043 & 92.1 & 1.121 & 851.4 & -1.885 & 96.7 & 0.0008 \\
+    \bottomrule
+    \end{tabular}
+    \vspace{0.5em}
+    \caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii-Mann iterations; $\rho(T)$: spectral radius.
+    Chosen convergence threshold $\varepsilon$ is $10^{-12}$.}
+    \label{tab:benchmark_results}
+\end{table}
 
 The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets, demonstrating practical computational feasibility. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
-Tropical SVM indeed fails to seprarate these datasets and thus performs poorly, while polynomials make the data separable.
+Tropical SVM indeed fails to seprarate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius negative).
+With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is way smaller than expected $O(1/\varepsilon^2)$.
 
-Notably, the spectral radius values closely align with our theoretical predictions: datasets yielding negative spectral radius values (Wine: -7.53, Breast Cancer: -1.76, Iris: -0.97) exhibited the highest tropical polynomial accuracy, while the non-separable Waveform dataset (spectral radius: 0.87) proved more challenging.
-
-As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. While specialized classical SVM implementations remain faster, our results conclusively demonstrate that tropical SVMs can be practically computed with pseudo-polynomial guarantees.
+As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. While optimized classical SVM implementations remain faster, our results conclusively demonstrate that tropical SVMs can be practically computed.
 
 \begin{figure}[htbp]
     \centering

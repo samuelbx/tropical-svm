@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.datasets import load_breast_cancer, load_iris, load_wine, load_diabetes
+from sklearn.datasets import load_breast_cancer, load_iris, load_wine
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.preprocessing import StandardScaler
@@ -117,7 +117,6 @@ def load_datasets():
   datasets['Breast Cancer'] = load_breast_cancer()
   datasets['Iris'] = load_iris()
   datasets['Wine'] = load_wine()
-  datasets['Diabetes'] = load_diabetes()   #   442 samples, 10 features
   
   print("Attempting to load OpenML datasets...")
   openml_datasets = [
