@@ -17,3 +17,7 @@
 ./playground.py moons 2 --equations -s ./tex/figures/moons.pgf
 ./playground.py bintoy-separated --equations --show-axes -s ./tex/figures/example.pgf
 python3 ./tropicalization.py
+
+# Empirical evaluation
+python3 ./evaluation_datasets.py
+python3 ./evaluation_scaling.py
