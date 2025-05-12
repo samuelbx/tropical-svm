@@ -453,7 +453,7 @@ games.\todo{SG: ref to chaloupka}
 %% Also, developing specialized parallel implementations would be needed to further accelerate computations, particularly for high-dimensional feature spaces or large-scale datasets with millions of points.
 
 %, which are still to be investigated. 
-
+\todo[color=red!30]{Remercier les eleves de l'an dernier}
 \bibliographystyle{unsrt}
 \bibliography{references}
 
@@ -643,7 +643,12 @@ The standard tropical SVM implementation exhibits training times close to Linear
 Tropical SVM indeed fails to seprarate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius negative).
 With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is way smaller than expected $O(1/\varepsilon^2)$.
 
-As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. While optimized classical SVM implementations remain faster, our results conclusively demonstrate that tropical SVMs can be practically computed.
+As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. Table~\ref{tab:benchmark_results}
+shows that the current implementation (an interpreted code, in python, calling numpy) is slower, by a factor $10^3$, than a state of the art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scale {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
+a proof of concept that tropical SVMs can be practically computed.
+%% Figure~\ref{fig:scaling_analysis} reveals that the tropical SVM algorithm exhibits linear scaling behavior both with respect to the number of effective monomials and the training set size.
+%% We used a Python script that systematically varies PCA dimensions, polynomial degrees, and sample sizes on MNIST data \cite{MNIST}.
+
 
 \begin{figure}[htbp]
     \centering
@@ -660,11 +665,10 @@ As expected, the number of monomials increases from $d+1$ in standard tropical S
         \caption{Training time vs. size of training set}
         \label{fig:sample_size_scaling}
     \end{subfigure}
-    \caption{Performance scaling analysis of tropical SVM on MNIST data}
+    \caption{Performance scaling analysis of tropical SVM on MNIST data \cite{MNIST}.}
     \label{fig:scaling_analysis}
 \end{figure}
 
-Figure~\ref{fig:scaling_analysis} reveals that the tropical SVM algorithm exhibits linear scaling behavior both with respect to the number of effective monomials and the training set size. We used a Python script that systematically varies PCA dimensions, polynomial degrees, and sample sizes on MNIST data \cite{MNIST}.
 
 \newpage
 \section*{NeurIPS Paper Checklist}
