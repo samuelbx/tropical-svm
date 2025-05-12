@@ -1,48 +1,62 @@
 This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
-The style file: plain.bst
+The style file: unsrt.bst
 Database file #1: references.bib
+Warning--I'm ignoring tang2020's extra "title" field
+--line 167 of file references.bib
+Warning--I'm ignoring tang2020's extra "volume" field
+--line 168 of file references.bib
+Warning--I'm ignoring tang2020's extra "number" field
+--line 174 of file references.bib
+Warning--I'm ignoring tang2020's extra "journal" field
+--line 176 of file references.bib
+Warning--I'm ignoring tang2020's extra "author" field
+--line 177 of file references.bib
+Warning--I'm ignoring tang2020's extra "year" field
+--line 179 of file references.bib
+Warning--I'm ignoring tang2020's extra "pages" field
+--line 180 of file references.bib
 Warning--empty journal in akian_correspondence_2011
-You've used 33 entries,
-            2118 wiz_defined-function locations,
-            718 strings with 10397 characters,
-and the built_in function-call counts, 13122 in all, are:
-= -- 1291
-> -- 696
+You've used 31 entries,
+            1791 wiz_defined-function locations,
+            656 strings with 9653 characters,
+and the built_in function-call counts, 8720 in all, are:
+= -- 788
+> -- 419
 < -- 13
-+ -- 276
-- -- 237
-* -- 1024
-:= -- 2170
-add.period$ -- 107
-call.type$ -- 33
-change.case$ -- 210
++ -- 150
+- -- 119
+* -- 664
+:= -- 1356
+add.period$ -- 99
+call.type$ -- 31
+change.case$ -- 28
 chr.to.int$ -- 0
-cite$ -- 34
-duplicate$ -- 443
-empty$ -- 953
-format.name$ -- 237
-if$ -- 2708
+cite$ -- 32
+duplicate$ -- 359
+empty$ -- 808
+format.name$ -- 119
+if$ -- 1937
 int.to.chr$ -- 0
-int.to.str$ -- 33
-missing$ -- 34
-newline$ -- 170
-num.names$ -- 74
-pop$ -- 198
+int.to.str$ -- 31
+missing$ -- 32
+newline$ -- 158
+num.names$ -- 39
+pop$ -- 81
 preamble$ -- 1
-purify$ -- 180
+purify$ -- 0
 quote$ -- 0
-skip$ -- 313
+skip$ -- 176
 stack$ -- 0
-substring$ -- 906
-swap$ -- 101
+substring$ -- 694
+swap$ -- 99
 text.length$ -- 13
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 126
+type$ -- 0
 warning$ -- 1
-while$ -- 128
-width$ -- 35
-write$ -- 377
-(There was 1 warning)
+while$ -- 89
+width$ -- 33
+write$ -- 351
+(There were 8 warnings)

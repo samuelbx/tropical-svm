@@ -28,6 +28,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Rmax}{\mathbb{R}_{\max}}
 \newcommand{\trop}{\mathbb{T}}
+\newcommand{\proj}{\mathbb{P}}
 \newcommand{\T}{\mathbb{T}}
 
 \title{Efficient Tropical SVMs via Mean-Payoff Games}
@@ -121,7 +122,7 @@ Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed spe
         \centering
         \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
     \end{subfigure}
-    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
+    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset.\todo{SG: add bibliographic reference to moons?} Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
     \label{fig:tropical_poly}
 \end{figure}
 
@@ -132,7 +133,9 @@ The remainder of the paper is organized as follows. Section~\ref{sec:prelim} int
 We now introduce the key concepts from tropical geometry that form the foundation of our approach.
 
 \paragraph{The Max-Plus Semiring.}
-The tropical (or max-plus) semiring $\trop = \R \cup \{-\infty\}$ replaces traditional arithmetic operations with:
+The tropical (or max-plus) semiring is the set $\trop = \R \cup \{-\infty\}$
+equipped with the following operations:
+%replaces traditional arithmetic operations with:
 \begin{align}
 x \oplus y &= \max(x,y) \quad \text{(tropical addition)}, \\
 x \odot y &= x + y \quad \text{(tropical multiplication)}.
@@ -141,10 +144,11 @@ x \odot y &= x + y \quad \text{(tropical multiplication)}.
 These operations may seem strange at first, but they naturally model systems where we care about ``bottlenecks'' or ``critical paths.'' For example, in project planning, if task A takes $x$ days and task B takes $y$ days, the project completion time depends on the maximum ($x \oplus y$) of these durations if tasks are parallel, and their sum ($x \odot y$) if sequential.
 
 \paragraph{Projective Space.}  
-The tropical projective space identifies points that differ by adding the same constant to all coordinates. Formally, it's the quotient of $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$ by the equivalence relation $x \sim y$ if $x = y + c \cdot \mathbf{1}$ for some constant $c$. In practice, we embed data from $\R^d$ into the projective space via:
+The tropical projective space $\proj \trop^d$ identifies vectors of $\trop^d$ that differ by adding the same constant to all coordinates. Formally, it's the quotient of $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$ by the equivalence relation $x \sim y$ if $x = y + c \cdot \mathbf{1}$ for some constant $c$, where $\mathbf{1}$ denotes the ``all ones'' vector. In practice, we embed data from $\R^{d-1}$ into the projective space $\proj \trop^d$ via:
 \[
-x=(x_1,\dots,x_d)\mapsto (x_1,\dots,x_d,-(x_1+\cdots+x_d)).
+x=(x_1,\dots,x_{d-1})\mapsto [(x_1,\dots,x_{d-1},-(x_1+\cdots+x_{d-1}))],
 \]
+where $[\cdot]$ denotes the equivalence class of a vector in  $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$.\todo{SG: changed numbering}
 
 This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. It's similar to how projective geometry in computer vision makes analysis invariant to camera distance.
 

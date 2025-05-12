@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex main"] 1745941275 "main.aux" "main.bbl" "main" 1745941287
-  "/usr/share/texlive/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1745941286 17242 303329f8e7402e8c9d3fa777cbd272df "pdflatex"
-  "references.bib" 1745940151 17520 53fc1f562d07d579585d0657851f400c ""
+["bibtex main"] 1747060101 "main.aux" "main.bbl" "main" 1747060105
+  "/usr/share/texlive/texmf-dist/bibtex/bst/base/unsrt.bst" 1292289607 18030 1376b4b231b50c66211e47e42eda2875 ""
+  "main.aux" 1747060105 15702 3b927804130ff4184291fee8eae48ac0 "pdflatex"
+  "references.bib" 1747060080 16670 fce8073041c93bd33862985e9309f5f0 ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1745941275 "main.tex" "main.pdf" "main" 1745941287
+["pdflatex"] 1747060101 "main.tex" "main.pdf" "main" 1747060105
   "/etc/texmf/web2c/texmf.cnf" 1677109391 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -58,9 +58,11 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb" 1248133631 36741 fa121aac0049305630cf160b86157ee4 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb" 1248133631 37912 77d683123f92148345f3fc36a38d9ab1 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb" 1248133631 36281 c355509802a035cadc5f15869451dcee ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb" 1248133631 36094 798f80770b3b148ceedd006d487db67c ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb" 1248133631 31809 8670ca339bf94e56da1fc21c80635e2a ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1248133631 32762 224316ccc9ad3ca0423a14971cfa7fc1 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb" 1248133631 33993 9b89b85fd2d9df0482bd47194d1d3bf3 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb" 1248133631 32915 7bf7720c61a5b3a7ff25b0964421c9b6 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1248133631 32716 08e384dc442464e7285e891af9f45947 ""
@@ -289,12 +291,12 @@
   "figures/moons-feat-sel.pgf" 1744496029 1280326 44ad86a311504d1ef9f9d77891122b9c ""
   "figures/moons.pgf" 1744496029 198470 158fec2be905fc3f13c80b719e1a55f3 ""
   "figures/non-separable.pgf" 1744496029 34993 6fa9f009e60762f2688caafcb6558999 ""
-  "figures/pca_degree_scaling.pgf" 1744496029 70472 54712bfbedad2b45a1fdc16e2dee73d9 ""
+  "figures/pca_degree_scaling.pgf" 1747060080 70466 ab45385281d019c549c1135ec731df05 ""
   "figures/sample_size_scaling.pgf" 1744496029 27172 ecb011d74f7c04b26c001db6a4b22bb2 ""
-  "main.aux" 1745941286 17242 303329f8e7402e8c9d3fa777cbd272df "pdflatex"
-  "main.bbl" 1745941275 8336 8011c3363222ca3493fe4eb85eee02b3 "bibtex main"
-  "main.out" 1745941286 1812 8c0b5544ec2548921229233b9aa7eb43 "pdflatex"
-  "main.tex" 1745941207 70701 5a6b29ebf4694e8f81d3c2256e616768 ""
+  "main.aux" 1747060105 15702 3b927804130ff4184291fee8eae48ac0 "pdflatex"
+  "main.bbl" 1747060101 7801 21fbfdce3d7fabfd0cfadb3d18a79041 "bibtex main"
+  "main.out" 1747060105 1795 40903b8ed19de0cb350d0b07ac5ecca8 "pdflatex"
+  "main.tex" 1747060080 69037 36fa9743fa9a51ea68f3bdddd8ba55a5 ""
   "neurips_2024.sty" 1744496029 11625 b5f853b54a7a098e9e5b837f826d5daa ""
   (generated)
   "main.aux"
