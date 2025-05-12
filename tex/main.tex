@@ -25,6 +25,11 @@
 \newtheorem{definition}{Definition}
 \newtheorem{proposition}[theorem]{Proposition}
 
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\preceq}{\preccurlyeq}
+\renewcommand{\succeq}{\succcurlyeq}
+
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Rmax}{\mathbb{R}_{\max}}
 \newcommand{\trop}{\mathbb{T}}
@@ -122,7 +127,7 @@ Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed spe
         \centering
         \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
     \end{subfigure}
-    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset.\todo{SG: add bibliographic reference to moons?} Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
+    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}\todo{SG: add bibliographic reference to moons?} 
     \label{fig:tropical_poly}
 \end{figure}
 
