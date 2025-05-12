@@ -93,7 +93,7 @@ The Shapley operators we employ encodes the one-step payoffs and transitions in 
 The spectral properties of these operators have been extensively studied to characterize fixed points and convergence in nonlinear systems~\cite{kolokoltsov1997,gaubert2004}.
 In particular, the spectral radius of a Shapley operator equals the game's value.
 Mean-payoff games lie in NP $\cap$ coNP, but no polynomial-time algorithm is known.
-Nonetheless, large instances can be solved efficiently by iterative schemes such as relative Krasnoselskii-Mann iteration, which require $O(L/\varepsilon^2)$ operator evaluations, which is \emph{linear} in input size $L$ for a precision $\varepsilon$.
+Nonetheless, large instances can be solved efficiently by iterative schemes such as relative Krasnoselskii--Mann iteration, which require $O(L/\varepsilon^2)$ operator evaluations, which is \emph{linear} in input size $L$ for a precision $\varepsilon$.
 
 \paragraph{Contributions.} We develop a new approach to tropical classification using mean-payoff games,
 overcoming the computational limitations of previous approaches:
@@ -286,11 +286,11 @@ Additionally, because our method is formulated as a spectral criterion rather th
 Having established the theoretical foundation, we now present our algorithm for tropical SVM based on the spectral criterion. The key insight is that we can compute the spectral radius and optimal hyperplane efficiently without exploring all possible sector assignments.
 
 
-\paragraph{Computing the Spectral Radius with Krasnoselskii-Mann Iterations.}
+\paragraph{Computing the Spectral Radius with Krasnoselskii--Mann Iterations.}
 \label{subsec:spectral_computation}
 To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we use
 Algorithm~\ref{alg:km_iteration}, a modification of relative value
-iteration using Krasnoselskii-Mann damping, studied
+iteration using Krasnoselskii--Mann damping, studied
 in~\cite{akianmfcs}.
 
 \begin{algorithm}
@@ -322,7 +322,7 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
   \STATE \quad For each class $k$, compute the diagonal-free projection $T^k(x) = P^{\textrm{DF}}_{X^k}(x)$
   \STATE \quad Combine via $T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}$ for each coordinate $i$
 \STATE \textbf{Compute Eigenpair:}
-  \STATE \quad Run Krasnoselskii-Mann iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and apex $a$ with an accuracy $\epsilon>0$.
+  \STATE \quad Run Krasnoselskii--Mann iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and apex $a$ with an accuracy $\epsilon>0$.
 \STATE \textbf{Assign Sectors to Classes:}
   \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
     \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$
@@ -620,7 +620,7 @@ To validate our theoretical complexity analysis, we evaluated both standard trop
     \bottomrule
     \end{tabular}
     \vspace{0.5em}
-    \caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii-Mann iterations; $\rho(T)$: spectral radius.
+    \caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii--Mann iterations; $\rho(T)$: spectral radius.
     Chosen convergence threshold $\varepsilon$ is $10^{-12}$.}
     \label{tab:benchmark_results}
 \end{table}
