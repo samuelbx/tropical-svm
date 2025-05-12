@@ -113,7 +113,7 @@ This work makes tropical SVMs tractable for real-world applications, enabling na
 \paragraph{Related Work.}
 Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category remain in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\todo{quote lavishly yoshida}
 
-\todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely}
+\todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely; Paragos }
 
 
 \begin{figure}[h]
@@ -127,10 +127,10 @@ Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed spe
         \centering
         \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
     \end{subfigure}
-    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}\todo{SG: add bibliographic reference to moons?} 
+    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
     \label{fig:tropical_poly}
 \end{figure}
-
+\todo{SG: add bibliographic reference to moons?} 
 The remainder of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions.
 
 \section{Tropical Geometry Preliminaries}\label{sec:prelim}
