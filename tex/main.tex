@@ -357,7 +357,7 @@ f(x) = \max_{\alpha \in A} (c_\alpha + \langle \alpha, x \rangle),
 where $A \subset \mathbb{Z}^d$ is a finite set of integer vectors (monomials), $c_\alpha \in \R$ are coefficients, and $\langle \alpha, x \rangle = \alpha_1 x_1 + \cdots + \alpha_d x_d$.
 
 To fit such polynomials, we use a feature map $\Phi_A: \trop^d \to \trop^{|A|}$ defined by:
-\begin{align}
+\begin{align}\label{e-def-feature}
 [\Phi_A(x)]_\alpha = \langle \alpha, x \rangle.
 \end{align}
 
@@ -436,9 +436,23 @@ Interestingly, the connection could be exploited in the reverse direction: tropi
 
 \section{Discussion and Future work}\label{sec:discussion}
 
-We addressed a key computational barrier limiting tropical SVM's practical application in machine learning. By reformulating tropical classification through spectral theory and mean-payoff games, we reduced complexity from exponential to pseudo-polynomial, making tropical SVMs feasible for real-world applications, which are still to be investigated. Our framework provides natural multi-class capabilities, theoretical margin guarantees, and interpretable piecewise-linear decision boundaries.
+We addressed a key computational barrier limiting tropical SVM's practical application in machine learning. By reformulating tropical classification through spectral theory and mean-payoff games, we reduced complexity from exponential to linear in the dimension (but pseudo-polynomial in the desired precision),
+making tropical SVMs feasible for real-world applications.
+Our framework provides natural multi-class capabilities, theoretical margin guarantees, and interpretable piecewise-linear decision boundaries.
 
-Our work opens several promising avenues for further investigation. First, addressing the sensitivity to outliers will be crucial for real-world applications. Then, developing generalization bounds for tropical polynomial classifiers would guide model selection, alongside intelligent monomial selection strategies that optimize the expressivity-efficiency tradeoff. Finally, developing specialized parallel implementations could further accelerate computations, particularly for high-dimensional feature spaces or large-scale datasets with millions of points.
+Our work opens several promising avenues for further investigation. First, addressing the sensitivity to outliers will be crucial for real-world applications. Then, developing generalization bounds for tropical polynomial classifiers would guide model selection. In particular, a key issue is the choice of the set of linear feature maps $x\mapsto \<\alpha,x>$, $\alpha\in A$ (cf.\ \eqref{e-def-feature}). Given a prescribed budget (cardinality of $|A|$) and characteristics
+of the data set, finding the optimal set of linear features
+appears to be an interesting open question, which seems accessible
+by methods of linear programming (e.g., cutting planes methods).
+%% intelligent monomial selection strategies that optimize the expressivity-efficiency tradeoff.
+We presented here a proof of concept, based on a first implementation in python: we implemented the simplest algorithm for mean-payoff games
+(relative value iteration), in a non-optimized way. We could rely instead on policy iteration, which has the merit of providing an exact solution, and
+has been found experimentally to be the fastest algorithm to solve mean-payoff
+games.\todo{SG: ref to chaloupka}
+%although its complexity is generally exponential.
+%% Also, developing specialized parallel implementations would be needed to further accelerate computations, particularly for high-dimensional feature spaces or large-scale datasets with millions of points.
+
+%, which are still to be investigated. 
 
 \bibliographystyle{unsrt}
 \bibliography{references}
