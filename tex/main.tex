@@ -654,16 +654,16 @@ To validate our theoretical complexity analysis, we evaluated both standard trop
     \cmidrule(lr){4-7} \cmidrule(lr){8-11} \cmidrule(lr){12-13}
     & & & Acc & Time & \#KM & $\rho(T)$ & Acc & Time & \#KM & $\rho(T)$ & Acc & Time \\
     \midrule
-    Iris & 3 & 150 & 66.7 & 0.0025 & 49.6 & 0.380 & 94.0 & 0.150 & 167.4 & -0.973 & 92.7 & 0.0004 \\
-    Wine & 3 & 178 & 74.2 & 0.0077 & 118.8 & 0.314 & 92.7 & 0.489 & 476.4 & -7.582 & 97.8 & 0.0005 \\
-    Breast Cancer & 2 & 569 & 82.1 & 0.0510 & 215.4 & 0.043 & 92.1 & 1.121 & 851.4 & -1.885 & 96.7 & 0.0008 \\
+    Iris & 3 & 150 & 66.0 & 0.0007 & 13.8 & 0.375 & 93.3 & 0.1519 & 165.6 & -0.986 & 92.7 & 0.0004 \\
+    Wine & 3 & 178 & 74.2 & 0.0024 & 35.8 & 0.314 & 92.7 & 0.1610 & 161.8 & -7.307 & 97.8 & 0.0005 \\
+    Breast Cancer & 2 & 569 & 81.0 & 0.0128 & 52.4 & 0.042 & 91.4 & 0.9974 & 763.8 & -1.901 & 96.7 & 0.0010 \\
     \bottomrule
     \end{tabular}
     \vspace{0.5em}
-    \caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii--Mann iterations; $\rho(T)$: spectral radius.
-    Chosen convergence threshold $\varepsilon$ is $10^{-12}$.}
+    \caption{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii--Mann iterations; $\rho(T)$: spectral radius. Convergence threshold $\varepsilon = 10^{-12}$.}
     \label{tab:benchmark_results}
 \end{table}
+
 
 The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets, demonstrating practical computational feasibility. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
 Tropical SVM indeed fails to separate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius negative).
