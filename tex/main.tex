@@ -353,7 +353,7 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
   \STATE \quad For each class $k$, compute the diagonal-free projection $T^k(x) = P^{\textrm{DF}}_{X^k}(x)$
   \STATE \quad Combine via $T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}$ for each coordinate $i$
 \STATE \textbf{Compute Eigenpair:}
-  \STATE \quad Run Krasnoselskii--Mann iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and apex $a$ with an accuracy $\epsilon>0$.
+  \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and apex $a$ with accuracy $\epsilon>0$.
 \STATE \textbf{Assign Sectors to Classes:}
   \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
     \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$
