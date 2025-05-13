@@ -112,6 +112,36 @@ overcoming the computational limitations of previous approaches:
 This work makes tropical SVMs tractable for real-world applications, enabling natural multi-class classification, and opening new directions for piecewise-linear methods that balance expressivity, interpretability, and computational efficiency.
 
 \paragraph{Related Work.}
+The theoretical fundation of this work relie on a separation theorem of Cohen, Gaubert and Quadrat~\cite{cohen2004}, refined in~\cite{AGNS10},  showing that the projection on tropical cone provides a nearest point in Hilbert's seminorm. This led to the development of the tropical
+analogue of Von Neumann cyclic projection algorithm, providing an effective
+way to separate two tropical convex sets, see~\cite{gaubert2011}, and also~\cite{CuninghameGreen2003} for an early result
+in this direction. A key novelty in the present work is the introduction
+of the classification operator $T$ of~\eqref{eq:single_operator}, combined
+with the substitution of ordinary projections by their ``diagonal-free'' counter parts,
+leading to a characterization of the separation margin. The diagonal-free projections
+originate from~\cite{akiangaubertqisaadi},
+in which they were used to solve tropical linear regression
+problems.
+
+Christopoulos and Paragos investigated the separation by tropical polynomials.
+A survey of the applications of tropical geometry to machine learning
+can be found in~\cite{maragos2021}.
+Paragos et al. studied several other problems of tropical linear regression.
+A survey of the application of tropical geometry to regression problems can be found
+in~\cite{}. Yoshida, and her coworkers, have developed a series of work
+dealing with tropical approximation (principal component analysis, regression)
+and separation (tropical SVM), and applied them to problems of phyologenetic analysis.
+These works apply not only to $\ell_\infty$-cost functions as the the one we consider,
+but also to $\ell_1$-costs functions, they include reductions to mixed
+linear programming problems, as well as efficient dedicated heuristics or local search
+methods~\cite{}. Recent developments of metric aspects of tropical geometry include
+the study of tropical medians and their link with optimal transport~\cite{}.
+
+
+
+Tropical The applito We rely specially
+on the appraoch of
+on the Metric The metric interpretis bresult subsequenb
 Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category remain in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\todo{quote lavishly yoshida}
 
 \todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely; Paragos }
@@ -250,9 +280,9 @@ T^k(x) = P_{X^k}^{\text{DF}}(x).
 This diagonal-free variant is defined by Equation~\ref{e-def-DF}.
 
 We then combine these operators into a single classification operator $T$ defined coordinatewise as:
-\[
-T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}\label{eq:single_operator},
-\]
+\begin{align}
+  T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}\label{eq:single_operator},
+\end{align}
 where $\operatorname{\max}_2$ denotes the second-largest value among the outputs. For binary classification ($K=2$), this simplifies to $T(x)=\min\{T^1(x), T^2(x)\}$.
 
 \paragraph{Main Theorem: Spectral Radius and Margin.}
