@@ -665,12 +665,12 @@ To validate our theoretical complexity analysis, we evaluated both standard trop
 \end{table}
 
 
-The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets, demonstrating practical computational feasibility. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
-Tropical SVM indeed fails to separate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius negative).
+The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
+Tropical SVM indeed fails to separate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius $\rho(T)$ is negative), and obtain an maximal-margin separator in the feature space.
 With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is way smaller than expected $O(1/\varepsilon^2)$.
 
 As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. Table~\ref{tab:benchmark_results}
-shows that the current implementation (an interpreted code, in python, calling numpy) is slower, by a factor $10^3$, than a state of the art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scale {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
+shows that the current interpreted (Python/NumPy) implementation is slower, by a factor $10^3$, than a state of the art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scale {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
 a proof of concept that tropical SVMs can be practically computed.
 
 
