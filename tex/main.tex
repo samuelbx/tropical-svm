@@ -1,10 +1,10 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-%\usepackage[preprint]{neurips_2024}
-\usepackage{neurips_2024}
-\usepackage{hyperref}
+%\usepackage[preprint]{neurips_2025}
+\usepackage{neurips_2025}
 \usepackage{url}
+\usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{pgfplots}
@@ -76,9 +76,9 @@
 
 \section{Introduction}\label{sec:intro}
 
-Classification is a fundamental task in machine learning, and Support Vector Machines (SVMs) have been a cornerstone method for decades. Traditional SVMs create decision boundaries using affine hyperplanes, which provide maximum-margin separation with strong generalization guarantees \cite{vapnik1999}. However, these linear boundaries become limiting when faced with complex, nonlinear data patterns, typically requiring kernel methods or feature engineering \cite{scholkopf2002}.
+Classification is a fundamental task in machine learning, and Support Vector Machines (SVMs) have been a cornerstone method for decades. Traditional SVMs create decision boundaries using affine hyperplanes, which provide maximum-margin separation with strong generalization guarantees \cite{vapnik1999}. However, these linear boundaries are limiting when faced with complex, nonlinear data patterns, typically requiring kernel methods or feature engineering \cite{scholkopf2002}.
 
-\paragraph{Motivation: Beyond Linear Boundaries.} We build on max-plus algebra, a framework where standard addition becomes the maximum operation, and multiplication becomes addition \cite{maclagan2015}. This leads to different geometric structures with attractive properties for machine learning: (1) instead of creating binary partitions, tropical hyperplanes divide space into multiple sectors, making them naturally suited for multi-class problems; (2) their piecewise-linear nature captures more complex patterns while maintaining interpretability; (3) the resulting decision boundaries coincide with those created by modern deep learning models with ReLU activations~\cite{zhang2018}. These properties provide richer, yet interpretable, decision boundaries that can capture nonlinear patterns in data while maintaining computational tractability \cite{maragos2021}.
+\paragraph{Motivation: Beyond Linear Boundaries.} We build on max-plus algebra, a framework where standard addition becomes the maximum operation, and multiplication becomes addition \cite{maclagan2015}. This leads to different geometric structures with attractive properties for machine learning: (1) instead of creating binary partitions, tropical hyperplanes divide space into multiple sectors, making them naturally suited for multi-class problems; (2) their piecewise-linear nature captures more complex patterns while maintaining interpretability; (3) the resulting decision boundaries coincide with those created by modern deep learning models with ReLU activations~\cite{zhang2018}. These properties provide richer and interpretable, decision boundaries that can capture nonlinear patterns in data while maintaining computational tractability \cite{maragos2021}.
 
 Tropical geometry has emerged as a powerful tool for modeling piecewise-linear phenomena in machine learning. Together with polyhedral geometry,
 it has been used to bound the number of linearity regions of functions realized by these networks~\cite{zhang2018,montufar}.
@@ -112,7 +112,7 @@ overcoming the computational limitations of previous approaches:
 This work makes tropical SVMs tractable for real-world applications, enabling natural multi-class classification, and opening new directions for piecewise-linear methods that balance expressivity, interpretability, and computational efficiency.
 
 \paragraph{Related Work.}
-The theoretical fundation of this work relie on a separation theorem of Cohen, Gaubert and Quadrat~\cite{cohen2004}, refined in~\cite{AGNS10},  showing that the projection on tropical cone provides a nearest point in Hilbert's seminorm. This led to the development of the tropical
+The theoretical foundation of this work relies on a separation theorem of Cohen, Gaubert and Quadrat~\cite{cohen2004}, refined in~\cite{AGNS10},  showing that the projection on tropical cone provides a nearest point in Hilbert's seminorm. This led to the development of the tropical
 analogue of Von Neumann cyclic projection algorithm, providing an effective
 way to separate two tropical convex sets, see~\cite{gaubert2011}, and also~\cite{CuninghameGreen2003} for an early result
 in this direction. A key novelty in the present work is the introduction
@@ -127,10 +127,10 @@ Charisopoulos and Paragos investigated the tropical analogues
 of perceptrons~\cite{Charisopoulos2017}.
 A survey covering further applications of tropical geometry to machine learning
 can be found in~\cite{maragos2021}. Another seminal work in this direction is~\cite{zhang2018}.
-Yoshida and her coworkers have developed a series of works
+Yoshida and her coworkers have developed a series of studies
 dealing with tropical approximation (principal component analysis~\cite{yoshida2019},
 regression)
-and separation (tropical SVM), and applied them to problems of phyologenetic analysis,
+and separation (tropical SVM), and applied them to problems of phylogenetic analysis,
 see~\cite{monod2022}. In particular, tropical support vector machines are studied
 in~\cite{tang2020,Yoshida2023}.
 %% These works apply not only to $\ell_\infty$-cost functions as the the one we consider,
@@ -142,7 +142,7 @@ in~\cite{tang2020,Yoshida2023}.
 %% on the appraoch of
 %% on the Metric The metric interpretis bresult subsequenb
 %% Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category remain in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\
-todo{quote lavishly yoshida}
+\todo{quote lavishly yoshida}
 
 \todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely; Paragos }
 
@@ -158,11 +158,11 @@ todo{quote lavishly yoshida}
         \centering
         \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
     \end{subfigure}
-    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1,1,1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
+    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1, 1, 1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
     \label{fig:tropical_poly}
 \end{figure}
 \todo{SG: add bibliographic reference to moons?} 
-The remainder of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions.
+The rest of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions.
 
 \section{Tropical Geometry Preliminaries}\label{sec:prelim}
 
@@ -180,13 +180,13 @@ x \odot y &= x + y \quad \text{(tropical multiplication)}.
 These operations may seem strange at first, but they naturally model systems where we care about ``bottlenecks'' or ``critical paths.'' For example, in project planning, if task A takes $x$ days and task B takes $y$ days, the project completion time depends on the maximum ($x \oplus y$) of these durations if tasks are parallel, and their sum ($x \odot y$) if sequential.
 
 \paragraph{Projective Space.}  
-The tropical projective space $\proj \trop^d$ identifies vectors of $\trop^d$ that differ by adding the same constant to all coordinates. Formally, it's the quotient of $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$ by the equivalence relation $x \sim y$ if $x = y + c \cdot \mathbf{1}$ for some constant $c$, where $\mathbf{1}$ denotes the ``all ones'' vector. In practice, we embed data from $\R^{d-1}$ into the projective space $\proj \trop^d$ via:
+The tropical projective space $\proj \trop^d$ identifies vectors of $\trop^d$ that differ by adding the same constant to all coordinates. Formally, it is the quotient of $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$ by the equivalence relation $x \sim y$ if $x = y + c \cdot \mathbf{1}$ for some constant $c$, where $\mathbf{1}$ denotes the ``all ones'' vector. In practice, we embed data from $\R^{d-1}$ into the projective space $\proj \trop^d$ via:
 \[
 x=(x_1,\dots,x_{d-1})\mapsto [(x_1,\dots,x_{d-1},-(x_1+\cdots+x_{d-1}))],
 \]
 where $[\cdot]$ denotes the equivalence class of a vector in  $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$.\todo{SG: changed numbering}
 
-This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. It's similar to how projective geometry in computer vision makes analysis invariant to camera distance.
+This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. it is similar to how projective geometry in computer vision makes analysis invariant to camera distance.
 
 \paragraph{Hyperplanes and Sectors.}
 A tropical hyperplane with apex $a \in \trop^d$ is defined as:
@@ -310,7 +310,7 @@ In contrast, our spectral characterization offers a complete theoretical underst
 \paragraph{Limitations.} 
 The primary limitation of our spectral approach is its sensitivity to outliers. Since convex hulls encompass all points in each class, a single misplaced point can significantly alter the classification boundary and potentially render previously separable data inseparable.
 
-Additionally, because our method is formulated as a spectral criterion rather than an optimization problem, it's challenging to incorporate relaxation mechanisms that would handle misclassified points in a controlled way. Traditional SVMs use slack variables to allow soft margins and tolerate some misclassifications, but our current approach doesn't have a direct equivalent. This suggests an important direction for future research.
+Additionally, because our method is formulated as a spectral criterion rather than an optimization problem, it is challenging to incorporate relaxation mechanisms that would handle misclassified points in a controlled way. Traditional SVMs use slack variables to allow soft margins and tolerate some misclassifications, but our current approach doesn't have a direct equivalent. This suggests an important direction for future research.
 
 \section{Algorithm and Implementation}\label{sec:algorithm}
 
@@ -406,8 +406,6 @@ The choice of monomial set $A$ critically affects both the expressivity and comp
 
 The degree parameter $s$ controls the trade-off between expressivity and overfitting. Higher degrees create more flexible boundaries but may overfit the training data. Cross-validation can guide this selection process.
 
-Importantly, only a sparse subset of monomials typically becomes active in the final classifier, making the approach computationally efficient even with many candidate monomials.
-
 \paragraph{Classification with Polynomials.}\label{subsec:poly_classification}
 To perform classification with polynomials:
 
@@ -436,14 +434,14 @@ This approach maintains the core theoretical guarantees of the hyperplane formul
 \vspace*{3em}
 \begin{figure}[ht!]
     \centering
-    \resizebox{0.7\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
+    \resizebox{0.8\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
     \caption{Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho(T)/3$ due to our theoretical results.}
     \label{fig:homogeneous_selection}
 \end{figure}
 \vspace*{4em}
 \begin{figure}[ht!]
     \centering
-    \resizebox{0.7\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
+    \resizebox{0.8\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
     \caption{Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref{sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.}
     \label{fig:adaptive_polynomial}
 \end{figure}
@@ -463,8 +461,6 @@ However, this method suffers from severe numerical instability for large $\beta$
     \label{fig:maslov_dequantization}
 \end{figure}
 
-Interestingly, the connection could be exploited in the reverse direction: tropical SVMs may offer efficient, interpretable warm-starts for classical methods, especially in high-dimensional or large-scale settings.
-
 \section{Discussion and Future work}\label{sec:discussion}
 
 We addressed a key computational barrier limiting tropical SVM's practical application in machine learning. By reformulating tropical classification through spectral theory and mean-payoff games, we reduced complexity from exponential to linear in the dimension (but pseudo-polynomial in the desired precision),
@@ -472,19 +468,17 @@ making tropical SVMs feasible for real-world applications.
 Our framework provides natural multi-class capabilities, theoretical margin guarantees, and interpretable piecewise-linear decision boundaries.
 
 Our work opens several promising avenues for further investigation. First, addressing the sensitivity to outliers will be crucial for real-world applications. Then, developing generalization bounds for tropical polynomial classifiers would guide model selection. In particular, a key issue is the choice of the set of linear feature maps $x\mapsto \<\alpha,x>$, $\alpha\in A$ (cf.\ \eqref{e-def-feature}). Given a prescribed budget (cardinality of $|A|$) and characteristics
-of the data set, finding the optimal set of linear features
+of the dataset, finding the optimal set of linear features
 appears to be an interesting open question, which seems accessible
 by methods of linear programming (e.g., cutting planes methods).
-%% intelligent monomial selection strategies that optimize the expressivity-efficiency tradeoff.
-We presented here a proof of concept, based on a first implementation in python: we implemented the simplest algorithm for mean-payoff games
+We presented here a proof of concept, based on a first implementation in Python: we implemented the simplest algorithm for mean-payoff games
 (relative value iteration), in a non-optimized way. We could rely instead on policy iteration, which has the merit of providing an exact solution, and
 has been found experimentally to be the fastest algorithm to solve mean-payoff
 games.\todo{SG: ref to chaloupka}
-%although its complexity is generally exponential.
-%% Also, developing specialized parallel implementations would be needed to further accelerate computations, particularly for high-dimensional feature spaces or large-scale datasets with millions of points.
 
-%, which are still to be investigated. 
-\todo[color=red!30]{Remercier les eleves de l'an dernier}
+\section*{Acknowledgements}
+
+\todo[color=red!30,inline]{Remercier les eleves de l'an dernier}
 \bibliographystyle{unsrt}
 \bibliography{references}
 
@@ -497,7 +491,7 @@ For any Shapley operator $T$, we define its fixed-point set as $\mathcal{S}(T) =
 Both $P$ and $P^\text{DF}$ have identical fixed-point sets and can serve as the class operators $T^k$ in our framework. We first characterize the maximal possible value for the margin.
 
 \begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
-Let $T^k$ be tropical projections on finite point clouds or their diagonal-free equivalents, and $T$ defined as the $\max_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
+Let $T^k$ be tropical projections on finite point clouds or their diagonal-free equivalents, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
 If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, then $T(a) \leq -\gamma + a$.
 Therefore, if we have an eigenpair $(\rho(T),a)$ of $T$, necessarily $\gamma \le -\rho(T)$.
 \end{lemma}
@@ -576,7 +570,8 @@ Intuitively, this can be thought of as representing the union of pairwise inters
     \label{fig:non_separable}
 \end{figure}
 
-\todo{This is the only place where diagonal free is needed.}
+The following Lemma is the only one where using the diagonal-free operator is needed.
+
 \begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
 Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
 \end{lemma}
@@ -586,9 +581,9 @@ Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a
 
 For a point $x \in \trop^d$, its distance to $\mathcal{H}_a$ is
 \begin{align}
-d_H(x, \mathcal{H}_a) = \max_i(x_i - a_i) - \max_2(x_i - a_i),
+d_H(x, \mathcal{H}_a) = \max_i(x_i - a_i) - \operatorname{\max}_2(x_i - a_i),
 \end{align}
-where $\max_2$ denotes the second-largest value.
+where $\operatorname{\max}_2$ denotes the second-largest value.
 
 For each point $x_j \in X^1 \cup X^2$, we define a perturbed point $\tilde{x}_j$ as follows:
 \begin{itemize}
@@ -671,14 +666,12 @@ To validate our theoretical complexity analysis, we evaluated both standard trop
 \end{table}
 
 The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets, demonstrating practical computational feasibility. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
-Tropical SVM indeed fails to seprarate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius negative).
+Tropical SVM indeed fails to separate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius negative).
 With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is way smaller than expected $O(1/\varepsilon^2)$.
 
 As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. Table~\ref{tab:benchmark_results}
 shows that the current implementation (an interpreted code, in python, calling numpy) is slower, by a factor $10^3$, than a state of the art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scale {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
 a proof of concept that tropical SVMs can be practically computed.
-%% Figure~\ref{fig:scaling_analysis} reveals that the tropical SVM algorithm exhibits linear scaling behavior both with respect to the number of effective monomials and the training set size.
-%% We used a Python script that systematically varies PCA dimensions, polynomial degrees, and sample sizes on MNIST data \cite{MNIST}.
 
 
 \begin{figure}[htbp]
