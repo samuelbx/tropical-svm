@@ -2,8 +2,6 @@
 
 tropy is a Python library for efficiently fitting piecewise linear models using tropical geometry and mean payoff games. It is distributed under the MIT License.
 
-[Read the (draft) paper behind this library.](https://raw.githubusercontent.com/samuelbx/tropical-svm/main/tex/Report_WIP.pdf)
-
 ## Installation
 
 If you already have a working installation of NumPy, the easiest way is to clone this repository.
@@ -44,10 +42,10 @@ optional arguments:
 
 | Commands | Results |
 |--|--|
-| `./playground.py moons 3` <br /><br /> `./playground.py moons --feature-selection 5 --simplified` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/moons.svg" width="40%"> <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/moons_feature_sel.svg" width="40%"> |
-| `./playground.py circular 3` <br /><br /> `./playground.py circular --feature-selection 5` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/circular.svg" width="40%"> <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/circular_feature_sel.svg" width="40%"> |
-| `./playground.py bintoy-separated 1` <br /><br /> `./playground.py bintoy-separated 1 --beta 10` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/bintoy-separated.svg" width="40%"> <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/bintoy-separated_maslov.svg" width="40%"> |
-| `./playground.py toy-reverse 3` <br /><br /> `./playground.py toy-reverse --feature-selection 3` | <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/toy-reverse.svg" width="40%"> <img src="https://raw.githubusercontent.com/samuelbx/tropical-svm/main/img/toy-reverse_feature_sel.svg" width="40%"> |
+| `./playground.py moons 3` <br /><br /> `./playground.py moons --feature-selection 5 --simplified` | <img src="./img/moons.svg" width="40%"> <img src="./img/moons_feature_sel.svg" width="40%"> |
+| `./playground.py circular 3` <br /><br /> `./playground.py circular --feature-selection 5` | <img src="./img/circular.svg" width="40%"> <img src="./img/circular_feature_sel.svg" width="40%"> |
+| `./playground.py bintoy-separated 1` <br /><br /> `./playground.py bintoy-separated 1 --beta 10` | <img src="./img/bintoy-separated.svg" width="40%"> <img src="./img/bintoy-separated_maslov.svg" width="40%"> |
+| `./playground.py toy-reverse 3` <br /><br /> `./playground.py toy-reverse --feature-selection 3` | <img src="./img/toy-reverse.svg" width="40%"> <img src="./img/toy-reverse_feature_sel.svg" width="40%"> |
 
 
 ### Fitting custom datasets
@@ -76,5 +74,4 @@ Module `tropy.graph` comes with a handful of methods to plot tridimensional trop
 ## Other experiments
 
 - `tropicalization.py` shows that *Maslov's dequantization* of classical SVMs does not produce good results.
-- `tightness.py` experimentally evaluates the tightness of the norm boundaries derived in Appendix A of the paper.
-- `iris_multiclass.ipynb` shows how one could use tropy on real-world data to build a multi-class classifier.
+- `evaluation_datasets.py` and `evaluation_scaling.py` runs the proof-of-concept evaluation on very simple datasets.

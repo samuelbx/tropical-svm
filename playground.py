@@ -100,7 +100,13 @@ def main(args):
   model = TropicalSVC()
   model.fit(data_classes, degree, native_tropical_data=native_tropical, log_linear_beta=log_linear_beta, feature_selection=feature_selection)
 
-  fig = plt.figure(figsize=(9,9) if save is None else (6, 6))
+  if args.small:
+    figsize = (3,3)
+  elif save is None:
+    figsize = (9,9)
+  else:
+    figsize = (6,6)
+  fig = plt.figure(figsize=figsize)
   ax = init_ax(fig, 111, L=10, mode_3d=False)
   if log_linear_beta is not None:
     method = f'linear SVM on log paper, $\\beta = {log_linear_beta}$'
@@ -113,35 +119,29 @@ def main(args):
   if save is None:
     ax.set_title(f'{features}, using {method}', fontsize='small', loc='left')
   L = plot_classes(ax, model._data_classes)
-  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L, sector_indicator=model._sector_indicator, data_classes=(model._data_classes if args.equations else None), simplified_mode=simplified, margin=(model.margin() if log_linear_beta is None else 0))
 
   if args.show_axes:
-    colors = ['#FF9999', '#99CCFF', '#99DD99']
+    colors = ['#CC6666', '#3366CC', '#339933']
     apex = -model._coeffs[0:3] if len(model._coeffs) >= 3 else np.zeros(3)
-    axis_length = L / 5
+    axis_length = L / 3
     
     for i in range(3):
-        direction = np.zeros(3)
-        direction[i] = axis_length
-        
-        ax.quiver(apex[0], apex[1], apex[2], 
-                 direction[0], direction[1], direction[2],
-                 color=colors[i], linewidth=2, arrow_length_ratio=0.1)
-        
-        text_offset = direction * 1.1
-        ax.text(apex[0] + text_offset[0], 
-                apex[1] + text_offset[1], 
-                apex[2] + text_offset[2], 
-                f'${["x", "y", "z"][i]}$', 
-                color=colors[i], fontsize=14, fontweight='bold',
-                ha='center', va='center')
-    
-    label_offset = np.array([0, 0, -axis_length/4])
-    ax.text(apex[0] + label_offset[0], 
-            apex[1] + label_offset[1], 
-            apex[2] + label_offset[2], 
-            f'$\\mathrm{{Apex}} = ({apex[0]:.2f}, {apex[1]:.2f}, {apex[2]:.2f})$', 
-            color='black', fontsize=11, ha='center')
+      direction = np.zeros(3)
+      direction[i] = axis_length
+      
+      ax.quiver(apex[0], apex[1], apex[2], 
+                direction[0], direction[1], direction[2],
+                color=colors[i], linewidth=2, arrow_length_ratio=0.1)
+      
+      text_offset = direction * 1.3
+      ax.text(apex[0] + text_offset[0], 
+              apex[1] + text_offset[1], 
+              apex[2] + text_offset[2], 
+              f'${["x", "y", "z"][i]}$', 
+              color=colors[i], fontsize=14, fontweight='bold',
+              ha='center', va='center')
+      
+  plot_polynomial_hypersurface_3d(ax, model._monomials, model._coeffs, L, sector_indicator=model._sector_indicator, data_classes=(model._data_classes if args.equations else None), simplified_mode=simplified, margin=(model.margin() if log_linear_beta is None else 0))
 
   if save is not None:
     if save == '__DEFAULT__':
@@ -161,6 +161,7 @@ if __name__ == '__main__':
   parser.add_argument("--simplified", action="store_true", help="Provide a simplified view of the hypersurface, with the decision boundary only")
   parser.add_argument("--equations", action="store_true", help="Show the equations for each monomial")
   parser.add_argument("--show-axes", action="store_true", help="Show the x, y, z axes")
+  parser.add_argument("--small", action="store_true", help="Make a small plot")
   parser.add_argument("--feature-selection", type=int, metavar='no_features', help="Experimental: heuristic to generate more relevant monomials based on data. Specify the number of points to sample per class if wanted. Bypasses degree option.")
 
   if len(sys.argv) == 1:

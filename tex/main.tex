@@ -151,14 +151,14 @@ in~\cite{tang2020,Yoshida2023}.
     \centering
     \begin{subfigure}[b]{0.35\textwidth}
         \centering
-        \resizebox{\textwidth}{!}{\clipbox{0.20\width{} 0.20\height{} 0.20\width{} 0.20\height{}}{\input{figures/example.pgf}}}
+        \resizebox{\textwidth}{!}{\clipbox{0.1\width{} 0.1\height{} 0.1\width{} 0.1\height{}}{\input{figures/example.pgf}}}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.61\textwidth}
         \centering
         \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
     \end{subfigure}
-    \caption{Left: Tropical hyperplane representation in projective space, with the constant vector (1, 1, 1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex. The two lower sectors are merged and assigned to orange points. Right: Visualization of a degree-2 polynomial classifier on the moons dataset. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
+    \caption{Left: Tropical hyperplane represented in projective space, with the constant vector (1, 1, 1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex, here equal to $(-0.65, 0.58, 0.07)$ and located at the elbow. The two lower sectors are merged and assigned to orange points. Margin is optimal and is represented in yellow. Right: Visualization of a degree-2 polynomial classifier on a toy dataset \cite{scikit-learn}. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
     \label{fig:tropical_poly}
 \end{figure}
 \todo{SG: add bibliographic reference to moons?} 
@@ -369,7 +369,7 @@ $\mathcal{O}(pd)$ time, where $p=p_1+\dots+p_K$ is the total number of points.
 Hence, Algorithm~\ref{alg:tropical_svm} terminates in $O(pd/\epsilon^2)$ time. Observe
 that this bound is {\em linear} in the input size $pd$.
 
-\paragraph{Empirical Performance Analysis.}
+\paragraph{Proof of Concept.}
 We validated the computational complexity of our algorithm through empirical testing (detailed in Appendix~\ref{appendix:empirical}). Our implementation achieves tractable performance on standard benchmark datasets, with performance scaling linearly with both dataset size and feature dimension as predicted by our theoretical analysis.
 
 For the first time, we demonstrate that tropical SVMs can be practically computed with pseudo-polynomial guarantees, removing the exponential barrier that limited previous approaches. While specialized classical SVM libraries remain faster on conventional tasks, our approach enables new applications where piecewise-linear decision boundaries offer advantages.
@@ -435,7 +435,7 @@ This approach maintains the core theoretical guarantees of the hyperplane formul
 \begin{figure}[ht!]
     \centering
     \resizebox{0.8\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
-    \caption{Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates the margin, which maintains a guaranteed lower bound of $-\rho(T)/3$ due to our theoretical results.}
+    \caption{Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho(T)/3$, as explained in the last paragraph of Section~\ref{sec:polynomials}.}
     \label{fig:homogeneous_selection}
 \end{figure}
 \vspace*{4em}
@@ -702,7 +702,7 @@ a proof of concept that tropical SVMs can be practically computed.
 \item {\bf Claims}
     \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The abstract and introduction clearly state the contributions—including the spectral characterization, margin optimality, pseudo‐polynomial algorithm, and extension to tropical polynomials—which are supported by both theoretical results and empirical evaluations.
+    \item[] Justification: The abstract and introduction clearly state the contributions—including the spectral characterization, margin optimality, pseudo‐polynomial algorithm, and extension to tropical polynomials—which are supported by both theoretical results and a proof of concept.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the abstract and introduction do not include the claims made in the paper.
@@ -744,7 +744,7 @@ a proof of concept that tropical SVMs can be practically computed.
     \item {\bf Experimental Result Reproducibility}
     \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The algorithm is fully described in Section~\ref{sec:algorithm}. The experimental section provides details on data splits (5-fold cross-validation), training times, accuracy metrics, and references a publicly available GitHub repository for code and reproduction (see Table~\ref{tab:benchmark_results} and Appendix~\ref{appendix:empirical}).
+    \item[] Justification: The algorithm is fully described in Section~\ref{sec:algorithm}. The experimental section provides details on data splits (5-fold cross-validation), training times, accuracy metrics, and references a repository for code and reproduction (see Table~\ref{tab:benchmark_results} and Appendix~\ref{appendix:empirical}).
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper does not include experiments.
@@ -764,7 +764,7 @@ a proof of concept that tropical SVMs can be practically computed.
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The paper includes a link to a GitHub repository (\url{https://github.com/samuelbx/tropical-svm}) with code and instructions for reproducing the experiments.
+    \item[] Justification: The supplementary material includes code and instructions for reproducing the experiments.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that paper does not include experiments requiring code.
@@ -859,7 +859,7 @@ a proof of concept that tropical SVMs can be practically computed.
 \item {\bf Licenses for existing assets}
     \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
     \item[] Answer: \answerYes{}.
-    \item[] Justification: All referenced works and datasets are properly cited, and the GitHub repository is expected to include license information consistent with proper academic practice.
+    \item[] Justification: All referenced works and datasets are properly cited.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper does not use existing assets.
@@ -875,7 +875,7 @@ a proof of concept that tropical SVMs can be practically computed.
 \item {\bf New Assets}
     \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The paper introduces a novel algorithm and provides experimental code, with documentation available in the supplementary GitHub repository.
+    \item[] Justification: The paper introduces a novel algorithm and provides experimental code, with documentation available in the supplementary code repository.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper does not release new assets.

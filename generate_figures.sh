@@ -15,7 +15,7 @@
 ./playground.py blobs 3 -s ./tex/figures/blobs.pgf
 ./playground.py moons --feature-selection 10 --simplified -s ./tex/figures/moons-feat-sel.pgf
 ./playground.py moons 2 --equations -s ./tex/figures/moons.pgf
-./playground.py bintoy-separated --equations --show-axes -s ./tex/figures/example.pgf
+./playground.py bintoy-separated --equations --show-axes --small -s ./tex/figures/example.pgf
 python3 ./tropicalization.py
 
 # Empirical evaluation

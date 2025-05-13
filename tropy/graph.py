@@ -207,8 +207,18 @@ def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=N
   
   # Add sector annotations if data is provided
   if data_classes is not None and sector_indicator is not None:
-    # Compute centroids for each sector based on points that actually belong to that sector
-    centroids = compute_sector_centroids(data_classes, sector_indicator, monomials, coeffs)
+    if len(monomials) == 3:
+      directions = {
+        0: np.array([ 2, -1, -1]),
+        1: np.array([-1,  2, -1]),
+        2: np.array([-1, -1,  2])
+      }
+      centroids = {}
+      for sector_idx in range(3):
+        centroids[sector_idx] = -np.array(coeffs) + directions[sector_idx] * (L / 4)
+    else:
+      # Compute centroids for each sector based on points that actually belong to that sector
+      centroids = compute_sector_centroids(data_classes, sector_indicator, monomials, coeffs)
     
     # For each sector with a centroid, display the dominant monomial
     for sector_idx, centroid in centroids.items():
@@ -227,7 +237,15 @@ def plot_polynomial_hypersurface_3d(ax, monomials, coeffs, L, sector_indicator=N
              usetex=True)  # Enable LaTeX rendering
 
 def draw_margin(ax, start, end, margin, color="#FFE4C9", alpha=1):
+  '''Warning: Method draw_margin draws a light-yellow band around
+  the tropical hypersurface. This doesn't strictly correspond to
+  the definition of the margin in general: for every sector_i
+  corresponding to dominant coordinate i (wrt. apex),
+  d(sector_i, class_k) >= margin for each class_k not associated
+  with sector_i. Hence, one would need to draw the union of such
+  bands in the complementary of sector_i, for each i.'''
   if np.isclose(margin, 0):
+
     return
 
   def cube_vertices(center, size):
