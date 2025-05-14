@@ -45,6 +45,12 @@ Marianne Akian, St{\'e}phane Gaubert, and Antoine Hochart.
 \newblock {\em Discrete and Continuous Dynamical Systems}, 40(1):207--231,
   2020.
 
+\bibitem{akiangaubertqisaadi}
+Marianne Akian, St{\'{e}}phane Gaubert, Yang Qi, and Omar Saadi.
+\newblock Tropical linear regression and mean payoff games: Or, how to measure
+  the distance to equilibria.
+\newblock {\em {SIAM} J. Disc. Math.}, 37(2):632--674, May 2023.
+
 \bibitem{yoshida2019}
 Ruriko Yoshida, Leon Zhang, and Xu~Zhang.
 \newblock Tropical principal component analysis and its application to
@@ -112,12 +118,6 @@ St{\'e}phane Gaubert and Sergei Sergeev.
 R.A. Cuninghame-Green and P.~Butkovic.
 \newblock The equation $a\otimes x=b\otimes y$ over $(\max, +)$.
 \newblock {\em Theoretical Computer Science}, 293(1):3–12, February 2003.
-
-\bibitem{akiangaubertqisaadi}
-Marianne Akian, St{\'{e}}phane Gaubert, Yang Qi, and Omar Saadi.
-\newblock Tropical linear regression and mean payoff games: Or, how to measure
-  the distance to equilibria.
-\newblock {\em {SIAM} J. Disc. Math.}, 37(2):632--674, May 2023.
 
 \bibitem{Charisopoulos2017}
 Vasileios Charisopoulos and Petros Maragos.
