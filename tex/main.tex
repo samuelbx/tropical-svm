@@ -384,7 +384,7 @@ Future optimizations could include kernel methods, sparse representations for la
 
 \section{Tropical Polynomials for Enhanced Expressivity}\label{sec:polynomials}
 
-While hyperplanes provide effective classification boundaries, we can achieve even greater expressivity by extending our framework to polynomials. They create more flexible decision boundaries while maintaining theoretical guarantees.
+While hyperplanes provide effective classification boundaries, we can achieve even greater expressivity by extending our framework to polynomials. They create more flexible and numerous decision boundaries while maintaining theoretical guarantees.
 
 \paragraph{Tropical Polynomial Kernel.}
 A tropical polynomial in $\trop^d$ takes the form:
@@ -405,7 +405,7 @@ The choice of monomial set $A$ critically affects both the expressivity and comp
 
 \begin{enumerate}
     \item \textbf{Homogeneous Monomials:} We use all monomials of degree $s$, defined as 
-    $A_s = \{\alpha \in \mathbb{N}^d : \sum_i \alpha_i = s\}$. The number of such monomials is $\binom{s+d-1}{s}$, which grows polynomially with $s$ for fixed dimension $d$.
+    $A_s = \{\alpha \in \mathbb{N}^d : \sum_i \alpha_i = s\}$. The number of such monomials is $\binom{s+d-1}{s}$, which grows polynomially with $s$ for fixed dimension $d$. Note that the implementation of Section~\ref{sec:algorithm} corresponds to the case $s=1$.
     
     \item \textbf{Adaptive Selection:} We sample pairs of points from different classes and construct monomials corresponding to the slopes of separating lines between them. This approach focuses computational resources on the most discriminative monomials.
 \end{enumerate}
@@ -427,6 +427,8 @@ To perform classification with polynomials:
     
     \item Classify new points by identifying which sector of $f_a(x)$ they fall into.
 \end{enumerate}
+
+Remark that we can now divide the space in $|A|$ sectors, allowing to classify more than $d$ classes in dimension $d$.
 \todo[inline,color=red!30]{SG: is it $a$ or $-a$, inconsistency}
 \paragraph{Margin Guarantees.}
 When extending to polynomial classifiers, we maintain theoretical guarantees on the margin. Specifically, when $\rho(T)<0$ (indicating separability in the feature space), the data are separable in the original space with a margin of at least $-\rho(T)/\lVert \Phi_A\rVert_{\text{op},\infty}$, where $\lVert \Phi_A\rVert_{\text{op},\infty}$ is the operator norm of the feature map.
