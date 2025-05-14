@@ -242,7 +242,7 @@ defined by:
 P_X(y) = \max\{z \in \text{tcone}(X) : z \leq y\}\label{e-canonical}.
 \end{align}
 
-The projection finds a closest point in the conical convex hull~\cite{AGNS10}.
+The projection finds a closest point in the conical convex hull~\cite{cohen2004,AGNS10}.
 
 Projection operators will play a central role in our classification framework. We will use them to build class-specific operators that characterize the separability of data.
 Actually, we shall need the following ``diagonal-free'' variant of the canonical projection~\eqref{e-canonical},
@@ -253,19 +253,31 @@ introduced in~\cite{akiangaubertqisaadi}:
 \end{align}
 where $p$ is the number of points of the set $X$ and $X_{ij}$ is the $i$-th coordinate of the $j$-th point.
 If one omits the constraints that $k\neq i$ in the expression of $[P_X^{\text{DF}}(y)]_i$, one gets
-precisely $[P_X(y)]_i$. \todo{Théo : devrait-on indiquer une source pour ce résultat ? idem pour le fait que P et Pdf ont les mêmes points fixes (même si la preuve se fait en deux lignes)?} We have 
-$$\operatorname{tcone}(X)= \{y\in \trop^d\mid y\leq P_X^{\text{DF}}(y)\},$$
-and similarly for $P_X$, so both operators can be used to represent $\operatorname{tcone}(X)$.
-However, as shown in~\cite{akiangaubertqisaadi}, the operator $P_X^{\text{DF}}$ captures finer metric properties.
+precisely $[P_X(y)]_i$, see~\cite[Theorem~5]{cohen2004}. \todo{Théo : devrait-on indiquer une source pour ce résultat ? SG , en effet, merci ! idem pour le fait que P et Pdf ont les mêmes points fixes (même si la preuve se fait en deux lignes)? SG : ajoute une explication} It can be checked that 
+\begin{align}
+  \label{e-rep-fp}
+  \operatorname{tcone}(X)= \{y\in \trop^d\mid y\leq P_X(y)\} = \{y\in \trop^d\mid y\leq P_X^{\text{DF}}(y)\}.
+\end{align}
+Indeed, it is shown in~\cite[Section 3.1]{cohen2004} that $P_X(y)\leq y$ holds for all $y\in \trop^d$ and that $\operatorname{tcone}(X)$ is the fixed point set of $P_X$,
+which shows the first equality in~\eqref{e-def-DF}. Moreover, Equation~(19), {\em ibid.} shows that $[P_X(y)]_i$ is given by the same expression as~\eqref{e-def-DF}, except that the restriction $k\neq i$ is ommited in the minimum, and then it follows that $y\leq P_X(y)$ is equivalent to $y\leq P_X^{\text{DF}}(y)$,
+showing the second equality in~\eqref{e-rep-fp}.
+So both operators $P_X$ and $P_X^{\text{DF}}$ can be used to represent $\operatorname{tcone}(X)$. However, as shown in~\cite[Theorem~6]{akiangaubertqisaadi}, the operator $P_X^{\text{DF}}$ captures finer metric properties.
 
-The operator $P_X^{\text{DF}}$ can be interpreted as the dynamic operators of a mean-payoff game~\cite{AGGut10}.
+The operator $P_X^{\text{DF}}$ can be interpreted as the dynamic programming operator of a mean-payoff game~\cite{AGGut10}.
 There are two players, ``Max'' and ``Min'' (the maximizer
 and the minimizer), who alternate their actions. Starting on node
-$i$, Player Max chooses to move to node $j$, and receives $X_{ij}$
+$i\in \{1,\dots,d\}$, Player Max chooses to move to node $j\in \{1,\dots,p\}$,
+and receives $X_{ij}$
 from Player Min. Similarly, Player Min in turn chooses a node $k$
-and has to pay $-X_{kj}$ to Player Max.
+and has to pay $-X_{kj}$ to Player Max. 
+The ``diagonal-free'' term refers to the fact that the variable $y_i$
+is absent from the expression in~\eqref{e-def-DF}
+of the $i$th coordinate of  $[P_X^{\text{DF}}(y)$. In terms
+  of games, this means that Player Min is prevented from replying tit-for-tat,
+  i.e., the choice $k=i$, which would cancel the payment $X_{ij}$
+  by $-X_{kj}$, does not appear in the minimum in~\eqref{e-def-DF}.
+The game interpretation is further elaborated in~\cite{akiangaubertqisaadi}.\todo{SG: explained tit for tat}
 
-The ``diagonal-free'' constraints imply that the opponent is prevented from replying tit-for-tat.
 
 
 
