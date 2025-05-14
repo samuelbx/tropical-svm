@@ -90,7 +90,7 @@ Despite these theoretical benefits, their method required exploring all possible
 \paragraph{Background on Mean‐Payoff Games.}
 Our approach uses concepts from game theory--specifically, Shapley operators arising in zero-sum dynamic games.
 Shapley introduced an ``operator approach'' for discounted stochastic games~\cite{shapley1953}, and Gillette later formulated the undiscounted, infinite-horizon variant now known as mean-payoff games~\cite{gillette1957}.
-The Shapley operators we employ encodes the one-step payoffs and transitions in such games, whose objective is the long-run average reward per time unit~\cite{zwick1996}. 
+The Shapley operators we employ encode the one-step payoffs and transitions in such games, whose objective is the long-run average reward per time unit~\cite{zwick1996}. 
 The spectral properties of these operators have been extensively studied to characterize fixed points and convergence in nonlinear systems~\cite{kolokoltsov1997,gaubert2004}.
 In particular, the spectral radius of a Shapley operator equals the game's value.
 Mean-payoff games lie in NP $\cap$ coNP, but no polynomial-time algorithm is known.
@@ -123,7 +123,7 @@ originate from~\cite{akiangaubertqisaadi},
 in which they were used to solve tropical linear regression
 problems.
 
-Charisopoulos and Paragos investigated the tropical analogues
+Charisopoulos and Maragos investigated the tropical analogues
 of perceptrons~\cite{Charisopoulos2017}.
 A survey covering further applications of tropical geometry to machine learning
 can be found in~\cite{maragos2021}. Another seminal work in this direction is~\cite{zhang2018}.
@@ -144,7 +144,7 @@ in~\cite{tang2020,Yoshida2023}.
 %% Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category remain in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\
 \todo{quote lavishly yoshida}
 
-\todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely; Paragos }
+\todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely; Maragos }
 
 
 \begin{figure}[h]
@@ -187,7 +187,7 @@ x=(x_1,\dots,x_{d-1})\mapsto [(x_1,\dots,x_{d-1},-(x_1+\cdots+x_{d-1}))],
 \]
 where $[\cdot]$ denotes the equivalence class of a vector in  $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$.
 
-This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. it is similar to how projective geometry in computer vision makes analysis invariant to camera distance.
+This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. It is similar to how projective geometry in computer vision makes analysis invariant to camera distance.
 
 \paragraph{Hyperplanes and Sectors.}
 A tropical hyperplane with parameters $a=(a_1,\dots,a_n) \in \trop^d$\todo{the apex is usually $-a$ and this is defined only for $a\in \R^n$, $a$ is rather a vector of parameters} is defined as:
@@ -251,7 +251,7 @@ $i$, Player Max chooses to move to node $j$, and receives $X_{ij}$
 from Player Min. Similarly, Player Min in turn chooses a node $k$
 and has to pay $-X_{kj}$ to Player Max.
 
-The ``diagonal-free'' constraints implies that the opponent is prevented from replying tit-for-tat.
+The ``diagonal-free'' constraints imply that the opponent is prevented from replying tit-for-tat.
 
 
 
@@ -674,10 +674,10 @@ To validate our theoretical complexity analysis, we evaluated both standard trop
 
 The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
 Tropical SVM indeed fails to separate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius $\rho(T)$ is negative), and obtain an maximal-margin separator in the feature space.
-With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is way smaller than expected $O(1/\varepsilon^2)$.
+With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is far fewer than the expected $O(1/\varepsilon^2)$ iterations.
 
 As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. Table~\ref{tab:benchmark_results}
-shows that the current interpreted (Python/NumPy) implementation is slower, by a factor $10^3$, than a state of the art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scale {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
+shows that the current interpreted (Python/NumPy) implementation is slower, by a factor $10^3$, than a state of the art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scales {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
 a proof of concept that tropical SVMs can be practically computed.
 
 
