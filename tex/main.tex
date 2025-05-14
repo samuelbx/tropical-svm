@@ -158,9 +158,10 @@ in~\cite{tang2020,Yoshida2023}.
         \centering
         \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons.pgf}}}
     \end{subfigure}
-    \caption{Left: Tropical hyperplane represented in projective space, with the constant vector (1, 1, 1) projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex, here equal to $(-0.65, 0.58, 0.07)$ and located at the elbow. The two lower sectors are merged and assigned to orange points. Margin is optimal and is represented in yellow. Right: Visualization of a degree-2 polynomial classifier on a toy dataset \cite{scikit-learn}. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
+    \caption{Left: Tropical hyperplane represented in projective space, with the constant vector $(1, 1, 1)$ projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex, here equal to $(-0.65, 0.58, 0.07)$ and located at the elbow. The two lower sectors are merged and assigned to orange points. Margin is optimal and is represented in yellow. Right: Visualization of a degree-2 polynomial classifier on a toy dataset \cite{scikit-learn}. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
     \label{fig:tropical_poly}
 \end{figure}
+\todo[inline,color=red]{SG: in Figure \ref{fig:tropical_poly}, is $(-0.65, 0.58, 0.07)$ the apex or the oposite of the apex. apex = sommet. it seems to be the sommet. We need to decide whether the apex is $a$ or $-a$ and check consistency in the separating hyperplanes}
 \todo{SG: add bibliographic reference to moons?} 
 The rest of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions.
 
@@ -189,7 +190,7 @@ where $[\cdot]$ denotes the equivalence class of a vector in  $\trop^d \setminus
 This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. it is similar to how projective geometry in computer vision makes analysis invariant to camera distance.
 
 \paragraph{Hyperplanes and Sectors.}
-A tropical hyperplane with apex $a \in \trop^d$ is defined as:
+A tropical hyperplane with parameters $a=(a_1,\dots,a_n) \in \trop^d$\todo{the apex is usually $-a$ and this is defined only for $a\in \R^n$, $a$ is rather a vector of parameters} is defined as:
 \begin{align}
 \mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i + a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
 \end{align}
@@ -198,6 +199,9 @@ This hyperplane divides the space into at most $d$ sectors. The $i$-th sector co
 \begin{align}
 S_i(a) = \left\{x \in \trop^d : i \in \underset{j}{\arg\max} (x_j + a_j)\right\}.
 \end{align}
+When the vector $a$ is finite, the vector $-a$ is called the {\em apex}
+of the tropical hyperplane, for each of these sections is a cone
+originating from point $-a$.\todo[inline,color=red!30]{SG: New/consistent terminology}
 
 Unlike classical hyperplanes that create two half-spaces, tropical hyperplanes (see Figure~\ref{fig:tropical_poly} on the left) create multiple sectors, one for each dimension. They naturally support multi-class classification, where we can assign different sectors to different classes.
 
@@ -296,7 +300,7 @@ Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the cl
 
 (3) \textit{Soft-Margin Interpretation:} For binary classification with overlapping data, $\rho(T)$ is positive and quantifies the minimal perturbation needed to achieve separability.
 
-Moreover, both $\rho(T)$ and an associated apex vector $a$ satisfying $T(a) = \rho(T)+a$ can be computed in pseudo-polynomial time using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).
+Moreover, both $\rho(T)$ and a vector $a$ satisfying $T(a) = \rho(T)+a$ can be computed in pseudo-polynomial time using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).
 \end{theorem}
 A complete proof is provided in Appendix~\ref{appendix:proofs}, where we will see that some of these results remain with more general assumptions.
 It is organized as follows: first, Lemma~\ref{lemma:hyperplane_to_operator} states that for tropical projections (or their diagonal-free counterpart), $-\rho(T)$ is a lower bound on the margin.
@@ -353,14 +357,14 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
   \STATE \quad For each class $k$, compute the diagonal-free projection $T^k(x) = P^{\textrm{DF}}_{X^k}(x)$
   \STATE \quad Combine via $T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}$ for each coordinate $i$
 \STATE \textbf{Compute Eigenpair:}
-  \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and apex $a$ with accuracy $\epsilon>0$.
+  \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and a vector $a$ parametrizing an hyperplane with accuracy $\epsilon>0$.
 \STATE \textbf{Assign Sectors to Classes:}
   \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
     \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$
   \ELSE
     \STATE Use a heuristic (e.g., majority vote) for non-separable data
   \ENDIF
-\STATE \textbf{Output:} Apex $a$, margin $-\rho(T)$ (if separable), and sector assignments for classification
+\STATE \textbf{Output:} Vector $a$ (so that $-a$ is the apex of the separating hyperplane), margin $-\rho(T)$ (if separable), and sector assignments for classification
 \end{algorithmic}
 \end{algorithm}
 Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{e-def-DF},
@@ -412,7 +416,7 @@ To perform classification with polynomials:
 \begin{enumerate}
     \item Map the original data to the feature space: $\Phi_A(X^k) = \{\Phi_A(x) : x \in X^k\}$ for each class $k$.
     
-    \item Apply the tropical SVM algorithm in this feature space to find apex $a \in \trop^{|A|}$ and spectral radius $\rho(T)$.
+    \item Apply the tropical SVM algorithm in this feature space to find the vector $a \in \trop^{|A|}$ parameterizing a separating hyperplane and spectral radius $\rho(T)$.
     
     \item The classifier in the original space is the polynomial:
     \begin{align}
@@ -421,7 +425,7 @@ To perform classification with polynomials:
     
     \item Classify new points by identifying which sector of $f_a(x)$ they fall into.
 \end{enumerate}
-
+\todo[inline,color=red!30]{SG: is it $a$ or $-a$, inconsistency}
 \paragraph{Margin Guarantees.}
 When extending to polynomial classifiers, we maintain theoretical guarantees on the margin. Specifically, when $\rho(T)<0$ (indicating separability in the feature space), the data are separable in the original space with a margin of at least $-\rho(T)/\lVert \Phi_A\rVert_{\text{op},\infty}$, where $\lVert \Phi_A\rVert_{\text{op},\infty}$ is the operator norm of the feature map.
 
@@ -487,8 +491,11 @@ games.\todo{SG: ref to chaloupka}
 \section{Proof of Theorem~\ref{thm:spectral_separability} (Spectral Separability)}\label{appendix:proofs}
 We provide a complete proof of our main result on spectral separability.
 
-For any Shapley operator $T$, we define its fixed-point set as $\mathcal{S}(T) = \{x \in \trop^d : x \leq T(x)\}$. An important property is that any tropically convex set $V$ verifies $V = S(P_V)$.
-Both $P$ and $P^\text{DF}$ have identical fixed-point sets and can serve as the class operators $T^k$ in our framework. We first characterize the maximal possible value for the margin.
+For any Shapley operator $T$, we define its fixed-point set as $\mathcal{S}(T) = \{x \in \trop^d : x \leq T(x)\}$. An important property is that any tropically convex set $V$ verifies $V = S(P_V)$. Similarly, $V = S(P^{\text{DF}}_V)$
+\todo[inline,color=red!30]{SG
+Both $P$ and $P^\text{DF}$
+have identical fixed-point sets -- not sure}
+and can serve as the class operators $T^k$ in our framework. We first characterize the maximal possible value for the margin.
 
 \begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
 Let $T^k$ be tropical projections on finite point clouds or their diagonal-free equivalents, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.

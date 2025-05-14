@@ -24,11 +24,6 @@ Liwen Zhang, Gregory Naitzat, and Lek-Heng Lim.
   Learning}, volume~80 of {\em Proceedings of Machine Learning Research}, pages
   5824--5832. PMLR, 2018.
 
-\bibitem{maragos2021}
-Petros Maragos, Vasileios Charisopoulos, and Emmanouil Theodosis.
-\newblock Tropical geometry and machine learning.
-\newblock {\em Proceedings of the IEEE}, 109(5):728--755, 2021.
-
 \bibitem{montufar}
 Guido Mont\'{u}far, Yue Ren, and Leon Zhang.
 \newblock Sharp bounds for the number of regions of maxout networks and
@@ -55,6 +50,11 @@ Ruriko Yoshida, Leon Zhang, and Xu~Zhang.
 \newblock Tropical principal component analysis and its application to
   phylogenetics.
 \newblock {\em Bulletin of Mathematical Biology}, 81(2):568--597, 2019.
+
+\bibitem{maragos2021}
+Petros Maragos, Vasileios Charisopoulos, and Emmanouil Theodosis.
+\newblock Tropical geometry and machine learning.
+\newblock {\em Proceedings of the IEEE}, 109(5):728--755, 2021.
 
 \bibitem{gartner2008}
 Bernd G{\"a}rtner and Martin Jaggi.
@@ -91,38 +91,68 @@ St{\'e}phane Gaubert and Jeremy Gunawardena.
 \newblock {\em Transactions of the American Mathematical Society},
   356(12):4931--4950, 2004.
 
-\bibitem{tang2020}
-Xiaoxian Tang, Houjie Wang, and Ruriko Yoshida.
-\newblock Tropical support vector machine and its applications to
-  phylogenomics.
-\newblock {\em Algebraic Statistics}, 14(2):133--165, December 2023.
-
-\bibitem{monod2022}
-Anthea Monod, Bo~Lin, Ruriko Yoshida, and Qiwen Kang.
-\newblock Tropical geometry of phylogenetic tree space: A statistical
-  perspective, 2022.
-
 \bibitem{cohen2004}
 Guy Cohen, St{\'e}phane Gaubert, and Jean-Pierre Quadrat.
 \newblock Duality and separation theorems in idempotent semimodules.
 \newblock {\em Linear Algebra and Its Applications}, 379:395--422, 2004.
 \newblock Special Issue on the Tenth ILAS Conference (Auburn, 2002).
 
-\bibitem{develin2004}
-Mike Develin and Bernd Sturmfels.
-\newblock Tropical convexity.
-\newblock {\em Documenta Mathematica}, 9:1--27, 2004.
-
 \bibitem{AGNS10}
 M.~Akian, S.~Gaubert, V.~Nitica, and I.~Singer.
 \newblock Best approximation in max-plus semimodules.
 \newblock {\em Linear Algebra and its Applications}, 435(12):3261--3296, 2011.
+
+\bibitem{gaubert2011}
+St{\'e}phane Gaubert and Sergei Sergeev.
+\newblock Cyclic projectors and separation theorems in idempotent convex
+  geometry.
+\newblock {\em Journal of Mathematical Sciences}, 155(6):815--829, 2011.
+
+\bibitem{CuninghameGreen2003}
+R.A. Cuninghame-Green and P.~Butkovic.
+\newblock The equation $a\otimes x=b\otimes y$ over $(\max, +)$.
+\newblock {\em Theoretical Computer Science}, 293(1):3–12, February 2003.
 
 \bibitem{akiangaubertqisaadi}
 Marianne Akian, St{\'{e}}phane Gaubert, Yang Qi, and Omar Saadi.
 \newblock Tropical linear regression and mean payoff games: Or, how to measure
   the distance to equilibria.
 \newblock {\em {SIAM} J. Disc. Math.}, 37(2):632--674, May 2023.
+
+\bibitem{Charisopoulos2017}
+Vasileios Charisopoulos and Petros Maragos.
+\newblock {\em Morphological Perceptrons: Geometry and Training Algorithms},
+  page 3–15.
+\newblock Springer International Publishing, 2017.
+
+\bibitem{monod2022}
+Anthea Monod, Bo~Lin, Ruriko Yoshida, and Qiwen Kang.
+\newblock Tropical geometry of phylogenetic tree space: A statistical
+  perspective, 2022.
+
+\bibitem{tang2020}
+Xiaoxian Tang, Houjie Wang, and Ruriko Yoshida.
+\newblock Tropical support vector machine and its applications to
+  phylogenomics.
+\newblock {\em Algebraic Statistics}, 14(2):133--165, December 2023.
+
+\bibitem{Yoshida2023}
+Ruriko Yoshida, Misaki Takamori, Hideyuki Matsumoto, and Keiji Miura.
+\newblock Tropical support vector machines: Evaluations and extension to
+  function spaces.
+\newblock {\em Neural Networks}, 157:77–89, January 2023.
+
+\bibitem{scikit-learn}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
+  M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, J.~Vanderplas, A.~Passos,
+  D.~Cournapeau, M.~Brucher, M.~Perrot, and E.~Duchesnay.
+\newblock Scikit-learn: Machine learning in {P}ython.
+\newblock {\em Journal of Machine Learning Research}, 12:2825--2830, 2011.
+
+\bibitem{develin2004}
+Mike Develin and Bernd Sturmfels.
+\newblock Tropical convexity.
+\newblock {\em Documenta Mathematica}, 9:1--27, 2004.
 
 \bibitem{AGGut10}
 M.~Akian, S.~Gaubert, and A.~Guterman.
@@ -170,13 +200,6 @@ Oleg Viro.
 \newblock In Carles Casacuberta, Rosa~Maria Mir{\'o}-Roig, Joan Verdera, and
   Sebasti{\`a} Xamb{\'o}-Descamps, editors, {\em European Congress of
   Mathematics}, pages 135--146. Birkh{\"a}user Basel, Basel, 2001.
-
-\bibitem{scikit-learn}
-F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
-  M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, J.~Vanderplas, A.~Passos,
-  D.~Cournapeau, M.~Brucher, M.~Perrot, and E.~Duchesnay.
-\newblock Scikit-learn: Machine learning in {P}ython.
-\newblock {\em Journal of Machine Learning Research}, 12:2825--2830, 2011.
 
 \bibitem{harris2020array}
 Charles~R. Harris, K.~Jarrod Millman, St{\'{e}}fan~J. van~der Walt, Ralf
