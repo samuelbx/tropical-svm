@@ -17,37 +17,36 @@ Warning--I'm ignoring tang2020's extra "year" field
 --line 179 of file references.bib
 Warning--I'm ignoring tang2020's extra "pages" field
 --line 180 of file references.bib
-Warning--empty journal in akian_correspondence_2011
-You've used 35 entries,
+You've used 34 entries,
             1791 wiz_defined-function locations,
-            685 strings with 10430 characters,
-and the built_in function-call counts, 9743 in all, are:
-= -- 883
-> -- 457
+            682 strings with 10276 characters,
+and the built_in function-call counts, 9582 in all, are:
+= -- 872
+> -- 446
 < -- 14
-+ -- 164
-- -- 129
-* -- 732
-:= -- 1506
-add.period$ -- 111
-call.type$ -- 35
-change.case$ -- 31
++ -- 160
+- -- 126
+* -- 722
+:= -- 1477
+add.period$ -- 108
+call.type$ -- 34
+change.case$ -- 30
 chr.to.int$ -- 0
-cite$ -- 36
-duplicate$ -- 410
-empty$ -- 907
-format.name$ -- 129
-if$ -- 2174
+cite$ -- 34
+duplicate$ -- 402
+empty$ -- 893
+format.name$ -- 126
+if$ -- 2141
 int.to.chr$ -- 0
-int.to.str$ -- 35
-missing$ -- 37
-newline$ -- 178
-num.names$ -- 43
-pop$ -- 92
+int.to.str$ -- 34
+missing$ -- 36
+newline$ -- 173
+num.names$ -- 42
+pop$ -- 87
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 208
+skip$ -- 205
 stack$ -- 0
 substring$ -- 770
 swap$ -- 116
@@ -55,8 +54,8 @@ text.length$ -- 14
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 1
-while$ -- 98
-width$ -- 37
-write$ -- 395
-(There were 8 warnings)
+warning$ -- 0
+while$ -- 97
+width$ -- 36
+write$ -- 386
+(There were 7 warnings)
