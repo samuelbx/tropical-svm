@@ -193,6 +193,34 @@ Oleg Viro.
   Sebasti{\`a} Xamb{\'o}-Descamps, editors, {\em European Congress of
   Mathematics}, pages 135--146. Birkh{\"a}user Basel, Basel, 2001.
 
+\bibitem{DG-06}
+V.~Dhingra and S.~Gaubert.
+\newblock How to solve large scale deterministic games with mean payoff by
+  policy iteration.
+\newblock In {\em Proceedings of the 1st international conference on
+  Performance evaluation methodolgies and tools (VALUETOOLS)}, volume 180,
+  Pisa, Italy, 2006.
+\newblock article No. 12.
+
+\bibitem{chaloupkathesis}
+Jakub Chaloupka.
+\newblock {\em Algorithms for Mean-Payoff and Energy Games}.
+\newblock PhD thesis, Masaryk University, Faculty of Informatics, 2011.
+
+\bibitem{chaloupka}
+J.~Chaloupka.
+\newblock Parallel algorithms for mean-payoff games: an experimental
+  evaluation.
+\newblock In {\em Algorithms---{ESA} 2009}, volume 5757 of {\em Lecture Notes
+  in Comput. Sci.}, pages 599--610. Springer, Berlin, 2009.
+
+\bibitem{labiadsefiani}
+Hicham Sefiani and Ismail Labiad.
+\newblock Tropical support vector machines, 2022.
+\newblock Report of research project ``EA MAP511'', cosupervised by X.
+  Allamigeon and S. Gaubert, Applied Mathematics Department, \'Ecole
+  polytechnique.
+
 \bibitem{akian2020}
 Marianne Akian, St{\'e}phane Gaubert, and Antoine Hochart.
 \newblock A game theory approach to the existence and uniqueness of nonlinear

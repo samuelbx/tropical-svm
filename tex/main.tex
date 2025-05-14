@@ -267,8 +267,7 @@ The operator $P_X^{\text{DF}}$ can be interpreted as the dynamic programming ope
 There are two players, ``Max'' and ``Min'' (the maximizer
 and the minimizer), who alternate their actions. Starting on node
 $i\in \{1,\dots,d\}$, Player Max chooses to move to one of the nodes $j\in \{1,\dots,p\}$, and receives a payment of $X_{ij}$
-from Player Min. Player Min in turn chooses a node $k\in \{1,\dots,d\}\setminus\{i\}$$
-and has to pay $-X_{kj}$ to Player Max. The game is repeated infinitely,
+from Player Min. Player Min in turn chooses a node $k\in \{1,\dots,d\}\setminus\{i\}$ and has to pay $-X_{kj}$ to Player Max. The game is repeated infinitely,
 the payment of an infinite trajectory being defined as the mean payoff per turn.
 The ``diagonal-free'' term refers to the fact that the variable $y_i$
 is absent from the expression in~\eqref{e-def-DF}
@@ -399,7 +398,7 @@ Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time
 where $p_k$ denotes the cardinality of the set $X_k$. Hence, $T$ can be evaluated in
 $\mathcal{O}(pd)$ time, where $p=p_1+\dots+p_K$ is the total number of points.
 Hence, Algorithm~\ref{alg:tropical_svm} terminates in $O(pd/\epsilon^2)$ time. Observe
-that this bound is {\em linear} in the input size $pd$. \todo{Théo : devrait-on comme dans la conclusion indiquer qu'on peut échanger l'algorithme 1 par un autre plus performant comme la policy-iteration?}
+that this bound is {\em linear} in the input size $pd$. \todo{Théo : devrait-on comme dans la conclusion indiquer qu'on peut échanger l'algorithme 1 par un autre plus performant comme la policy-iteration? SG: I added it in the concluding section}
 
 \paragraph{Proof of Concept.}
 We validated the computational complexity of our algorithm through empirical testing (detailed in Appendix~\ref{appendix:empirical}). Our implementation achieves tractable performance on standard benchmark datasets, with performance scaling linearly with both dataset size and feature dimension as predicted by our theoretical analysis.
@@ -506,13 +505,15 @@ of the dataset, finding the optimal set of linear features
 appears to be an interesting open question, which seems accessible
 by methods of linear programming (e.g., cutting planes methods).
 We presented here a proof of concept, based on a first implementation in Python: we implemented the simplest algorithm for mean-payoff games
-(relative value iteration), in a non-optimized way. We could rely instead on policy iteration, which has the merit of providing an exact solution, and
-has been found experimentally to be the fastest algorithm to solve mean-payoff
-games.\todo{SG: ref to chaloupka}
+(relative value iteration), in a non-optimized way. We could rely instead on the policy iteration algorithm~\cite{DG-06} or its refinement allowing parallelization in~\cite{chaloupkathesis}, which have been reported to provided experimentally to fastest algorithm to solve practially mean-payoff
+games~\cite{chaloupka}.\todo{SG: ref to chaloupka}
 
 \section*{Acknowledgements}
+Xavier Allamigeon and St\'ephane Gaubert thank Hicham Sefiani and Ismail Labiad
+for their preliminary investigation int the application of game theory methods to the resolutio of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani},
 
-\todo[color=red!30,inline]{Remercier les eleves de l'an dernier}
+
+\todo[color=red!30,inline]{SG to XA: verifie mon remerciement. Les eleevs ont ecrit Sefiani en premier auteur renversant l'ordre, j'ai garde cela dans la ref biblio.}
 \bibliographystyle{unsrt}
 \bibliography{references}
 

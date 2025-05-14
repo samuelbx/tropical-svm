@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex main"] 1747245925 "main.aux" "main.bbl" "main" 1747245929
+["bibtex main"] 1747254161 "main.aux" "main.bbl" "main" 1747254166
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/unsrt.bst" 1292289607 18030 1376b4b231b50c66211e47e42eda2875 ""
-  "main.aux" 1747245929 24672 10a118977586026e4d1f2c4513c182d8 "pdflatex"
-  "references.bib" 1747245493 19313 a7dd40b3229625f742db31a29eb0dcf2 ""
+  "main.aux" 1747254165 27205 7cc00e41f06244caec189a78c3c0af94 "pdflatex"
+  "references.bib" 1747254106 20755 70b740b8727a7ea93aa0965c50d91d21 ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1747245925 "main.tex" "main.pdf" "main" 1747245929
+["pdflatex"] 1747254161 "main.tex" "main.pdf" "main" 1747254166
   "/etc/texmf/web2c/texmf.cnf" 1677109391 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -289,10 +289,10 @@
   "figures/non-separable.pgf" 1744496029 34993 6fa9f009e60762f2688caafcb6558999 ""
   "figures/pca_degree_scaling.pgf" 1747060080 70466 ab45385281d019c549c1135ec731df05 ""
   "figures/sample_size_scaling.pgf" 1744496029 27172 ecb011d74f7c04b26c001db6a4b22bb2 ""
-  "main.aux" 1747245929 24672 10a118977586026e4d1f2c4513c182d8 "pdflatex"
-  "main.bbl" 1747245925 8628 f659323bfe0503fd9963b0b908381fcd "bibtex main"
-  "main.out" 1747245929 1826 ca53150b92634032b2090cc5dfb2d109 "pdflatex"
-  "main.tex" 1747245896 76511 7c552c74c3f33981223c40fe883fd21e ""
+  "main.aux" 1747254165 27205 7cc00e41f06244caec189a78c3c0af94 "pdflatex"
+  "main.bbl" 1747254161 9657 ee138363668696ed9abd7ea6907b1966 "bibtex main"
+  "main.out" 1747254165 1826 ca53150b92634032b2090cc5dfb2d109 "pdflatex"
+  "main.tex" 1747254148 79073 c2e3b0ef98e8ea7e1219945e1290339e ""
   "neurips_2025.sty" 1747203215 13023 2817c1b954c70ec3156371423da6545c ""
   (generated)
   "main.aux"

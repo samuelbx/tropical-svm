@@ -18,45 +18,45 @@ Warning--I'm ignoring tang2020's extra "year" field
 Warning--I'm ignoring tang2020's extra "pages" field
 --line 180 of file references.bib
 Warning--empty title in Litvinov2001
-You've used 35 entries,
+You've used 39 entries,
             1791 wiz_defined-function locations,
-            690 strings with 10421 characters,
-and the built_in function-call counts, 9835 in all, are:
-= -- 892
-> -- 457
-< -- 14
-+ -- 164
-- -- 129
-* -- 748
-:= -- 1516
-add.period$ -- 110
-call.type$ -- 35
-change.case$ -- 30
+            716 strings with 11154 characters,
+and the built_in function-call counts, 10681 in all, are:
+= -- 975
+> -- 481
+< -- 17
++ -- 174
+- -- 135
+* -- 789
+:= -- 1641
+add.period$ -- 124
+call.type$ -- 39
+change.case$ -- 33
 chr.to.int$ -- 0
-cite$ -- 36
-duplicate$ -- 411
-empty$ -- 919
-format.name$ -- 129
-if$ -- 2195
+cite$ -- 40
+duplicate$ -- 458
+empty$ -- 1010
+format.name$ -- 135
+if$ -- 2397
 int.to.chr$ -- 0
-int.to.str$ -- 35
-missing$ -- 37
-newline$ -- 177
-num.names$ -- 43
-pop$ -- 89
+int.to.str$ -- 39
+missing$ -- 39
+newline$ -- 198
+num.names$ -- 47
+pop$ -- 107
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 208
+skip$ -- 231
 stack$ -- 0
-substring$ -- 797
-swap$ -- 117
-text.length$ -- 14
+substring$ -- 829
+swap$ -- 133
+text.length$ -- 17
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 99
-width$ -- 37
-write$ -- 395
+while$ -- 106
+width$ -- 41
+write$ -- 444
 (There were 8 warnings)
