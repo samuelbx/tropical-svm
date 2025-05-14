@@ -316,6 +316,16 @@ We then combine these operators into a single classification operator $T$ define
 \end{align}
 where $\operatorname{\max}_2$ denotes the second-largest value among a collection of $K$ real numbers. For binary classification ($K=2$), this simplifies to $T(x)=\min\{T^1(x), T^2(x)\}$, the minimum being understood entrywise.
 
+\paragraph{Separating point clouds with a hyperplane.}
+
+We say that the hyperplane $\mathcal{H}_a$ with apex $a$ separates the point clouds $X^1, \ldots, X^K$ if there exists a partition of $\{1, \ldots, d\}$ into $K$ disjoint and non-empty subsets $I_1, \ldots, I_K$, corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$ and every point $x \in X^k$, the point $x$ belongs only to the sectors $S_i(a)$ with $i \in I_k$. 
+
+Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for any two distinct classes $k \neq \ell$ and any point $x \in X^k$, the Hilbert distance from $x$ to sector $S^\ell$ is at least $\gamma$, namely,
+\begin{align}
+d_H(x, S^\ell) = \max_j(x_j - a_j) - \max_{i \in I_\ell}(x_i - a_i) \geq \gamma.
+\end{align}
+
+
 \paragraph{Main Theorem: Spectral Radius and Margin.}
 Our central result establishes the connection between separability and the spectral radius:
 \begin{theorem}\label{thm:spectral_separability}
