@@ -566,7 +566,7 @@ d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
 Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
 \end{proof}
 
-In the binary case where data overlaps, we have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
+In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understading of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020} \todo{Théo : rather thm 16 of condition number paper applied to T (adding that S(T) not only characterizes but equals the intersection?}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
 \begin{align}
@@ -581,7 +581,7 @@ Intuitively, this can be thought of as representing the union of pairwise inters
     \label{fig:non_separable}
 \end{figure}
 
-The following Lemma is the only one where using the diagonal-free operator is needed.
+The following Lemma is the only one where using the diagonal-free operator is needed.\todo{Théo : d'après ma remarque ci-dessus, on devrait alors indiquer plus globalement et plus simplement que la version df est uniquement utile pour la compréhension du cas binaire non séparable}
 
 \begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
 Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
@@ -637,10 +637,10 @@ Equation \ref{eq:major} gives $d_{H}(x_{j},\mathcal{H}_{a})\le\rho(T)$.
 Let $\tilde{T}^{1}$ and $\tilde{T}^{2}$ be the diagonal-free projections
 over transformed projections, and $\tilde{T}=\min(\tilde{T}^{1},\tilde{T}^{2})$.
 We have just shown that $\tilde{T}(a)_{i}=\tilde{T}^{1}(a)_{i}=a_{i}$,
-and finally $\tilde{T}(a)=a$.
+and finally $\tilde{T}(a)=a$. \todo{Théo : de même rajouter une référence au thm 16 de condition number / à la discussion ci avant qui explique son utilisation (ie S(T tilde ) = intersection des convex hulls des nuages transformes)?}
 \end{proof}
 
-We summarize the proof of the Main Theorem, which holds when $T^k$ are diagonal-free projections:
+We summarize the proof of the Main Theorem, which holds entirely when $T^k$ are diagonal-free projections (and only for part $1$ and $2$ when they are non diagonal-free):
 
 \begin{proof}[Proof of Theorem~\ref{thm:spectral_separability}]
 For part 1 (Separability Criterion): If we have an eigenpair $(\rho(T),a)$ such that the data are separable with margin $\gamma > 0$, then by Lemma~\ref{lemma:hyperplane_to_operator}, $\rho(T) \leq -\gamma < 0$. Conversely, if $\rho(T) < 0$, then by Lemma~\ref{lemma:operator_to_hyperplane}, the data are separable.
