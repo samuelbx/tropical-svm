@@ -133,6 +133,13 @@ regression)
 and separation (tropical SVM), and applied them to problems of phylogenetic analysis,
 see~\cite{monod2022}. In particular, tropical support vector machines are studied
 in~\cite{tang2020,Yoshida2023}.
+
+We build on the theory of tropical convexity,
+which has been developed by several authors,
+both in finite and infinite dimension, see~\cite{Litvinov2001,develin2004,cohen2004} and the references therein.
+We refer the reader to~\cite{maclagan2015} for background
+on tropical geometry.\todo{SG: added general references}
+%, and also to~\cite{} for combinatorial aspects.
 %% These works apply not only to $\ell_\infty$-cost functions as the the one we consider,
 %% but also to $\ell_1$-costs functions, they include reductions to mixed
 %% linear programming problems, as well as efficient dedicated heuristics or local search
@@ -142,9 +149,9 @@ in~\cite{tang2020,Yoshida2023}.
 %% on the appraoch of
 %% on the Metric The metric interpretis bresult subsequenb
 %% Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category remain in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\
-\todo{quote lavishly yoshida}
+%\todo{quote lavishly yoshida}
 
-\todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely; Maragos }
+\todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely; Maragos [did most of it, yue ren montfar discussed above, joswig a bit far?]}
 
 
 \begin{figure}[h]
@@ -180,7 +187,7 @@ x \odot y &= x + y \quad \text{(tropical multiplication)}.
 
 These operations may seem strange at first, but they naturally model systems where we care about ``bottlenecks'' or ``critical paths.'' For example, in project planning, if task A takes $x$ days and task B takes $y$ days, the project completion time depends on the maximum ($x \oplus y$) of these durations if tasks are parallel, and their sum ($x \odot y$) if sequential.
 
-\todo{Théo : peut-être ajoute-t-on une remarque disant qu'on n'utilisera plutôt dans la suite du papier les notations usuelles + et max ? Puisqu'on utilise qu'ici les opérations tropicales + même question pour l'espace projectif PT qu'on ne mentionne que ci dessous?}
+\todo{Théo : peut-être ajoute-t-on une remarque disant qu'on n'utilisera plutôt dans la suite du papier les notations usuelles + et max ? Puisqu'on utilise qu'ici les opérations tropicales + même question pour l'espace projectif PT qu'on ne mentionne que ci dessous? SG: on utilise un peu $\oplus$ pour d\'efinir ci-dessous le cone engendré, }
 
 \paragraph{Projective Space.}  
 The tropical projective space $\proj \trop^d$ identifies vectors of $\trop^d$ that differ by adding the same constant to all coordinates. Formally, it is the quotient of $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$ by the equivalence relation $x \sim y$ if $x = y + c \cdot \mathbf{1}$ for some constant $c$, where $\mathbf{1}$ denotes the ``all ones'' vector. In practice, we embed data from $\R^{d-1}$ into the projective space $\proj \trop^d$ via:
@@ -192,20 +199,23 @@ where $[\cdot]$ denotes the equivalence class of a vector in  $\trop^d \setminus
 This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. It is similar to how projective geometry in computer vision makes analysis invariant to camera distance.
 
 \paragraph{Hyperplanes and Sectors.}
-A tropical hyperplane with parameters $a=(a_1,\dots,a_n) \in \trop^d$ is defined as:
+A {\em tropical hyperplane} with {\em apex} $a=(a_1,\dots,a_n) \in \R^d$ is defined as:
+\todo[inline,color=red!30]{SG: thanks for correcting, byt then $a$ is the apex and it should be finite valued, i.e. $xin \trop^d$ but $a\in \R^d$. Indeed if $a$ has one $-\infty$ coordinate then the max becomes infinite. Ie, in earlier works, I called $b$ in $\max_{i} b_i +x_i$ the vector of parameters of the hyperplane, allowing $b$ to take $-\infty$ values, and only when $b$ is finite, $a=-b$ is called the apex. We loose degenerate hyperplanes by requiring $a$ to be finite, there is no loss of generality since we only separate sets of points with finite coordinate, the case of points with $-\infty$ is more subttle, see~\cite{akiangaubertqisaadi}, but we do not need it here}
 
 %\todo{the apex is usually $-a$ and this is defined only for $a\in \R^n$, $a$ is rather a vector of parameters}
 \begin{align}
 \mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i - a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
 \end{align}
 
-This hyperplane divides the space into at most $d$ sectors. The $i$-th sector contains points where the maximum of $x - a$ occurs at the $i$-th coordinate:
+This hyperplane divides the space into $d$ sectors. The $i$-th sector contains points where the maximum of $x - a$ occurs at the $i$-th coordinate:
 \begin{align}
-S_i(a) = \left\{x \in \trop^d : i \in \underset{j}{\arg\max} (x_j - a_j)\right\}.
+S_i(a) = \left\{x \in \trop^d : i \in \underset{1\leq j\leq d}{\arg\max} (x_j - a_j)\right\}.
 \end{align}
-When the vector $a$ is finite, it is called the {\em apex}
-of the tropical hyperplane, for each of these sections is a cone
-originating from point $a$. %\todo[inline,color=red!30]{SG: New/consistent terminology}
+The vector $a$ is called the apex since 
+%of the tropical hyperplane, for
+each of these sections is a cone
+originating from point $a$.
+\todo[inline,color=red!30]{SG: now $a$ is always required to be finite}
 
 Unlike classical hyperplanes that create two half-spaces, tropical hyperplanes (see Figure~\ref{fig:tropical_poly} on the left) create multiple sectors, one for each dimension. They naturally support multi-class classification, where we can assign different sectors to different classes.
 
@@ -361,14 +371,14 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
   \STATE \quad For each class $k$, compute the diagonal-free projection $T^k(x) = P^{\textrm{DF}}_{X^k}(x)$
   \STATE \quad Combine via $T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}$ for each coordinate $i$
 \STATE \textbf{Compute Eigenpair:}
-  \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and a vector $a$ parametrizing an hyperplane with accuracy $\epsilon>0$.
+  \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and the apex $a$ of a tropical hyperplane with accuracy $\epsilon>0$.
 \STATE \textbf{Assign Sectors to Classes:}
   \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
     \STATE Assign coordinate $i$ to class $k$ if $T^k(-a)_i > \rho(T) - a_i$
   \ELSE
     \STATE Use a heuristic (e.g., majority vote) for non-separable data
   \ENDIF
-\STATE \textbf{Output:} Vector $a$ parametrizing the hyperplane, margin $-\rho(T)$ (if separable), and sector assignments for classification
+\STATE \textbf{Output:} Vector $a$ the apex of the hyperplane, margin $-\rho(T)$ (if separable), and sector assignments for classification
 \end{algorithmic}
 \end{algorithm}
 Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{e-def-DF},

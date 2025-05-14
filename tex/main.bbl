@@ -38,13 +38,6 @@ Petros Maragos and Emmanouil Theodosis.
 \newblock {\em IEEE International Conference on Acoustics, Speech and Signal
   Processing}, pages 3822--3826, 2020.
 
-\bibitem{akian2020}
-Marianne Akian, St{\'e}phane Gaubert, and Antoine Hochart.
-\newblock A game theory approach to the existence and uniqueness of nonlinear
-  {Perron-Frobenius} eigenvectors.
-\newblock {\em Discrete and Continuous Dynamical Systems}, 40(1):207--231,
-  2020.
-
 \bibitem{akiangaubertqisaadi}
 Marianne Akian, St{\'{e}}phane Gaubert, Yang Qi, and Omar Saadi.
 \newblock Tropical linear regression and mean payoff games: Or, how to measure
@@ -142,17 +135,21 @@ Ruriko Yoshida, Misaki Takamori, Hideyuki Matsumoto, and Keiji Miura.
   function spaces.
 \newblock {\em Neural Networks}, 157:77–89, January 2023.
 
+\bibitem{Litvinov2001}
+G.~L. Litvinov, V.~P. Maslov, and G.~B. Shpiz.
+\newblock {\em Mathematical Notes}, 69(5/6):696–729, 2001.
+
+\bibitem{develin2004}
+Mike Develin and Bernd Sturmfels.
+\newblock Tropical convexity.
+\newblock {\em Documenta Mathematica}, 9:1--27, 2004.
+
 \bibitem{scikit-learn}
 F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
   M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, J.~Vanderplas, A.~Passos,
   D.~Cournapeau, M.~Brucher, M.~Perrot, and E.~Duchesnay.
 \newblock Scikit-learn: Machine learning in {P}ython.
 \newblock {\em Journal of Machine Learning Research}, 12:2825--2830, 2011.
-
-\bibitem{develin2004}
-Mike Develin and Bernd Sturmfels.
-\newblock Tropical convexity.
-\newblock {\em Documenta Mathematica}, 9:1--27, 2004.
 
 \bibitem{AGGut10}
 M.~Akian, S.~Gaubert, and A.~Guterman.
@@ -195,6 +192,13 @@ Oleg Viro.
 \newblock In Carles Casacuberta, Rosa~Maria Mir{\'o}-Roig, Joan Verdera, and
   Sebasti{\`a} Xamb{\'o}-Descamps, editors, {\em European Congress of
   Mathematics}, pages 135--146. Birkh{\"a}user Basel, Basel, 2001.
+
+\bibitem{akian2020}
+Marianne Akian, St{\'e}phane Gaubert, and Antoine Hochart.
+\newblock A game theory approach to the existence and uniqueness of nonlinear
+  {Perron-Frobenius} eigenvectors.
+\newblock {\em Discrete and Continuous Dynamical Systems}, 40(1):207--231,
+  2020.
 
 \bibitem{harris2020array}
 Charles~R. Harris, K.~Jarrod Millman, St{\'{e}}fan~J. van~der Walt, Ralf
