@@ -161,7 +161,7 @@ in~\cite{tang2020,Yoshida2023}.
     \caption{Left: Tropical hyperplane represented in projective space, with the constant vector $(1, 1, 1)$ projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex, here equal to $(-0.65, 0.58, 0.07)$ and located at the elbow. The two lower sectors are merged and assigned to orange points. Margin is optimal and is represented in yellow. Right: Visualization of a degree-2 polynomial classifier on a toy dataset \cite{scikit-learn}. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
     \label{fig:tropical_poly}
 \end{figure}
-\todo[inline,color=red]{SG: in Figure \ref{fig:tropical_poly}, is $(-0.65, 0.58, 0.07)$ the apex or the oposite of the apex. apex = sommet. it seems to be the sommet. We need to decide whether the apex is $a$ or $-a$ and check consistency in the separating hyperplanes}
+%\todo[inline,color=red]{SG: in Figure \ref{fig:tropical_poly}, is $(-0.65, 0.58, 0.07)$ the apex or the oposite of the apex. apex = sommet. it seems to be the sommet. We need to decide whether the apex is $a$ or $-a$ and check consistency in the separating hyperplanes}
 \todo{SG: add bibliographic reference to moons?} 
 The rest of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions.
 
@@ -192,18 +192,20 @@ where $[\cdot]$ denotes the equivalence class of a vector in  $\trop^d \setminus
 This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. It is similar to how projective geometry in computer vision makes analysis invariant to camera distance.
 
 \paragraph{Hyperplanes and Sectors.}
-A tropical hyperplane with parameters $a=(a_1,\dots,a_n) \in \trop^d$\todo{the apex is usually $-a$ and this is defined only for $a\in \R^n$, $a$ is rather a vector of parameters} is defined as:
+A tropical hyperplane with parameters $a=(a_1,\dots,a_n) \in \trop^d$ is defined as:
+
+%\todo{the apex is usually $-a$ and this is defined only for $a\in \R^n$, $a$ is rather a vector of parameters}
 \begin{align}
-\mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i + a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
+\mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i - a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
 \end{align}
 
-This hyperplane divides the space into at most $d$ sectors. The $i$-th sector contains points where the maximum of $x + a$ occurs at the $i$-th coordinate:
+This hyperplane divides the space into at most $d$ sectors. The $i$-th sector contains points where the maximum of $x - a$ occurs at the $i$-th coordinate:
 \begin{align}
-S_i(a) = \left\{x \in \trop^d : i \in \underset{j}{\arg\max} (x_j + a_j)\right\}.
+S_i(a) = \left\{x \in \trop^d : i \in \underset{j}{\arg\max} (x_j - a_j)\right\}.
 \end{align}
-When the vector $a$ is finite, the vector $-a$ is called the {\em apex}
+When the vector $a$ is finite, it is called the {\em apex}
 of the tropical hyperplane, for each of these sections is a cone
-originating from point $-a$.\todo[inline,color=red!30]{SG: New/consistent terminology}
+originating from point $a$. %\todo[inline,color=red!30]{SG: New/consistent terminology}
 
 Unlike classical hyperplanes that create two half-spaces, tropical hyperplanes (see Figure~\ref{fig:tropical_poly} on the left) create multiple sectors, one for each dimension. They naturally support multi-class classification, where we can assign different sectors to different classes.
 
@@ -362,11 +364,11 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
   \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and a vector $a$ parametrizing an hyperplane with accuracy $\epsilon>0$.
 \STATE \textbf{Assign Sectors to Classes:}
   \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
-    \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$
+    \STATE Assign coordinate $i$ to class $k$ if $T^k(-a)_i > \rho(T) - a_i$
   \ELSE
     \STATE Use a heuristic (e.g., majority vote) for non-separable data
   \ENDIF
-\STATE \textbf{Output:} Vector $a$ (so that $-a$ is the apex of the separating hyperplane), margin $-\rho(T)$ (if separable), and sector assignments for classification
+\STATE \textbf{Output:} Vector $a$ parametrizing the hyperplane, margin $-\rho(T)$ (if separable), and sector assignments for classification
 \end{algorithmic}
 \end{algorithm}
 Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{e-def-DF},
@@ -389,7 +391,7 @@ While hyperplanes provide effective classification boundaries, we can achieve ev
 \paragraph{Tropical Polynomial Kernel.}
 A tropical polynomial in $\trop^d$ takes the form:
 \begin{align}
-f(x) = \max_{\alpha \in A} (c_\alpha + \langle \alpha, x \rangle),
+f(x) = \max_{\alpha \in A} (-c_\alpha + \langle \alpha, x \rangle),
 \end{align}
 where $A \subset \mathbb{Z}^d$ is a finite set of integer vectors (monomials), $c_\alpha \in \R$ are coefficients, and $\langle \alpha, x \rangle = \alpha_1 x_1 + \cdots + \alpha_d x_d$.
 
@@ -429,7 +431,7 @@ To perform classification with polynomials:
 \end{enumerate}
 
 Remark that we can now divide the space in $|A|$ sectors, allowing to classify more than $d$ classes in dimension $d$.
-\todo[inline,color=red!30]{SG: is it $a$ or $-a$, inconsistency}
+%\todo[inline,color=red!30]{SG: is it $a$ or $-a$, inconsistency}
 \paragraph{Margin Guarantees.}
 When extending to polynomial classifiers, we maintain theoretical guarantees on the margin. Specifically, when $\rho(T)<0$ (indicating separability in the feature space), the data are separable in the original space with a margin of at least $-\rho(T)/\lVert \Phi_A\rVert_{\text{op},\infty}$, where $\lVert \Phi_A\rVert_{\text{op},\infty}$ is the operator norm of the feature map.
 
@@ -508,10 +510,12 @@ Therefore, if we have an eigenpair $(\rho(T),a)$ of $T$, necessarily $\gamma \le
 \end{lemma}
 
 \begin{proof}
-Consider two different classes $k$ and $\ell$. Let $I^k$ denote the set of coordinates assigned to class $k$. For any point $x \in X^k$, the margin condition implies
+Consider two different classes $k$ and $\ell$. Let $I^k$ denote the set of coordinates assigned to class $k$. For any point $x \in X^k$, the margin condition implies that its Hilbert distance to sector $S^{\ell}$ is bigger than $\gamma$, namely
 \begin{align}
 d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i) \geq \gamma.
 \end{align}
+
+\todo{Théo : je pense qu'on pourrait nous demander à quoi correspondrait 'dans la réalité' (ou au moins sur l'écran) cette marge ; peut-être pourrait-on faire un peu de vulgarisation ? Typiquement est-ce la longueur du segment sur l'écran entre deux points?}
 
 This can be rewritten as: for all $i \in I^{\ell}$,
 \begin{align}
@@ -566,7 +570,7 @@ d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
 Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
 \end{proof}
 
-In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understading of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020} \todo{Théo : rather thm 16 of condition number paper applied to T (adding that S(T) not only characterizes but equals the intersection?}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
+In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understading of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020} \todo{Théo : rather thm 16 of condition number paper applied to T (adding that S(T) not only characterizes but equals the intersection?}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex \todo{Théo: do we know if in this case (non separable) a is necessarily finite and therefore $a$ can be called apex ? } $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
 \begin{align}
@@ -581,14 +585,14 @@ Intuitively, this can be thought of as representing the union of pairwise inters
     \label{fig:non_separable}
 \end{figure}
 
-The following Lemma is the only one where using the diagonal-free operator is needed.\todo{Théo : d'après ma remarque ci-dessus, on devrait alors indiquer plus globalement et plus simplement que la version df est uniquement utile pour la compréhension du cas binaire non séparable}
+The following Lemma is the only one where using the diagonal-free operator is needed.\todo{Théo : d'après ma remarque ci-dessus, on devrait alors indiquer plus globalement et plus simplement que la version df est uniquement utile pour la compréhension du cas binaire non séparable (et peut-être se risquer à dire qu'on pourrait en quoi son usage est plus pertinent dans le cas non séparable même multi-classe? sauf si l'interprétation avec les mains de l'union des intersections suffit}
 
 \begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
 Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
 \end{lemma}
 
 \begin{proof}
-Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
+Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$ \todo{Théo: cf above comment}. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
 
 For a point $x \in \trop^d$, its distance to $\mathcal{H}_a$ is
 \begin{align}
