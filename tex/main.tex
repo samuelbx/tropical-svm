@@ -581,7 +581,7 @@ Then, we deduce from~\eqref{e-toreverse} that
 -\gamma + a_i \geq x_i +\min_{j\neq i} (-x_j + a_j) ,\qquad \text{for all }x\in X^k \enspace,
 \]
 and so, taking the maximum over $x\in X^k$, and noting that either $T^k=\Pdiagfree_{X^k}$ or
-$T^k=P_{X^k}\leq P\diagfree_{X^k}$,
+$T^k=P_{X^k}\leq \Pdiagfree_{X^k}$,
 \[
 -\gamma  + a_i \geq [\Pdiagfree_{X^h}(a)]_i \geq [T^k(a)]_i\enspace .
 \]
@@ -595,8 +595,8 @@ $T^k=P_{X^k}\leq P\diagfree_{X^k}$,
 %% T^k(a)_i \leq -\gamma + a_i.
 %% \end{align}
 
-Since this holds for all $i \in I^{\ell}$ and all classes $k \neq \ell$, we have $T(a)_i \leq -\gamma + a_i$ for all $i$, which gives us $T(a) \leq -\gamma + a$.
-Finally, if $T(a)=\rho(T)+a$, then, by the Collatz-Wieland theorem (see~\cite[Theorem~7]{akiangaubertqisaadi}), $\rho(T)\le -\gamma$.\todo{SG: reference added}
+Since this holds for all classes $k \neq \ell$, we have $T(a)_i \leq -\gamma + a_i$.
+Finally, if $(\rho(T),a)$ is an eigenpair, $T(a)_i=\rho(T)+a_i$, hence $\rho(T)\le -\gamma$.
 \end{proof}
 
 \begin{lemma}[Max-margin hyperplane]\label{lemma:operator_to_hyperplane}
