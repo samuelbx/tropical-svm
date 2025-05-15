@@ -321,7 +321,7 @@ Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the cl
 
 (2) \textit{Margin Optimality:} For separable data, the maximum margin equals $-\rho(T)$ and is achieved.
 
-(3) \textit{Soft-Margin Interpretation:} For non separable data, and for the binary classification problem, $\rho(T)$ is positive and coincides with the minimal distance of the original data to perturbed data that achieve separability.
+(3) \textit{Soft-Margin Interpretation:} For non separable data, and for the binary classification problem, $\rho(T)$ is positive and coincides with the minimal distance of the original data to perturbed data that achieves separability.
 
 Moreover, both $\rho(T)$ and a vector $a$ satisfying $T(a) = \rho(T)+a$ can be computed in pseudo-polynomial time using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).
 \end{theorem}
@@ -363,7 +363,7 @@ in~\cite{akianmfcs}.
   $a \approx y^{(k+1)}$.
 \end{algorithmic}
 \end{algorithm}
-It follows from from a theorem of Baillon and Bruck~\cite{baillonbruck} that
+It follows from a theorem of Baillon and Bruck~\cite{baillonbruck} that
 as soon the eigenproblem $T(a)=\lambda + a$ with $a\in \R^n$ and $\lambda \in \R$ is solvable, which as observed above is always the case for the operator $T$ in~\eqref{eq:single_operator},
 we have
 $\left\|T(y^{(k)})-y^{(k)}\right\|_H
@@ -534,7 +534,7 @@ although the finest results will be obtained with $\Pdiagfree_V$.
 We first characterize the maximal possible value for the margin.
 
 \begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
-Let $T^k$ be tropical projections on finite point clouds or their diagonal-free coutnerparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
+Let $T^k$ be tropical projections on finite point clouds or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
 If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, then $T(a) \leq -\gamma + a$.
 Therefore, if $(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$, necessarily $\gamma \le -\rho(T)$.
 \end{lemma}
