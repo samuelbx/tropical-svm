@@ -282,8 +282,8 @@ see~\cite{nussbaum1986,AGGut10,akiangaubertqisaadi} for more information,
 especially~\cite[Theorem~7]{akiangaubertqisaadi}.
 
 \paragraph{Constructing the Classification Operator.}
-Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \R^d$.\todo{SG: points should be {\em finite} (not in $\trop^d$, otherwise some statements may be more delicate -- or we need to check }
-We define an operator $T^k$ for each class $k$ by taking the diagonal-free variant of the tropical projection onto the convex hull of points in that class:\todo[inline,color=red!30]{ SG: $T^k(x)$ is confusing owing to conflict with $x$ in $X^k$}
+Consider a classification problem with $K$ classes, each represented by a set of finite points $X^1,\dots,X^K \subset \R^d$.
+We define an operator $T^k$ for each class $k$ by taking the diagonal-free variant of the tropical projection onto the convex hull of points in that class:
 \[
 T^k(y) = P_{X^k}^{\text{DF}}(y).
 \]
@@ -602,7 +602,7 @@ d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
 Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
 \end{proof}
 
-In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understading of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020} \todo{Théo : rather thm 16 of condition number paper applied to T (adding that S(T) not only characterizes but equals the intersection?}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
+In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understading of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown by Theorem 16 in \cite{allamigeon_condition}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
 \begin{align}
@@ -617,14 +617,14 @@ Intuitively, this can be thought of as representing the union of pairwise inters
     \label{fig:non_separable}
 \end{figure}
 
-The following Lemma is the only one where using the diagonal-free operator is needed.\todo{Théo : d'après ma remarque ci-dessus, on devrait alors indiquer plus globalement et plus simplement que la version df est uniquement utile pour la compréhension du cas binaire non séparable (et peut-être se risquer à dire qu'on pourrait en quoi son usage est plus pertinent dans le cas non séparable même multi-classe? sauf si l'interprétation avec les mains de l'union des intersections suffit}
+The following Lemma is the only one where using the diagonal-free operator is needed.
 
 \begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
 Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
 \end{lemma}
 
 \begin{proof}
-Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$ \todo{Théo: cf above comment}. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
+Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
 
 For a point $x \in \trop^d$, its distance to $\mathcal{H}_a$ is
 \begin{align}
@@ -673,7 +673,7 @@ Equation \ref{eq:major} gives $d_{H}(x_{j},\mathcal{H}_{a})\le\rho(T)$.
 Let $\tilde{T}^{1}$ and $\tilde{T}^{2}$ be the diagonal-free projections
 over transformed projections, and $\tilde{T}=\min(\tilde{T}^{1},\tilde{T}^{2})$.
 We have just shown that $\tilde{T}(a)_{i}=\tilde{T}^{1}(a)_{i}=a_{i}$,
-and finally $\tilde{T}(a)=a$. \todo{Théo : de même rajouter une référence au thm 16 de condition number / à la discussion ci avant qui explique son utilisation (ie S(T tilde ) = intersection des convex hulls des nuages transformes)?}
+and finally $\tilde{T}(a)=a$ by Theorem 16 in \cite{allamigeon_condition}.
 \end{proof}
 
 We summarize the proof of the Main Theorem, which holds entirely when $T^k$ are diagonal-free projections (and only for part $1$ and $2$ when they are non diagonal-free):
