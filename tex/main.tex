@@ -612,7 +612,6 @@ The following Lemma is the only one where using the diagonal-free operator is ne
 \begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
 Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
 \end{lemma}
-
 \begin{proof}
 Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
 
@@ -622,48 +621,52 @@ d_H(x, \mathcal{H}_a) = \max_i(x_i - a_i) - \operatorname{\max}_2(x_i - a_i),
 \end{align}
 where $\operatorname{\max}_2$ denotes the second-largest value.
 
-For each point $x_j \in X^1 \cup X^2$, we define a perturbed point $\tilde{x}_j$ as follows:
+For each point $x \in X^1 \cup X^2$, we define a perturbed point $\tilde{x}$ as follows:
 \begin{itemize}
-\item If $d_H(x_j, \mathcal{H}_a) \geq \rho(T)$, then $\tilde{x}_j = x_j$ (no perturbation)
-\item If $d_H(x_j, \mathcal{H}_a) < \rho(T)$, let $s = \arg\max_i(x_{ji} - a_i)$ be the sector of $x_j$. We set:
+\item If $d_H(x, \mathcal{H}_a) \geq \rho(T)$, then $\tilde{x} = x$ (no perturbation)
+\item If $d_H(x, \mathcal{H}_a) < \rho(T)$, let $s = \arg\max_i(x_{i} - a_i)$ be the sector of $x$. We set:
   \begin{align}
-  \tilde{x}_{ji} = \begin{cases}
-  x_{ji} - d_H(x_j, \mathcal{H}_a) & \text{if } i = s \\
-  x_{ji} & \text{otherwise}
+  \tilde{x}_{i} = \begin{cases}
+  x_{i} - d_H(x, \mathcal{H}_a) & \text{if } i = s \\
+  x_{i} & \text{otherwise}
   \end{cases}
   \end{align}
 \end{itemize}
 
-This projection ensures that $\tilde{x}_j$ lies exactly on $\mathcal{H}_a$.
+Note that if $s$ is not unique then $x$ is already on $\mathcal{H}_a$ and we don't perturb it.
 
-Therefore, for any $x^{c}$ in the tropical convex hull of class $c\in\{1,2\}$,
+This projection ensures that $\tilde{x}$ lies exactly on $\mathcal{H}_a$.
+
+Therefore, for any $y$ in the tropical convex hull of class $c\in\{1,2\}$,
 \begin{equation}
-[x^{c}]_{i}\leq T^{c}(x^{c})_{i}=\underbrace{\left(T^{c}(x^{c})-T^{c}(a)\right)_{i}}_{\leq\,\max_{k\ne i}(x_{k}^{c}-a_{k})}+T^{c}(a)_{i}.\label{eq:major}
+[y]_{i}\le T^{c}(y)_{i}=\underbrace{\left(T^{c}(y)-T^{c}(a)\right)_{i}}_{\le\,\max_{k\ne i}(y_{k}-a_{k})}+T^{c}(a)_{i}.\label{eq:major}
 \end{equation}
+Also note that for any $i$, by definition of $T^{c}$, if $X^c \cap \text{Sec}_i $ is not empty we can rewrite
+\begin{equation}
+T^{c}(a)_{i}=\max_{x \in {X^c \cap \text{Sec}_i(a)}}(x_{i}-a_{i} - \max_{k\neq i} (x_{k}-a_{k}))  + a_i = \max_{x \in {X^c \cap \text{Sec}_i(a)}}(d_{H}\left(x,\mathcal{H}_{a}\right)) + a_i  .\label{eq:rewrite}
+\end{equation}
+
 Fix a coordinate $i$. If $x\in X^{1}\cup X^{2}$ is in sector $s\ne i$, and reaches its second argmax at coordinate $t$, then for $k\ne s$, by definition,
-$(\tilde{x}_{j}-a)_{k}\le(x_{j}-a)_{t}\le(\tilde{x}_{j}-a)_{s}$,
-hence $\tilde{x}_{jk}-\max_{k\ne i}(\tilde{x}_{jk}-a_{k})\leq a_{i}$.
-Otherwise, $x_{j}$ is in the $i$-th sector and $\max_{k\ne i}(\tilde{x}_{jk}-a_{k})=x_{jt}-a_{t}$,
+$(\tilde{x}-a)_{k}\le(x-a)_{t}\le(\tilde{x}-a)_{s}$,
+hence $\tilde{x}_{k}-\max_{k\ne i}(\tilde{x}_{k}-a_{k})\le a_{i}$.
+Otherwise, $x$ is in the $i$-th sector and $\max_{k\ne i}(\tilde{x}_{k}-a_{k})=x_{t}-a_{t}$,
 thus
-\[
-\tilde{x}_{ji}-\max_{k\ne i}(\tilde{x}_{j}-a)_{k}=(\tilde{x}_{j}-a)_{i}-(\tilde{x}_{j}-a)_{t}+a_{i}\geq a_{i},
-\]
-with equality if $d_{H}\left(x_{j},\mathcal{H}_{a}\right)\leq\rho(T)$.
+\begin{equation}
+\tilde{x}_{i}-\max_{k\ne i}(\tilde{x}-a)_{k}=(\tilde{x}-a)_{i}-(\tilde{x}-a)_{t}+a_{i}\ge a_{i} \label{eq:dist}
+\end{equation}
+
+with equality if $d_{H}\left(x_{j},\mathcal{H}_{a}\right)\le\rho(T)$ by definition of $\tilde{x}$.
 
 Suppose by symmetry that $T(a)_{i}=T^{1}(a)_{i}=\rho(T)+a_{i}$. We
-also have $T^{2}(a)\geq\rho(T)+a_{i}$. Then, using the proof of Theorem
-22 in \cite{akiangaubertqisaadi}, there exist witness points $x_{j_{1}}\in X^{1}$ and
-$x_{j_{2}}\in X^{2}$ in sector $i$ , with $x_{j_{1}}$ being at
-distance $\rho(T)$ from $\mathcal{H}_{a}$ and $x_{j_{2}}$ at distance
-greater than $\rho(T)$. Therefore, $\tilde{x}_{j_{1}i}-\max_{k\ne i}(\tilde{x}_{j_{1}k}-a_{k})=a_{i}$
-and $\tilde{x}_{j_{2}i}-\max_{k\ne i}(\tilde{x}_{j_{2}k}-a_{k})\geq a_{i}$.
-Moreover, for any $j$ such that $x_{j}\in X^1$ is in sector $i$,
-Equation \ref{eq:major} gives $d_{H}(x_{j},\mathcal{H}_{a})\leq\rho(T)$.
-
-Let $\tilde{T}^{1}$ and $\tilde{T}^{2}$ be the diagonal-free projections
-over transformed projections, and $\tilde{T}=\min(\tilde{T}^{1},\tilde{T}^{2})$.
-We have just shown that $\tilde{T}(a)_{i}=\tilde{T}^{1}(a)_{i}=a_{i}$,
-  and finally $\tilde{T}(a)=a$. We conclude by Theorem 16 in \cite{allamigeon_condition} that $S(\tilde{T})$ has empty interior, and therefore the intersection of convex hulls of both transformed point clouds, namely $\mathcal{S}(\tilde{T}^1) \cap \mathcal{S}(\tilde{T}^2) \subset S(\tilde{T})$, has empty interior too.
+also have $T^{2}(a)\ge\rho(T)+a_{i}$. Then, according to Theorem
+22 in \cite{akiangaubertqisaadi}, there exists witness points $x_{1}\in X^{1}$ and
+$x_{2}\in X^{2}$ in sector $i$ , with $x_{1}$ being at
+distance $\rho(T)$ from $\mathcal{H}_{a}$ and $x_{2}$ at distance
+greater $\rho(T)$. Therefore, $\tilde{x}_{1i}-\max_{k\ne i}(\tilde{x}_{1k}-a_{k})=a_{i}$
+and $\tilde{x}_{2i}-\max_{k\ne i}(\tilde{x}_{2k}-a_{k})\ge a_{i}$.
+Moreover, for any $x\in X^1$ belonging to sector $i$,
+Equation \ref{eq:major} yields $d_{H}(x,\mathcal{H}_{a})\le\rho(T)$. Hence by Equations \ref{eq:major}, \ref{eq:rewrite} and \ref{eq:dist}, we have $\tilde{T}^{1}(a)_{i}=a_{i}$  and $\tilde{T}^{2}(a)_{i} \ge a_{i}$, hence $\tilde{T}}(a)_{i}=a_{i}$.
+Since this holds for all $i$ we have finally $\tilde{T}(a)=a$. We conclude by Theorem 16 in \cite{allamigeon_condition} that $S(\tilde{T})$ has empty interior, and therefore the intersection of convex hulls of both transformed point clouds, namely $\mathcal{S}(\tilde{T}^1) \cap \mathcal{S}(\tilde{T}^2) \subset S(\tilde{T})$, has empty interior too.
 \end{proof}
 
 We summarize the proof of the Main Theorem, which holds entirely when $T^k$ are diagonal-free projections (and only for part $1$ and $2$ when they are non diagonal-free):
