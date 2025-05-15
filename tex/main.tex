@@ -85,7 +85,7 @@ Tropical geometry has emerged as a powerful tool for modeling piecewise-linear p
 it has been used to bound the number of linearity regions of functions realized by these networks~\cite{zhang2018,montufar}.
 It has been successfully applied to linear regression \cite{maragos2020,akiangaubertqisaadi}
 
-\paragraph{Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multiclass problems, since a single tropical hyperplane in dimension $d$ partitions the space in $d$ regions.
+\paragraph{Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multiclass problems, since a single tropical hyperplane in dimension $d$ partitions the space into $d$ regions.
 Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leading to exponential worst-case complexity. This computational barrier has limited practical applications.
 
 \paragraph{Background on Mean‐Payoff Games.}
@@ -118,7 +118,7 @@ analogue of Von Neumann cyclic projection algorithm, providing an effective
 way to separate two tropical convex sets, see~\cite{gaubert2011}, and also~\cite{CuninghameGreen2003} for an early result
 in this direction. A key novelty in the present work is the introduction
 of the classification operator $T$ of~\eqref{eq:single_operator}, combined
-with the substitution of ordinary projections by their ``diagonal-free'' counter parts,
+with the substitution of ordinary projections by their ``diagonal-free'' counterparts,
 leading to a characterization of the separation margin. The diagonal-free projections
 originate from~\cite{akiangaubertqisaadi},
 in which they were used to solve tropical linear regression
@@ -137,7 +137,7 @@ in~\cite{tang2020,Yoshida2023}.
 
 We build on the theory of tropical convexity,
 which has been developed by several authors,
-both in finite and infinite dimension, see~\cite{Litvinov2001,develin2004,cohen2004} and the references therein.
+both in finite and infinite dimensions, see~\cite{Litvinov2001,develin2004,cohen2004} and the references therein.
 We refer the reader to~\cite{maclagan2015} for background
 on tropical geometry.
 
@@ -238,7 +238,7 @@ precisely $[P_X(y)]_i$, see~\cite[Theorem~5]{cohen2004}. It can be checked that
   \tcone(X)= \{y\in \trop^d\mid y\leq P_X(y)\} = \{y\in \trop^d\mid y\leq P_X^{\text{DF}}(y)\}.
 \end{align}
 Indeed, it is shown in~\cite[Section 3.1]{cohen2004} that $P_X(y)\leq y$ holds for all $y\in \trop^d$ and that $\tcone(X)$ is the fixed point set of $P_X$,
-which shows the first equality in~\eqref{e-def-DF}. Moreover, Equation~(19), {\em ibid.} shows that $[P_X(y)]_i$ is given by the same expression as~\eqref{e-def-DF}, except that the restriction $k\neq i$ is ommited in the minimum, and then it follows that $y\leq P_X(y)$ is equivalent to $y\leq P_X^{\text{DF}}(y)$,
+which shows the first equality in~\eqref{e-def-DF}. Moreover, Equation~(19), {\em ibid.} shows that $[P_X(y)]_i$ is given by the same expression as~\eqref{e-def-DF}, except that the restriction $k\neq i$ is omitted in the minimum, and then it follows that $y\leq P_X(y)$ is equivalent to $y\leq P_X^{\text{DF}}(y)$,
 showing the second equality in~\eqref{e-rep-fp}.
 So both operators $P_X$ and $P_X^{\text{DF}}$ can be used to represent $\tcone(X)$. However, as shown in~\cite[Theorem~6]{akiangaubertqisaadi}, the operator $P_X^{\text{DF}}$ captures finer metric properties.
 
@@ -250,7 +250,7 @@ from Player Min. Player Min in turn chooses a node $k\in \{1,\dots,d\}\setminus\
 the payment of an infinite trajectory being defined as the mean payoff per turn.
 The ``diagonal-free'' term refers to the fact that the variable $y_i$
 is absent from the expression in~\eqref{e-def-DF}
-of the $i$th coordinate of  $[P_X^{\text{DF}}(y)$. In terms
+of the $i$th coordinate of  $P_X^{\text{DF}}(y)$. In terms
   of games, this means that Player Min is prevented from replying tit-for-tat,
   i.e., the choice $k=i$, which would cancel the payment $X_{ij}$
   by $-X_{kj}$, does not appear in the minimum in~\eqref{e-def-DF}.
@@ -293,7 +293,7 @@ We then combine these operators into a single classification operator $T$ define
 \begin{align}
   T(y)_i = \operatorname{\max}_2\{T^1(y)_i, \dots, T^K(y)_i\}\label{eq:single_operator},
 \end{align}
-where $\operatorname{\max}_2$ denotes the second-largest value among a collection of $K$ real numbers. For binary classification ($K=2$), this simplifies to $T(y)=\min\{T^1(y), T^2(y\}$, the minimum being understood entrywise. Since the
+where $\operatorname{\max}_2$ denotes the second-largest value among a collection of $K$ real numbers. For binary classification ($K=2$), this simplifies to $T(y)=\min\{T^1(y), T^2(y)\}$, the minimum being understood entrywise. Since the
 the cloud sets $X^1,\dots,X^k$ are finite, the eigenproblem
 $T(u) =\lambda + u$ has a solution $u\in \R^n$ and $\lambda\in \R$,
 and the eigenvalue $\lambda$ is unique and coincides with $\rho(T)$ -- this follows
@@ -310,7 +310,7 @@ Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for 
 \begin{align}
 d_H(x, S^\ell) = \max_j(x_j - a_j) - \max_{i \in I_\ell}(x_i - a_i) \geq \gamma.
 \end{align}
-Finally, with define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq k} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
+Finally, we define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq k} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
 
 \paragraph{Main Theorem: Spectral Radius and Margin.}
 Our central result establishes the connection between separability and the spectral radius. 
@@ -506,12 +506,12 @@ of the dataset, finding the optimal set of linear features
 appears to be an interesting open question, which seems accessible
 by methods of linear programming (e.g., cutting planes methods).
 We presented here a proof of concept, based on a first implementation in Python: we implemented the simplest algorithm for mean-payoff games
-(relative value iteration), in a non-optimized way. We could rely instead on the policy iteration algorithm~\cite{DG-06} and its refinement allowing parallelization in~\cite{chaloupkathesis}, which has been reported expermentally to providethe fastest method to solve mean-payoff
+(relative value iteration), in a non-optimized way. We could rely instead on the policy iteration algorithm~\cite{DG-06} and its refinement allowing parallelization in~\cite{chaloupkathesis}, which has been reported experimentally to provide the fastest method to solve mean-payoff
 games in practice~\cite{chaloupka}.
 
 \section*{Acknowledgements}
 Xavier Allamigeon and St\'ephane Gaubert thank Hicham Sefiani and Ismail Labiad
-for their preliminary investigation int theo application of game theory methods to the resolutio of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani}.
+for their preliminary investigation into the application of game theory methods to the resolution of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani}.
 
 
 \todo[color=red!30,inline]{SG to XA: verifie mon remerciement. Les eleevs ont ecrit Sefiani en premier auteur renversant l'ordre, j'ai garde cela dans la ref biblio.}
@@ -713,11 +713,11 @@ To validate our theoretical complexity analysis, we evaluated both standard trop
 
 
 The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
-Tropical SVM indeed fails to separate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius $\rho(T)$ is negative), and obtain an maximal-margin separator in the feature space.
+Tropical SVM indeed fails to separate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius $\rho(T)$ is negative), and obtain a maximal-margin separator in the feature space.
 With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is far fewer than the expected $O(1/\varepsilon^2)$ iterations.
 
 As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. Table~\ref{tab:benchmark_results}
-shows that the current interpreted (Python/NumPy) implementation is slower, by a factor $10^3$, than a state of the art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scales {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
+shows that the current interpreted (Python/NumPy) implementation is slower, by a factor $10^3$, than a state-of-the-art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scales {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
 a proof of concept that tropical SVMs can be practically computed.
 
 
