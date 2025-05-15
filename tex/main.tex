@@ -83,7 +83,7 @@ Classification is a fundamental task in machine learning, and Support Vector Mac
 
 Tropical geometry has emerged as a powerful tool for modeling piecewise-linear phenomena in machine learning. Together with polyhedral geometry,
 it has been used to bound the number of linearity regions of functions realized by these networks~\cite{zhang2018,montufar}.
-It has been successfully applied to linear regression \cite{maragos2020,akiangaubertqisaadi} \todo{Théo : la seconde référence n'est pas plutôt \cite{akiangaubertqisaadi} (trop lin reg)? SG: oui, merci!}, principal component analysis \cite{yoshida2019} and neural network analysis \cite{maragos2021}.
+It has been successfully applied to linear regression \cite{maragos2020,akiangaubertqisaadi}
 
 \paragraph{Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multiclass problems, since a single tropical hyperplane in dimension $d$ partitions the space in $d$ regions.
 Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leading to exponential worst-case complexity. This computational barrier has limited practical applications.
@@ -139,20 +139,7 @@ We build on the theory of tropical convexity,
 which has been developed by several authors,
 both in finite and infinite dimension, see~\cite{Litvinov2001,develin2004,cohen2004} and the references therein.
 We refer the reader to~\cite{maclagan2015} for background
-on tropical geometry.\todo{SG: added general references}
-%, and also to~\cite{} for combinatorial aspects.
-%% These works apply not only to $\ell_\infty$-cost functions as the the one we consider,
-%% but also to $\ell_1$-costs functions, they include reductions to mixed
-%% linear programming problems, as well as efficient dedicated heuristics or local search
-%% methods~\cite{}. Recent developments of metric aspects of tropical geometry include
-%% the study of tropical medians and their link with optimal transport~\cite{}.
-%% Tropical The applito We rely specially
-%% on the appraoch of
-%% on the Metric The metric interpretis bresult subsequenb
-%% Tang et al.~\cite{tang2020} and Monod et al~\cite{monod2022} later developed specialized algorithms for binary classification cases where data points from the same category remain in the same sector, showing promising results in computational biology for analyzing evolutionary trees.\
-%\todo{quote lavishly yoshida}
-
-\todo[inline]{SG: I will add references to AGG, Sergei, YangQi, Joswig (transport optimal tropical), Yue Ren/Montufar. Discuss Yoshida/heuristics more precisely; Maragos [did most of it, yue ren montfar discussed above, joswig a bit far?]}
+on tropical geometry.
 
 
 \begin{figure}[h]
@@ -169,8 +156,6 @@ on tropical geometry.\todo{SG: added general references}
     \caption{Left: Tropical hyperplane represented in projective space, with the constant vector $(1, 1, 1)$ projected to the origin. Each sector corresponds to a coordinate that dominates relative to the apex, here equal to $(-0.65, 0.58, 0.07)$ and located at the elbow. The two lower sectors are merged and assigned to orange points. Margin is optimal and is represented in yellow. Right: Visualization of a degree-2 polynomial classifier on a toy dataset \cite{scikit-learn}. Each region corresponds to a sector where a specific affine combination of the features dominates, creating an interpretable piecewise-linear decision boundary.}
     \label{fig:tropical_poly}
 \end{figure}
-%\todo[inline,color=red]{SG: in Figure \ref{fig:tropical_poly}, is $(-0.65, 0.58, 0.07)$ the apex or the oposite of the apex. apex = sommet. it seems to be the sommet. We need to decide whether the apex is $a$ or $-a$ and check consistency in the separating hyperplanes}
-\todo{SG: add bibliographic reference to moons?} 
 The rest of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions.
 
 \section{Tropical Geometry Preliminaries}\label{sec:prelim}
@@ -180,15 +165,12 @@ We now introduce the key concepts from tropical geometry that form the foundatio
 \paragraph{The Max-Plus Semiring.}
 The tropical (or max-plus) semiring is the set $\trop = \R \cup \{-\infty\}$
 equipped with the following operations:
-%replaces traditional arithmetic operations with:
 \begin{align}
 x \oplus y &= \max(x,y) \quad \text{(tropical addition)}, \\
 x \odot y &= x + y \quad \text{(tropical multiplication)}.
 \end{align}
 
 These operations may seem strange at first, but they naturally model systems where we care about ``bottlenecks'' or ``critical paths.'' For example, in project planning, if task A takes $x$ days and task B takes $y$ days, the project completion time depends on the maximum ($x \oplus y$) of these durations if tasks are parallel, and their sum ($x \odot y$) if sequential.
-
-\todo{Théo : peut-être ajoute-t-on une remarque disant qu'on n'utilisera plutôt dans la suite du papier les notations usuelles + et max ? Puisqu'on utilise qu'ici les opérations tropicales + même question pour l'espace projectif PT qu'on ne mentionne que ci dessous? SG: on utilise un peu $\oplus$ pour d\'efinir ci-dessous le cone engendré, }
 
 \paragraph{Projective Space.}  
 The tropical projective space $\proj \trop^d$ identifies vectors of $\trop^d$ that differ by adding the same constant to all coordinates. Formally, it is the quotient of $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$ by the equivalence relation $x \sim y$ if $x = y + c \cdot \mathbf{1}$ for some constant $c$, where $\mathbf{1}$ denotes the ``all ones'' vector. In practice, we embed data from $\R^{d-1}$ into the projective space $\proj \trop^d$ via:
@@ -201,9 +183,7 @@ This transformation makes our classifier invariant to shifts—adding the same c
 
 \paragraph{Hyperplanes and Sectors.}
 A {\em tropical hyperplane} with {\em apex} $a=(a_1,\dots,a_n) \in \R^d$ is defined as:
-\todo[inline,color=red!30]{SG: thanks for correcting, byt then $a$ is the apex and it should be finite valued, i.e. $xin \trop^d$ but $a\in \R^d$. Indeed if $a$ has one $-\infty$ coordinate then the max becomes infinite. Ie, in earlier works, I called $b$ in $\max_{i} b_i +x_i$ the vector of parameters of the hyperplane, allowing $b$ to take $-\infty$ values, and only when $b$ is finite, $a=-b$ is called the apex. We loose degenerate hyperplanes by requiring $a$ to be finite, there is no loss of generality since we only separate sets of points with finite coordinate, the case of points with $-\infty$ is more subttle, see~\cite{akiangaubertqisaadi}, but we do not need it here}
 
-%\todo{the apex is usually $-a$ and this is defined only for $a\in \R^n$, $a$ is rather a vector of parameters}
 \begin{align}
 \mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i - a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
 \end{align}
@@ -213,10 +193,8 @@ This hyperplane divides the space into $d$ sectors. The $i$-th sector contains p
 S_i(a) = \left\{x \in \trop^d : i \in \underset{1\leq j\leq d}{\arg\max} (x_j - a_j)\right\}.
 \end{align}
 The vector $a$ is called the apex since 
-%of the tropical hyperplane, for
 each of these sections is a cone
 originating from point $a$.
-\todo[inline,color=red!30]{SG: now $a$ is always required to be finite}
 
 Unlike classical hyperplanes that create two half-spaces, tropical hyperplanes (see Figure~\ref{fig:tropical_poly} on the left) create multiple sectors, one for each dimension. They naturally support multi-class classification, where we can assign different sectors to different classes.
 
@@ -247,14 +225,14 @@ The projection finds a closest point in the conical convex hull~\cite{cohen2004,
 
 Projection operators will play a central role in our classification framework. We will use them to build class-specific operators that characterize the separability of data.
 Actually, we shall need the following ``diagonal-free'' variant of the canonical projection~\eqref{e-canonical},
-introduced in~\cite[Equation~(9)]{akiangaubertqisaadi} (up to a change of sign):\todo{SG: explained the change of sign}
+introduced in~\cite[Equation~(9)]{akiangaubertqisaadi} (up to a change of sign):
 \begin{align}
   [P_X^{\text{DF}}(y)]_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{1\leq k\leq d,\; k \neq i} (-X_{kj} + y_k)\right\},
   \label{e-def-DF}
 \end{align}
 where $p$ is the number of points of the set $X$ and $X_{ij}$ is the $i$-th coordinate of the $j$-th point.
 If one omits the constraints that $k\neq i$ in the expression of $[P_X^{\text{DF}}(y)]_i$, one gets
-precisely $[P_X(y)]_i$, see~\cite[Theorem~5]{cohen2004}. \todo{Théo : devrait-on indiquer une source pour ce résultat ? SG , en effet, merci ! idem pour le fait que P et Pdf ont les mêmes points fixes (même si la preuve se fait en deux lignes)? SG : ajoute une explication} It can be checked that 
+precisely $[P_X(y)]_i$, see~\cite[Theorem~5]{cohen2004}. It can be checked that 
 \begin{align}
   \label{e-rep-fp}
   \tcone(X)= \{y\in \trop^d\mid y\leq P_X(y)\} = \{y\in \trop^d\mid y\leq P_X^{\text{DF}}(y)\}.
@@ -276,7 +254,7 @@ of the $i$th coordinate of  $[P_X^{\text{DF}}(y)$. In terms
   of games, this means that Player Min is prevented from replying tit-for-tat,
   i.e., the choice $k=i$, which would cancel the payment $X_{ij}$
   by $-X_{kj}$, does not appear in the minimum in~\eqref{e-def-DF}.
-  The game interpretation is further elaborated in~\cite{akiangaubertqisaadi}.\todo{SG: explained tit for tat}
+  The game interpretation is further elaborated in~\cite{akiangaubertqisaadi}.
 
 
 
@@ -297,7 +275,7 @@ It admits a unique continuous extension $\T^d\to \T^d$, also denoted by $T$ \cit
 \rho(T) = \max\left\{\lambda \in \R : \exists u \neq -\infty \text{ with } T(u) = \lambda + u\right\},
 \end{align}
 where $-\infty\in \T^d$ denotes the all $-\infty$ vector -- the ``zero'' vector in max-plus algebra.
-The maximum is always achieved. \todo{Théo : idem indique-t-on une source? ou est-ce clair que le résultat est dans une des trois sources citées ci-après? SG: c'est dans chacune des trois sources avec des degres de generalite et de precision different}
+The maximum is always achieved.
 Moreover, $\rho(T)$ is the infimum of the values $\lambda\in \R$ for which there exists a vector $u\in\R^d$
 satisfying $T(u) \leq \lambda + u$,
 see~\cite{nussbaum1986,AGGut10,akiangaubertqisaadi} for more information,
@@ -321,7 +299,6 @@ $T(u) =\lambda + u$ has a solution $u\in \R^n$ and $\lambda\in \R$,
 and the eigenvalue $\lambda$ is unique and coincides with $\rho(T)$ -- this follows
 from Theorem~13 of~\cite{gaubert2004}, along the lines of the proof of Proposition~23
 in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
-\todo{SG: added this explanation}
 
 
 
@@ -333,7 +310,7 @@ Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for 
 \begin{align}
 d_H(x, S^\ell) = \max_j(x_j - a_j) - \max_{i \in I_\ell}(x_i - a_i) \geq \gamma.
 \end{align}
-Finally, with define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq k} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.\todo[color=red!30]{SG: defined distance of perturbed}
+Finally, with define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq k} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
 
 \paragraph{Main Theorem: Spectral Radius and Margin.}
 Our central result establishes the connection between separability and the spectral radius. 
@@ -344,7 +321,7 @@ Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the cl
 
 (2) \textit{Margin Optimality:} For separable data, the maximum margin equals $-\rho(T)$ and is achieved.
 
-(3) \textit{Soft-Margin Interpretation:} For non separable data, and for the binary classification problem, $\rho(T)$ is positive and coincides with the minimal distance of the original data to perturbed data that achieve separability.\todo{SG: added more explanation/non-separated instances}
+(3) \textit{Soft-Margin Interpretation:} For non separable data, and for the binary classification problem, $\rho(T)$ is positive and coincides with the minimal distance of the original data to perturbed data that achieve separability.
 
 Moreover, both $\rho(T)$ and a vector $a$ satisfying $T(a) = \rho(T)+a$ can be computed in pseudo-polynomial time using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).
 \end{theorem}
@@ -373,24 +350,23 @@ To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a\in \
 Algorithm~\ref{alg:km_iteration}, a modification of relative value
 iteration using Krasnoselskii--Mann damping, studied
 in~\cite{akianmfcs}.
-\todo[color=red!30]{SG: again $T(x)$ is disturbing given $X$ is data cloud, can we write $T(y)$?}
 \begin{algorithm}
 \caption{Relative value iteration with Krasnoselskii--Mann damping~\cite{akianmfcs}}\label{alg:km_iteration}
 \begin{algorithmic}[1]
 \STATE \textbf{Input:} Shapley operator $T$, accuracy $\varepsilon > 0$
-\STATE \textbf{Initialize:} $x^{(0)} \in \R^d$ (typically set to $\mathbf{1}_d$), $\lambda^{(0)} = 0$
+\STATE \textbf{Initialize:} $y^{(0)} \in \R^d$ (typically set to $\mathbf{1}_d$), $\lambda^{(0)} = 0$
 \REPEAT
-  \STATE $z^{(k+1)} \leftarrow \frac{1}{2}\bigl(x^{(k)} + T(x^{(k)})\bigr)$
-  \STATE $x^{(k+1)} \leftarrow z^{(k+1)} - \max\bigl(z^{(k+1)}\bigr)\,\mathbf{1}_d$ 
-  \UNTIL{$\left\|T(x^{(k)})-x^{(k)}\right\|_H\leq \varepsilon$}
+  \STATE $y^{(k+1)} \leftarrow \frac{1}{2}\bigl(y^{(k)} + T(y^{(k)})\bigr)$
+  \STATE $y^{(k+1)} \leftarrow z^{(k+1)} - \max\bigl(z^{(k+1)}\bigr)\,\mathbf{1}_d$ 
+  \UNTIL{$\left\|T(y^{(k)})-y^{(k)}\right\|_H\leq \varepsilon$}
   \STATE \textbf{Return:} $\rho(T) \approx 2\max z^{(k+1)}$,
-  $a \approx x^{(k+1)}$.
+  $a \approx y^{(k+1)}$.
 \end{algorithmic}
 \end{algorithm}
 It follows from from a theorem of Baillon and Bruck~\cite{baillonbruck} that
-as soon the eigenproblem $T(a)=\lambda + a$ with $a\in \R^n$ and $\lambda \in \R$ is solvable, which as observed above is always the case for the operator $T$ in~\eqref{eq:single_operator},\todo{SG: I added a justification}
+as soon the eigenproblem $T(a)=\lambda + a$ with $a\in \R^n$ and $\lambda \in \R$ is solvable, which as observed above is always the case for the operator $T$ in~\eqref{eq:single_operator},
 we have
-$\left\|T(x^{(k)})-x^{(k)}\right\|_H
+$\left\|T(y^{(k)})-y^{(k)}\right\|_H
 = \mathcal{O}(1/k^{1/2})$, where the constant implied in the $\mathcal{O}(\cdot)$ is explicit, 
 see~\cite{akianmfcs} for details. 
 Hence, Algorithm~\ref{alg:km_iteration} terminates in $O(1/\varepsilon^2)$ iterations.
@@ -416,12 +392,11 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
 \STATE \textbf{Output:} Vector $a$ the apex of the hyperplane, margin $-\rho(T)$ (if separable), and sector assignments for classification
 \end{algorithmic}
 \end{algorithm}
-\todo[inline,color=red]{SG: sign issue in algo 2 at line 9 in $T^k(-a)_i > \rho(T) - a_i$, from the proof it seems it should be $T^k(a)_i > \rho(T) + a_i$. I corrected, please check!}
 Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{e-def-DF},
 where $p_k$ denotes the cardinality of the set $X_k$. Hence, $T$ can be evaluated in
 $\mathcal{O}(pd)$ time, where $p=p_1+\dots+p_K$ is the total number of points.
 Hence, Algorithm~\ref{alg:tropical_svm} terminates in $O(pd/\epsilon^2)$ time. Observe
-that this bound is {\em linear} in the input size $pd$. \todo{Théo : devrait-on comme dans la conclusion indiquer qu'on peut échanger l'algorithme 1 par un autre plus performant comme la policy-iteration? SG: I added it in the concluding section}
+that this bound is {\em linear} in the input size $pd$.
 
 \paragraph{Proof of Concept.}
 We validated the computational complexity of our algorithm through empirical testing (detailed in Appendix~\ref{appendix:empirical}). Our implementation achieves tractable performance on standard benchmark datasets, with performance scaling linearly with both dataset size and feature dimension as predicted by our theoretical analysis.
@@ -477,7 +452,6 @@ To perform classification with polynomials:
 \end{enumerate}
 
 Remark that we can now divide the space in $|A|$ sectors, allowing to classify more than $d$ classes in dimension $d$.
-%\todo[inline,color=red!30]{SG: is it $a$ or $-a$, inconsistency}
 \paragraph{Margin Guarantees.}
 When extending to polynomial classifiers, we maintain theoretical guarantees on the margin. Specifically, when $\rho(T)<0$ (indicating separability in the feature space), the data are separable in the original space with a margin of at least $-\rho(T)/\lVert \Phi_A\rVert_{\text{op},\infty}$, where $\lVert \Phi_A\rVert_{\text{op},\infty}$ is the operator norm of the feature map.
 
@@ -529,11 +503,11 @@ appears to be an interesting open question, which seems accessible
 by methods of linear programming (e.g., cutting planes methods).
 We presented here a proof of concept, based on a first implementation in Python: we implemented the simplest algorithm for mean-payoff games
 (relative value iteration), in a non-optimized way. We could rely instead on the policy iteration algorithm~\cite{DG-06} and its refinement allowing parallelization in~\cite{chaloupkathesis}, which has been reported expermentally to providethe fastest method to solve mean-payoff
-games in practice~\cite{chaloupka}.\todo{SG: ref to chaloupka}
+games in practice~\cite{chaloupka}.
 
 \section*{Acknowledgements}
 Xavier Allamigeon and St\'ephane Gaubert thank Hicham Sefiani and Ismail Labiad
-for their preliminary investigation int the application of game theory methods to the resolutio of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani},
+for their preliminary investigation int theo application of game theory methods to the resolutio of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani}.
 
 
 \todo[color=red!30,inline]{SG to XA: verifie mon remerciement. Les eleevs ont ecrit Sefiani en premier auteur renversant l'ordre, j'ai garde cela dans la ref biblio.}
@@ -546,7 +520,6 @@ for their preliminary investigation int the application of game theory methods t
 We provide a complete proof of our main result on spectral separability.
 
 For any Shapley operator $T$, we define its sub-fixed-point
-\todo{SG: sub-fixed point not fixed-point}
 set as $\mathcal{S}(T) = \{x \in \trop^d : x \leq T(x)\}$.
 An important property is that if $X$ is any finite subset of $\trop^d$
 and $V=\tcone(X)$ is the tropical cone generated by $X$, as per~\eqref{e-def-tcone},
@@ -568,8 +541,6 @@ Consider two different classes $k$ and $\ell$. Let $I^k$ denote the set of coord
 d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i) \geq \gamma.
 \end{align}
 
-\todo{Théo : je pense qu'on pourrait nous demander à quoi correspondrait 'dans la réalité' (ou au moins sur l'écran) cette marge ; peut-être pourrait-on faire un peu de vulgarisation ? Typiquement est-ce la longueur du segment sur l'écran entre deux points?}
-
 This can be rewritten as: for all $i \in I^{\ell}$,
 \begin{align}
 x_i - a_i \leq \max_j(x_j - a_j) - \gamma.\label{e-toreverse}
@@ -585,15 +556,11 @@ $T^k=P_{X^k}\leq \Pdiagfree_{X^k}$,
 \[
 -\gamma  + a_i \geq [\Pdiagfree_{X^h}(a)]_i \geq [T^k(a)]_i\enspace .
 \]
-\todo[inline,color=red!30]{SG:  I didnot get the previous proof (double max at right is puzzling), so I detailed above -- previous proof
-``Taking the maximum over all $x \in X^k$, we get
-\(%\begin{align}
+
+Taking the maximum over all $x \in X^k$, we get
+\(
 \max_{x \in X^k}(x_i - a_i) \leq \max_{x \in X^k}\left(\max_{j\neq i}(x_j - a_j)\right) - \gamma.
-\)''}%\end{align}
-%% By the definition of $T^k$, this implies
-%% \begin{align}
-%% T^k(a)_i \leq -\gamma + a_i.
-%% \end{align}
+\)
 
 Since this holds for all classes $k \neq \ell$, we have $T(a)_i \leq -\gamma + a_i$.
 Finally, if $(\rho(T),a)$ is an eigenpair, $T(a)_i=\rho(T)+a_i$, hence $\rho(T)\le -\gamma$.
@@ -623,7 +590,7 @@ x_i - a_i \leq \max_j(x_j - a_j) + \rho(T).
 
 With $\rho(T) < 0$, this implies $x_i - a_i < \max_j(x_j - a_j)$, meaning $i$ cannot be the $\arg\max$ of $x - a$. Therefore, the $\arg\max$ must lie in $I^k$, placing $x$ in its correct sector.
 
-Finally, for the margin, consider $x \in \mathcal{S}(T^k)$ and sector $S^{\ell}$ with $\ell \neq k$. The distance is \todo{Théo: cite for example \cite{akiangaubertqisaadi} (prop 29)?}
+Finally, for the margin, consider $x \in \mathcal{S}(T^k)$ and sector $S^{\ell}$ with $\ell \neq k$. The distance is 
 \begin{align}
 d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
 \end{align}
@@ -631,7 +598,7 @@ d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
 Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
 \end{proof}
 
-In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understading of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020} \todo{Théo : rather thm 16 of condition number paper applied to T (adding that S(T) not only characterizes but equals the intersection?}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex \todo{Théo: do we know if in this case (non separable) a is necessarily finite and therefore $a$ can be called apex ? } $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
+In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understading of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown in \cite{akian2020} \todo{Théo : rather thm 16 of condition number paper applied to T (adding that S(T) not only characterizes but equals the intersection?}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
 \begin{align}
