@@ -83,9 +83,9 @@ Classification is a fundamental task in machine learning, and Support Vector Mac
 
 Tropical geometry has emerged as a powerful tool for modeling piecewise-linear phenomena in machine learning. Together with polyhedral geometry,
 it has been used to bound the number of linearity regions of functions realized by these networks~\cite{zhang2018,montufar}.
-It has been successfully applied to linear regression \cite{maragos2020,akiangaubertqisaadi}
+It has been successfully applied to linear regression \cite{maragos2020,akiangaubertqisaadi}, principal component analysis \cite{yoshida2019} and neural network analysis \cite{maragos2021}.
 
-\paragraph{Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multiclass problems, since a single tropical hyperplane in dimension $d$ partitions the space into $d$ regions.
+\paragraph{Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multi-class problems, since a single tropical hyperplane in dimension $d$ partitions the space into $d$ regions.
 Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leading to exponential worst-case complexity. This computational barrier has limited practical applications.
 
 \paragraph{Background on Mean‐Payoff Games.}
@@ -113,7 +113,7 @@ overcoming the computational limitations of previous approaches:
 This work makes tropical SVMs tractable for real-world applications, enabling natural multi-class classification, and opening new directions for piecewise-linear methods that balance expressivity, interpretability, and computational efficiency.
 
 \paragraph{Related Work.}
-The theoretical foundation of this work relies on a separation theorem of Cohen, Gaubert and Quadrat~\cite{cohen2004}, refined in~\cite{AGNS10},  showing that the projection on tropical cone provides a nearest point in Hilbert's seminorm. This led to the development of the tropical
+The theoretical foundation of this work relies on a separation theorem of Cohen, Gaubert and Quadrat~\cite{cohen2004}, refined in~\cite{AGNS10},  showing that the projection onto a tropical cone provides a nearest point in Hilbert's seminorm. This led to the development of the tropical
 analogue of Von Neumann cyclic projection algorithm, providing an effective
 way to separate two tropical convex sets, see~\cite{gaubert2011}, and also~\cite{CuninghameGreen2003} for an early result
 in this direction. A key novelty in the present work is the introduction
@@ -182,7 +182,7 @@ where $[\cdot]$ denotes the equivalence class of a vector in  $\trop^d \setminus
 This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. It is similar to how projective geometry in computer vision makes analysis invariant to camera distance.
 
 \paragraph{Hyperplanes and Sectors.}
-A {\em tropical hyperplane} with {\em apex} $a=(a_1,\dots,a_n) \in \R^d$ is defined as:
+A {\em tropical hyperplane} with {\em apex} $a=(a_1,\dots,a_d) \in \R^d$ is defined as:
 
 \begin{align}
 \mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i - a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
@@ -247,7 +247,7 @@ There are two players, ``Max'' and ``Min'' (the maximizer
 and the minimizer), who alternate their actions. Starting on node
 $i\in \{1,\dots,d\}$, Player Max chooses to move to one of the nodes $j\in \{1,\dots,p\}$, and receives a payment of $X_{ij}$
 from Player Min. Player Min in turn chooses a node $k\in \{1,\dots,d\}\setminus\{i\}$ and has to pay $-X_{kj}$ to Player Max. The game is repeated infinitely,
-the payment of an infinite trajectory being defined as the mean payoff per turn.
+the payment of an infinite trajectory being defined as the mean-payoff per turn.
 The ``diagonal-free'' term refers to the fact that the variable $y_i$
 is absent from the expression in~\eqref{e-def-DF}
 of the $i$th coordinate of  $P_X^{\text{DF}}(y)$. In terms
@@ -282,7 +282,7 @@ see~\cite{nussbaum1986,AGGut10,akiangaubertqisaadi} for more information,
 especially~\cite[Theorem~7]{akiangaubertqisaadi}.
 
 \paragraph{Constructing the Classification Operator.}
-Consider a classification problem with $K$ classes, each represented by a set of finite points $X^1,\dots,X^K \subset \R^d$.
+Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \R^d$.
 We define an operator $T^k$ for each class $k$ by taking the diagonal-free variant of the tropical projection onto the convex hull of points in that class:
 \[
 T^k(y) = P_{X^k}^{\text{DF}}(y).
@@ -294,7 +294,7 @@ We then combine these operators into a single classification operator $T$ define
   T(y)_i = \operatorname{\max}_2\{T^1(y)_i, \dots, T^K(y)_i\}\label{eq:single_operator},
 \end{align}
 where $\operatorname{\max}_2$ denotes the second-largest value among a collection of $K$ real numbers. For binary classification ($K=2$), this simplifies to $T(y)=\min\{T^1(y), T^2(y)\}$, the minimum being understood entrywise. Since the
-the cloud sets $X^1,\dots,X^k$ are finite, the eigenproblem
+the cloud sets $X^1,\dots,X^K$ are finite, the eigenproblem
 $T(u) =\lambda + u$ has a solution $u\in \R^n$ and $\lambda\in \R$,
 and the eigenvalue $\lambda$ is unique and coincides with $\rho(T)$ -- this follows
 from Theorem~13 of~\cite{gaubert2004}, along the lines of the proof of Proposition~23
@@ -310,7 +310,7 @@ Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for 
 \begin{align}
 d_H(x, S^\ell) = \max_j(x_j - a_j) - \max_{i \in I_\ell}(x_i - a_i) \geq \gamma.
 \end{align}
-Finally, we define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq k} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
+Finally, we define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq K} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
 
 \paragraph{Main Theorem: Spectral Radius and Margin.}
 Our central result establishes the connection between separability and the spectral radius. 
@@ -321,7 +321,7 @@ Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the cl
 
 (2) \textit{Margin Optimality:} For separable data, the maximum margin equals $-\rho(T)$ and is achieved.
 
-(3) \textit{Soft-Margin Interpretation:} For non separable data, and for the binary classification problem, $\rho(T)$ is positive and coincides with the minimal distance of the original data to perturbed data that achieve separability.
+(3) \textit{Soft-Margin Interpretation:} For non-separable data, and for the binary classification problem, $\rho(T)$ is positive and coincides with the minimal distance of the original data to perturbed data that achieve separability.
 
 Moreover, both $\rho(T)$ and a vector $a$ satisfying $T(a) = \rho(T)+a$ can be computed in pseudo-polynomial time using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).
 \end{theorem}
@@ -356,7 +356,7 @@ in~\cite{akianmfcs}.
 \STATE \textbf{Input:} Shapley operator $T$, accuracy $\varepsilon > 0$
 \STATE \textbf{Initialize:} $y^{(0)} \in \R^d$ (typically set to $\mathbf{1}_d$), $\lambda^{(0)} = 0$
 \REPEAT
-  \STATE $y^{(k+1)} \leftarrow \frac{1}{2}\bigl(y^{(k)} + T(y^{(k)})\bigr)$
+  \STATE $z^{(k+1)} \leftarrow \frac{1}{2}\bigl(y^{(k)} + T(y^{(k)})\bigr)$
   \STATE $y^{(k+1)} \leftarrow z^{(k+1)} - \max\bigl(z^{(k+1)}\bigr)\,\mathbf{1}_d$ 
   \UNTIL{$\left\|T(y^{(k)})-y^{(k)}\right\|_H\leq \varepsilon$}
   \STATE \textbf{Return:} $\rho(T) \approx 2\max z^{(k+1)}$,
@@ -467,13 +467,11 @@ This approach maintains the core theoretical guarantees of the hyperplane formul
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
-        \caption{}
         \label{fig:homogeneous_selection}
     \end{subfigure}\hfill
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
-        \caption{}
         \label{fig:adaptive_polynomial}
     \end{subfigure}
     \caption{Left: Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho(T)/3$, as explained in the last paragraph of Section~\ref{sec:polynomials}. Right: Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref{sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.}
@@ -495,7 +493,7 @@ However, this method suffers from severe numerical instability for large $\beta$
     \label{fig:maslov_dequantization}
 \end{figure}
 
-\section{Discussion and Future work}\label{sec:discussion}
+\section{Discussion and Future Work}\label{sec:discussion}
 
 We addressed a key computational barrier limiting tropical SVM's practical application in machine learning. By reformulating tropical classification through spectral theory and mean-payoff games, we reduced complexity from exponential to linear in the dimension (but pseudo-polynomial in the desired precision),
 making tropical SVMs feasible for real-world applications.
@@ -509,12 +507,12 @@ We presented here a proof of concept, based on a first implementation in Python:
 (relative value iteration), in a non-optimized way. We could rely instead on the policy iteration algorithm~\cite{DG-06} and its refinement allowing parallelization in~\cite{chaloupkathesis}, which has been reported experimentally to provide the fastest method to solve mean-payoff
 games in practice~\cite{chaloupka}.
 
-\section*{Acknowledgements}
-Xavier Allamigeon and St\'ephane Gaubert thank Hicham Sefiani and Ismail Labiad
-for their preliminary investigation into the application of game theory methods to the resolution of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani}.
+% -- Samuel: Temporarily removed for NIPS submission --
+% \section*{Acknowledgements}
+% Xavier Allamigeon and St\'ephane Gaubert thank Hicham Sefiani and Ismail Labiad
+% for their preliminary investigation into the application of game theory methods to the resolution of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani}.
+% \todo[color=red!30,inline]{SG to XA: verifie mon remerciement. Les eleevs ont ecrit Sefiani en premier auteur renversant l'ordre, j'ai garde cela dans la ref biblio.}
 
-
-\todo[color=red!30,inline]{SG to XA: verifie mon remerciement. Les eleevs ont ecrit Sefiani en premier auteur renversant l'ordre, j'ai garde cela dans la ref biblio.}
 \bibliographystyle{unsrt}
 \bibliography{references}
 
@@ -534,7 +532,7 @@ although the finest results will be obtained with $\Pdiagfree_V$.
 We first characterize the maximal possible value for the margin.
 
 \begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
-Let $T^k$ be tropical projections on finite point clouds or their diagonal-free coutnerparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
+Let $T^k$ be tropical projections on finite point clouds or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
 If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, then $T(a) \leq -\gamma + a$.
 Therefore, if $(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$, necessarily $\gamma \le -\rho(T)$.
 \end{lemma}
@@ -602,7 +600,7 @@ d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
 Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
 \end{proof}
 
-In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understading of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown by Theorem 16 in \cite{allamigeon_condition}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
+In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understanding of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)$ characterizes the intersection of convex hulls of both point clouds. As shown by Theorem 16 in \cite{allamigeon_condition}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by our Algorithm lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
 \begin{align}
