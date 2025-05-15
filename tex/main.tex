@@ -369,11 +369,11 @@ Having established the theoretical foundation, we now present our algorithm for 
 
 \paragraph{Computing the Spectral Radius with Krasnoselskii--Mann Iterations.}
 \label{subsec:spectral_computation}
-To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a$, we use
+To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a\in \R^n$, we use
 Algorithm~\ref{alg:km_iteration}, a modification of relative value
 iteration using Krasnoselskii--Mann damping, studied
 in~\cite{akianmfcs}.
-
+\todo[color=red!30]{SG: again $T(x)$ is disturbing given $X$ is data cloud, can we write $T(y)$?}
 \begin{algorithm}
 \caption{Relative value iteration with Krasnoselskii--Mann damping~\cite{akianmfcs}}\label{alg:km_iteration}
 \begin{algorithmic}[1]
@@ -387,7 +387,10 @@ in~\cite{akianmfcs}.
   $a \approx x^{(k+1)}$.
 \end{algorithmic}
 \end{algorithm}
-It follows from from a theorem of Baillon and Bruck~\cite{baillonbruck} that $\left\|T(x^{(k)})-x^{(k)}\right\|_H
+It follows from from a theorem of Baillon and Bruck~\cite{baillonbruck} that
+as soon the eigenproblem $T(a)=\lambda + a$ with $a\in \R^n$ and $\lambda \in \R$ is solvable, which as observed above is always the case for the operator $T$ in~\eqref{eq:single_operator},\todo{SG: I added a justification}
+we have
+$\left\|T(x^{(k)})-x^{(k)}\right\|_H
 = \mathcal{O}(1/k^{1/2})$, where the constant implied in the $\mathcal{O}(\cdot)$ is explicit, 
 see~\cite{akianmfcs} for details. 
 Hence, Algorithm~\ref{alg:km_iteration} terminates in $O(1/\varepsilon^2)$ iterations.
