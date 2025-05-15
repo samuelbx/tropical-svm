@@ -382,7 +382,7 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
   \STATE \quad For each class $k$, compute the diagonal-free projection $T^k(x) = P^{\textrm{DF}}_{X^k}(x)$
   \STATE \quad Combine via $T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}$ for each coordinate $i$
 \STATE \textbf{Compute Eigenpair:}
-  \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and the apex $a$ of a tropical hyperplane with accuracy $\epsilon>0$.
+  \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and the apex $a$ of a tropical hyperplane with accuracy $\varepsilon>0$.
 \STATE \textbf{Assign Sectors to Classes:}
   \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
     \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$
@@ -395,7 +395,7 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
 Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{e-def-DF},
 where $p_k$ denotes the cardinality of the set $X_k$. Hence, $T$ can be evaluated in
 $\mathcal{O}(pd)$ time, where $p=p_1+\dots+p_K$ is the total number of points.
-Hence, Algorithm~\ref{alg:tropical_svm} terminates in $O(pd/\epsilon^2)$ time. Observe
+Hence, Algorithm~\ref{alg:tropical_svm} terminates in $O(pd/\varepsilon^2)$ time. Observe
 that this bound is {\em linear} in the input size $pd$.
 
 \paragraph{Proof of Concept.}
@@ -451,7 +451,7 @@ To perform classification with polynomials:
     \item Classify new points by identifying which sector of $f_a(x)$ they fall into.
 \end{enumerate}
 
-Remark that we can now divide the space in $|A|$ sectors, allowing to classify more than $d$ classes in dimension $d$.
+Remark that we can now divide the space in $|A|$ sectors, allowing us to classify more than $d$ classes in dimension $d$.
 \paragraph{Margin Guarantees.}
 When extending to polynomial classifiers, we maintain theoretical guarantees on the margin. Specifically, when $\rho(T)<0$ (indicating separability in the feature space), the data are separable in the original space with a margin of at least $-\rho(T)/\lVert \Phi_A\rVert_{\text{op},\infty}$, where $\lVert \Phi_A\rVert_{\text{op},\infty}$ is the operator norm of the feature map.
 
@@ -648,7 +648,7 @@ Therefore, for any $x^{c}$ in the tropical convex hull of class $c\in\{1,2\}$,
 \begin{equation}
 [x^{c}]_{i}\le T^{c}(x^{c})_{i}=\underbrace{\left(T^{c}(x^{c})-T^{c}(a)\right)_{i}}_{\le\,\max_{k\ne i}(x_{k}^{c}-a_{k})}+T^{c}(a)_{i}.\label{eq:major}
 \end{equation}
-Fix a coordinate $i$. If $x\in X^{1}\cup X^{2}$ is in sector $s\ne i$, and reaches it second argmax at coordinate $t$, then for $k\ne s$, by definition,
+Fix a coordinate $i$. If $x\in X^{1}\cup X^{2}$ is in sector $s\ne i$, and reaches its second argmax at coordinate $t$, then for $k\ne s$, by definition,
 $(\tilde{x}_{j}-a)_{k}\le(x_{j}-a)_{t}\le(\tilde{x}_{j}-a)_{s}$,
 hence $\tilde{x}_{jk}-\max_{k\ne i}(\tilde{x}_{jk}-a_{k})\le a_{i}$.
 Otherwise, $x_{j}$ is in the $i$-th sector and $\max_{k\ne i}(\tilde{x}_{jk}-a_{k})=x_{jt}-a_{t}$,
@@ -660,7 +660,7 @@ with equality if $d_{H}\left(x_{j},\mathcal{H}_{a}\right)\le\rho(T)$.
 
 Suppose by symmetry that $T(a)_{i}=T^{1}(a)_{i}=\rho(T)+a_{i}$. We
 also have $T^{2}(a)\ge\rho(T)+a_{i}$. Then, using the proof of Theorem
-22 in \cite{akiangaubertqisaadi}, there exists witness points $x_{j_{1}}\in X^{1}$ and
+22 in \cite{akiangaubertqisaadi}, there exist witness points $x_{j_{1}}\in X^{1}$ and
 $x_{j_{2}}\in X^{2}$ in sector $i$ , with $x_{j_{1}}$ being at
 distance $\rho(T)$ from $\mathcal{H}_{a}$ and $x_{j_{2}}$ at distance
 greater than $\rho(T)$. Therefore, $\tilde{x}_{j_{1}i}-\max_{k\ne i}(\tilde{x}_{j_{1}k}-a_{k})=a_{i}$
@@ -712,7 +712,7 @@ To validate our theoretical complexity analysis, we evaluated both standard trop
 
 The standard tropical SVM implementation exhibits training times close to LinearSVC on smaller datasets. The tropical polynomial variant requires additional computation but substantially improves accuracy, approaching LinearSVC on datasets like Iris.
 Tropical SVM indeed fails to separate these datasets and thus performs poorly, while polynomials make the data separable (i.e. the spectral radius $\rho(T)$ is negative), and obtain a maximal-margin separator in the feature space.
-With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is far fewer than the expected $O(1/\varepsilon^2)$ iterations.
+With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before convergence, which is far below the theoretical $O(1/\varepsilon^2)$ worst-case bound.
 
 As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. Table~\ref{tab:benchmark_results}
 shows that the current interpreted (Python/NumPy) implementation is slower, by a factor $10^3$, than a state-of-the-art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scales {\em linearly} in the size of the training set and in the number of features (monomials), thereby providing
