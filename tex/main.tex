@@ -531,7 +531,7 @@ We first characterize the maximal possible value for the margin.
 \begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
 Let $T^k$ be tropical projections on finite point clouds or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
 If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, and 
-$(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$, then $\gamma \le -\rho(T)$.
+$(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$, then $\gamma \leq -\rho(T)$.
 \end{lemma}
 
 \begin{proof}
@@ -557,7 +557,7 @@ $T^k=P_{X^k}\leq \Pdiagfree_{X^k}$,
 \]
 
 Since this holds for all classes $k \neq \ell$, we have $T(a)_i \leq -\gamma + a_i$.
-Finally, if $(\rho(T),a)$ is an eigenpair, $T(a)_i=\rho(T)+a_i$, hence $\rho(T)\le -\gamma$.
+Finally, if $(\rho(T),a)$ is an eigenpair, $T(a)_i=\rho(T)+a_i$, hence $\rho(T)\leq -\gamma$.
 \end{proof}
 
 \begin{lemma}[Max-margin hyperplane]\label{lemma:operator_to_hyperplane}
@@ -638,27 +638,27 @@ This projection ensures that $\tilde{x}_j$ lies exactly on $\mathcal{H}_a$.
 
 Therefore, for any $x^{c}$ in the tropical convex hull of class $c\in\{1,2\}$,
 \begin{equation}
-[x^{c}]_{i}\le T^{c}(x^{c})_{i}=\underbrace{\left(T^{c}(x^{c})-T^{c}(a)\right)_{i}}_{\le\,\max_{k\ne i}(x_{k}^{c}-a_{k})}+T^{c}(a)_{i}.\label{eq:major}
+[x^{c}]_{i}\leq T^{c}(x^{c})_{i}=\underbrace{\left(T^{c}(x^{c})-T^{c}(a)\right)_{i}}_{\leq\,\max_{k\ne i}(x_{k}^{c}-a_{k})}+T^{c}(a)_{i}.\label{eq:major}
 \end{equation}
 Fix a coordinate $i$. If $x\in X^{1}\cup X^{2}$ is in sector $s\ne i$, and reaches its second argmax at coordinate $t$, then for $k\ne s$, by definition,
 $(\tilde{x}_{j}-a)_{k}\le(x_{j}-a)_{t}\le(\tilde{x}_{j}-a)_{s}$,
-hence $\tilde{x}_{jk}-\max_{k\ne i}(\tilde{x}_{jk}-a_{k})\le a_{i}$.
+hence $\tilde{x}_{jk}-\max_{k\ne i}(\tilde{x}_{jk}-a_{k})\leq a_{i}$.
 Otherwise, $x_{j}$ is in the $i$-th sector and $\max_{k\ne i}(\tilde{x}_{jk}-a_{k})=x_{jt}-a_{t}$,
 thus
 \[
-\tilde{x}_{ji}-\max_{k\ne i}(\tilde{x}_{j}-a)_{k}=(\tilde{x}_{j}-a)_{i}-(\tilde{x}_{j}-a)_{t}+a_{i}\ge a_{i},
+\tilde{x}_{ji}-\max_{k\ne i}(\tilde{x}_{j}-a)_{k}=(\tilde{x}_{j}-a)_{i}-(\tilde{x}_{j}-a)_{t}+a_{i}\geq a_{i},
 \]
-with equality if $d_{H}\left(x_{j},\mathcal{H}_{a}\right)\le\rho(T)$.
+with equality if $d_{H}\left(x_{j},\mathcal{H}_{a}\right)\leq\rho(T)$.
 
 Suppose by symmetry that $T(a)_{i}=T^{1}(a)_{i}=\rho(T)+a_{i}$. We
-also have $T^{2}(a)\ge\rho(T)+a_{i}$. Then, using the proof of Theorem
+also have $T^{2}(a)\geq\rho(T)+a_{i}$. Then, using the proof of Theorem
 22 in \cite{akiangaubertqisaadi}, there exist witness points $x_{j_{1}}\in X^{1}$ and
 $x_{j_{2}}\in X^{2}$ in sector $i$ , with $x_{j_{1}}$ being at
 distance $\rho(T)$ from $\mathcal{H}_{a}$ and $x_{j_{2}}$ at distance
 greater than $\rho(T)$. Therefore, $\tilde{x}_{j_{1}i}-\max_{k\ne i}(\tilde{x}_{j_{1}k}-a_{k})=a_{i}$
-and $\tilde{x}_{j_{2}i}-\max_{k\ne i}(\tilde{x}_{j_{2}k}-a_{k})\ge a_{i}$.
+and $\tilde{x}_{j_{2}i}-\max_{k\ne i}(\tilde{x}_{j_{2}k}-a_{k})\geq a_{i}$.
 Moreover, for any $j$ such that $x_{j}\in X^1$ is in sector $i$,
-Equation \ref{eq:major} gives $d_{H}(x_{j},\mathcal{H}_{a})\le\rho(T)$.
+Equation \ref{eq:major} gives $d_{H}(x_{j},\mathcal{H}_{a})\leq\rho(T)$.
 
 Let $\tilde{T}^{1}$ and $\tilde{T}^{2}$ be the diagonal-free projections
 over transformed projections, and $\tilde{T}=\min(\tilde{T}^{1},\tilde{T}^{2})$.

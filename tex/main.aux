@@ -2,10 +2,13 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
 \HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
 \global\let\oldnewlabel\newlabel
 \gdef\newlabel#1#2{\newlabelxx{#1}#2}
 \gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
 \AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
 \let\newlabel\oldnewlabel
 \fi}
 \fi}
@@ -113,11 +116,11 @@
 \@writefile{toc}{\contentsline {paragraph}{Classification with Polynomials.}{8}{Item.8}\protected@file@percent }
 \newlabel{subsec:poly_classification}{{5}{8}{Classification with Polynomials}{Item.8}{}}
 \@writefile{toc}{\contentsline {paragraph}{Margin Guarantees.}{8}{Item.12}\protected@file@percent }
-\newlabel{fig:homogeneous_selection}{{\caption@xref {fig:homogeneous_selection}{ on input line 470}}{8}{Margin Guarantees}{figure.caption.3}{}}
+\newlabel{fig:homogeneous_selection}{{\caption@xref {fig:homogeneous_selection}{ on input line 467}}{8}{Margin Guarantees}{figure.caption.3}{}}
 \newlabel{sub@fig:homogeneous_selection}{{}{8}{Margin Guarantees}{figure.caption.3}{}}
-\newlabel{fig:adaptive_polynomial}{{\caption@xref {fig:adaptive_polynomial}{ on input line 475}}{8}{Margin Guarantees}{figure.caption.3}{}}
+\newlabel{fig:adaptive_polynomial}{{\caption@xref {fig:adaptive_polynomial}{ on input line 472}}{8}{Margin Guarantees}{figure.caption.3}{}}
 \newlabel{sub@fig:adaptive_polynomial}{{}{8}{Margin Guarantees}{figure.caption.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Left: Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho (T)/3$, as explained in the last paragraph of Section\nobreakspace  {}\ref {sec:polynomials}. Right: Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section\nobreakspace  {}\ref {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }}{8}{figure.caption.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Left: Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho (T)/3$, as explained in the last paragraph of Section\nobreakspace  {}\ref  {sec:polynomials}. Right: Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section\nobreakspace  {}\ref  {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }}{8}{figure.caption.3}\protected@file@percent }
 \newlabel{fig:poly_classifier_comparison}{{2}{8}{Left: Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho (T)/3$, as explained in the last paragraph of Section~\ref {sec:polynomials}. Right: Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref {sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.\relax }{figure.caption.3}{}}
 \citation{viro2001}
 \citation{DG-06}
@@ -126,13 +129,13 @@
 \bibstyle{unsrt}
 \bibdata{references}
 \bibcite{vapnik1999}{{1}{}{{}}{{}}}
+\bibcite{scholkopf2002}{{2}{}{{}}{{}}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Connection to Classical SVMs}{9}{section.6}\protected@file@percent }
 \newlabel{sec:maslov}{{6}{9}{Connection to Classical SVMs}{section.6}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Comparison of hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral classifier (black).\relax }}{9}{figure.caption.4}\protected@file@percent }
 \newlabel{fig:maslov_dequantization}{{3}{9}{Comparison of hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral classifier (black).\relax }{figure.caption.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Discussion and Future Work}{9}{section.7}\protected@file@percent }
 \newlabel{sec:discussion}{{7}{9}{Discussion and Future Work}{section.7}{}}
-\bibcite{scholkopf2002}{{2}{}{{}}{{}}}
 \bibcite{maclagan2015}{{3}{}{{}}{{}}}
 \bibcite{zhang2018}{{4}{}{{}}{{}}}
 \bibcite{montufar}{{5}{}{{}}{{}}}
@@ -166,33 +169,34 @@
 \bibcite{DG-06}{{33}{}{{}}{{}}}
 \bibcite{chaloupkathesis}{{34}{}{{}}{{}}}
 \bibcite{chaloupka}{{35}{}{{}}{{}}}
-\bibcite{harris2020array}{{36}{}{{}}{{}}}
-\bibcite{MNIST}{{37}{}{{}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}\ref {thm:spectral_separability} (Spectral Radius and Margin)}{13}{appendix.A}\protected@file@percent }
-\newlabel{appendix:proofs}{{A}{13}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Radius and Margin)}{appendix.A}{}}
-\newlabel{lemma:hyperplane_to_operator}{{2}{13}{Upper bound on margin}{theorem.2}{}}
-\newlabel{e-toreverse}{{17}{13}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Radius and Margin)}{equation.A.17}{}}
-\newlabel{lemma:operator_to_hyperplane}{{3}{13}{Max-margin hyperplane}{theorem.3}{}}
+\bibcite{allamigeon_condition}{{36}{}{{}}{{}}}
+\bibcite{harris2020array}{{37}{}{{}}{{}}}
+\bibcite{MNIST}{{38}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}\ref  {thm:spectral_separability} (Spectral Radius and Margin)}{12}{appendix.A}\protected@file@percent }
+\newlabel{appendix:proofs}{{A}{12}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Radius and Margin)}{appendix.A}{}}
+\newlabel{lemma:hyperplane_to_operator}{{2}{12}{Upper bound on margin}{theorem.2}{}}
+\newlabel{e-toreverse}{{17}{12}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Radius and Margin)}{equation.A.17}{}}
+\newlabel{lemma:operator_to_hyperplane}{{3}{12}{Max-margin hyperplane}{theorem.3}{}}
 \citation{allamigeon_condition}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Non-separable case: $\rho (T) \geqslant 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }}{14}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:non_separable}{{4}{14}{Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }{figure.caption.5}{}}
-\newlabel{lemma:perturbation}{{4}{14}{Overlap interpretation}{theorem.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Non-separable case: $\rho (T) \geqslant 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }}{13}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:non_separable}{{4}{13}{Non-separable case: $\rho (T) \geq 0$, indicating class overlap. The spectral radius quantifies the minimum perturbation required to achieve separability, and the inner radius of the convex hulls' intersection.\relax }{figure.caption.5}{}}
+\newlabel{lemma:perturbation}{{4}{13}{Overlap interpretation}{theorem.4}{}}
 \citation{akiangaubertqisaadi}
 \citation{allamigeon_condition}
 \citation{scikit-learn}
 \citation{harris2020array}
-\newlabel{eq:major}{{25}{15}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Radius and Margin)}{equation.A.25}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Proof of Concept}{15}{appendix.B}\protected@file@percent }
-\newlabel{appendix:empirical}{{B}{15}{Proof of Concept}{appendix.B}{}}
+\newlabel{eq:major}{{25}{14}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Radius and Margin)}{equation.A.25}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Proof of Concept}{14}{appendix.B}\protected@file@percent }
+\newlabel{appendix:empirical}{{B}{14}{Proof of Concept}{appendix.B}{}}
 \citation{MNIST}
 \citation{MNIST}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii--Mann iterations; $\rho (T)$: spectral radius. Convergence threshold $\varepsilon = 10^{-12}$.\relax }}{16}{table.caption.6}\protected@file@percent }
-\newlabel{tab:benchmark_results}{{1}{16}{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii--Mann iterations; $\rho (T)$: spectral radius. Convergence threshold $\varepsilon = 10^{-12}$.\relax }{table.caption.6}{}}
-\newlabel{fig:pca_degree_scaling}{{5a}{16}{Training time vs. number of monomials\relax }{figure.caption.7}{}}
-\newlabel{sub@fig:pca_degree_scaling}{{a}{16}{Training time vs. number of monomials\relax }{figure.caption.7}{}}
-\newlabel{fig:sample_size_scaling}{{5b}{16}{Training time vs. size of training set\relax }{figure.caption.7}{}}
-\newlabel{sub@fig:sample_size_scaling}{{b}{16}{Training time vs. size of training set\relax }{figure.caption.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Performance scaling analysis of tropical SVM on MNIST data \cite  {MNIST}.\relax }}{16}{figure.caption.7}\protected@file@percent }
-\newlabel{fig:scaling_analysis}{{5}{16}{Performance scaling analysis of tropical SVM on MNIST data \cite {MNIST}.\relax }{figure.caption.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii--Mann iterations; $\rho (T)$: spectral radius. Convergence threshold $\varepsilon = 10^{-12}$.\relax }}{15}{table.caption.6}\protected@file@percent }
+\newlabel{tab:benchmark_results}{{1}{15}{Performance comparison across benchmark datasets (5-fold cross-validation). Accuracy standard deviations range from 1.1\% to 9.7\%. \#C: number of classes; \#S: number of samples; \#KM: average number of Krasnoselskii--Mann iterations; $\rho (T)$: spectral radius. Convergence threshold $\varepsilon = 10^{-12}$.\relax }{table.caption.6}{}}
+\newlabel{fig:pca_degree_scaling}{{5a}{15}{Training time vs. number of monomials\relax }{figure.caption.7}{}}
+\newlabel{sub@fig:pca_degree_scaling}{{a}{15}{Training time vs. number of monomials\relax }{figure.caption.7}{}}
+\newlabel{fig:sample_size_scaling}{{5b}{15}{Training time vs. size of training set\relax }{figure.caption.7}{}}
+\newlabel{sub@fig:sample_size_scaling}{{b}{15}{Training time vs. size of training set\relax }{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Performance scaling analysis of tropical SVM on MNIST data \cite  {MNIST}.\relax }}{15}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:scaling_analysis}{{5}{15}{Performance scaling analysis of tropical SVM on MNIST data \cite {MNIST}.\relax }{figure.caption.7}{}}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
-\gdef \@abspage@last{23}
+\gdef \@abspage@last{22}
