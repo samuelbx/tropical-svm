@@ -183,7 +183,6 @@ This transformation makes our classifier invariant to shifts—adding the same c
 
 \paragraph{Hyperplanes and Sectors.}
 A {\em tropical hyperplane} with {\em apex} $a=(a_1,\dots,a_d) \in \R^d$ is defined as:
-
 \begin{align}
 \mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i - a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
 \end{align}
@@ -293,10 +292,10 @@ We then combine these operators into a single classification operator $T$ define
 \begin{align}
   T(y)_i = \operatorname{\max}_2\{T^1(y)_i, \dots, T^K(y)_i\}\label{eq:single_operator},
 \end{align}
-where $\operatorname{\max}_2$ denotes the second-largest value among a collection of $K$ real numbers. For binary classification ($K=2$), this simplifies to $T(y)=\min\{T^1(y), T^2(y)\}$, the minimum being understood entrywise. Since the
+where $\operatorname{\max}_2$ denotes the second-largest value among a collection of $K$ real numbers. For binary classification ($K=2$), this simplifies to $T(y)=\min\{T^1(y), T^2(y)\}$, the minimum being understood entrywise. Since
 the cloud sets $X^1,\dots,X^K$ are finite, the eigenproblem
 $T(u) =\lambda + u$ has a solution $u\in \R^n$ and $\lambda\in \R$,
-and the eigenvalue $\lambda$ is unique and coincides with $\rho(T)$ -- this follows
+and the eigenvalue $\lambda$ is unique and coincides with $\rho(T)$. This follows
 from Theorem~13 of~\cite{gaubert2004}, along the lines of the proof of Proposition~23
 in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
 
@@ -304,7 +303,7 @@ in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
 
 \paragraph{Separating Point Clouds with a Hyperplane.}
 
-We say that the hyperplane $\mathcal{H}_a$ with apex $a$ separates the point clouds $X^1, \ldots, X^K$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1, \ldots, d\}$, corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$ and every point $x \in X^k$, the point $x$ belongs to the union $S^k$ of the sectors $(\text{Sec}_i)_{i\in I^k}$ assigned to class $k$.
+We say that the hyperplane $\mathcal{H}_a$ with apex $a$ separates the point clouds $X^1, \ldots, X^K$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1, \ldots, d\}$, corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$ and every point $x \in X^k$, the point $x$ belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$.
 
 Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for any two distinct classes $k \neq \ell$ and any point $x \in X^k$, the Hilbert distance from $x$ to $S^\ell$ is at least $\gamma$, namely,
 \begin{align}
@@ -330,7 +329,7 @@ It is organized as follows: first, Lemma~\ref{lemma:hyperplane_to_operator} stat
 Then, Lemma~\ref{lemma:operator_to_hyperplane} gives a construction for a separating hyperplane of margin $-\rho(T)$ in the separable case. Finally, Lemma~\ref{lemma:perturbation} handles the binary overlapping case.
 
 \paragraph{Benefits of the Spectral Approach.} 
-Our framework advances the tropical SVM foundation established by Gärtner and Jaggi \cite{gartner2008}. Their work showed that tropical SVM could be formulated as finding a point of maximum margin within a tropical polytope defined by sector constraints, but required exhaustive exploration of sector assignments—leading to exponential complexity.
+Our framework advances the tropical SVM foundation established by Gärtner and Jaggi \cite{gartner2008}. Their work showed that tropical SVM could be formulated as finding a point of maximum margin within a tropical polytope defined by sector constraints, but required exhaustive exploration of sector assignments, leading to exponential complexity.
 
 In contrast, our spectral characterization offers a complete theoretical understanding of when data are tropically separable, an exact formula for the optimal margin, an efficient algorithm to find the optimal classifier without combinatorial exploration and a natural interpretation for non-separable cases.
 
@@ -379,8 +378,8 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
 \begin{algorithmic}[1]
 \STATE \textbf{Input:} Labeled point sets $X^1,\dots,X^K \subset \trop^d$
 \STATE \textbf{Construct Operators:}
-  \STATE \quad For each class $k$, compute the diagonal-free projection $T^k(x) = P^{\textrm{DF}}_{X^k}(x)$
-  \STATE \quad Combine via $T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}$ for each coordinate $i$
+  \STATE \quad For each class $k$, compute the diagonal-free projection $T^k(y) = P^{\textrm{DF}}_{X^k}(y)$
+  \STATE \quad Combine via $T(y)_i = \operatorname{\max}_2\{T^1(y)_i, \dots, T^K(y)_i\}$ for each coordinate $i$
 \STATE \textbf{Compute Eigenpair:}
   \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and the apex $a$ of a tropical hyperplane with accuracy $\varepsilon>0$.
 \STATE \textbf{Assign Sectors to Classes:}
@@ -486,7 +485,7 @@ However, this method suffers from severe numerical instability for large $\beta$
 
 \begin{figure}[h]
     \centering
-    \resizebox{0.5\textwidth}{!}{\clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/log-log.pgf}}}
+    \resizebox{0.6\textwidth}{!}{\clipbox{0.15\width{} 0.32\height{} 0.15\width{} 0.20\height{}}{\input{figures/log-log.pgf}}}
     \caption{Comparison of hyperplanes obtained through Maslov dequantization and our spectral approach. The limiting hyperplane (red) from dequantization is suboptimal compared to the spectral classifier (black).}
     \label{fig:maslov_dequantization}
 \end{figure}
