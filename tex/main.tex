@@ -610,7 +610,7 @@ Intuitively, this can be thought of as representing the union of pairwise inters
 The following Lemma is the only one where using the diagonal-free operator is needed.
 
 \begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
-Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
+Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the intersection of the tropical convex hulls of the perturbed sets have empty interior.
 \end{lemma}
 \begin{proof}
 Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
@@ -643,7 +643,7 @@ Therefore, for any $y$ in the tropical convex hull of class $c\in\{1,2\}$,
 \end{equation}
 Also note that for any $i$, by definition of $T^{c}$, if $X^c \cap \text{Sec}_i $ is not empty we can rewrite
 \begin{equation}
-T^{c}(a)_{i}=\max_{x \in {X^c \cap \text{Sec}_i(a)}}(x_{i}-a_{i} - \max_{k\neq i} (x_{k}-a_{k}))  + a_i = \max_{x \in {X^c \cap \text{Sec}_i(a)}}(d_{H}\left(x,\mathcal{H}_{a}\right)) + a_i  .\label{eq:rewrite}
+T^{c}(a)_{i}=\max_{x \in {X^c \cap \text{Sec}_i(a)}}\left(x_{i}-a_{i} - \max_{k\neq i} (x_{k}-a_{k})\right)  + a_i = \max_{x \in {X^c \cap \text{Sec}_i(a)}}(d_{H}\left(x,\mathcal{H}_{a}\right)) + a_i  .\label{eq:rewrite}
 \end{equation}
 
 Fix a coordinate $i$. If $x\in X^{1}\cup X^{2}$ is in sector $s\ne i$, and reaches its second argmax at coordinate $t$, then for $k\ne s$, by definition,
