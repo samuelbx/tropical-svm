@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2023)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: unsrt.bst
@@ -17,46 +17,47 @@ Warning--I'm ignoring tang2020's extra "year" field
 --line 179 of file references.bib
 Warning--I'm ignoring tang2020's extra "pages" field
 --line 180 of file references.bib
+Warning--I didn't find a database entry for "allamigeon_condition"
 Warning--empty title in Litvinov2001
-You've used 39 entries,
+You've used 37 entries,
             1791 wiz_defined-function locations,
-            716 strings with 11154 characters,
-and the built_in function-call counts, 10681 in all, are:
-= -- 975
-> -- 481
+            708 strings with 10767 characters,
+and the built_in function-call counts, 10283 in all, are:
+= -- 940
+> -- 462
 < -- 17
-+ -- 174
-- -- 135
-* -- 789
-:= -- 1641
-add.period$ -- 124
-call.type$ -- 39
-change.case$ -- 33
++ -- 167
+- -- 130
+* -- 764
+:= -- 1579
+add.period$ -- 118
+call.type$ -- 37
+change.case$ -- 31
 chr.to.int$ -- 0
-cite$ -- 40
-duplicate$ -- 458
-empty$ -- 1010
-format.name$ -- 135
-if$ -- 2397
+cite$ -- 38
+duplicate$ -- 444
+empty$ -- 968
+format.name$ -- 130
+if$ -- 2309
 int.to.chr$ -- 0
-int.to.str$ -- 39
-missing$ -- 39
-newline$ -- 198
-num.names$ -- 47
-pop$ -- 107
+int.to.str$ -- 37
+missing$ -- 38
+newline$ -- 188
+num.names$ -- 45
+pop$ -- 99
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 231
+skip$ -- 224
 stack$ -- 0
-substring$ -- 829
-swap$ -- 133
+substring$ -- 804
+swap$ -- 131
 text.length$ -- 17
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 106
-width$ -- 41
-write$ -- 444
-(There were 8 warnings)
+while$ -- 102
+width$ -- 39
+write$ -- 423
+(There were 9 warnings)
