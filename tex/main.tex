@@ -305,17 +305,25 @@ especially~\cite[Theorem~7]{akiangaubertqisaadi}.
 
 \paragraph{Constructing the Classification Operator.}
 Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \R^d$.\todo{SG: points should be {\em finite} (not in $\trop^d$, otherwise some statements may be more delicate -- or we need to check }
-We define an operator $T^k$ for each class $k$ by taking the diagonal-free variant of the tropical projection onto the convex hull of points in that class:
+We define an operator $T^k$ for each class $k$ by taking the diagonal-free variant of the tropical projection onto the convex hull of points in that class:\todo[inline,color=red!30]{ SG: $T^k(x)$ is confusing owing to conflict with $x$ in $X^k$}
 \[
-T^k(x) = P_{X^k}^{\text{DF}}(x).
+T^k(y) = P_{X^k}^{\text{DF}}(y).
 \]
 This diagonal-free variant is defined by Equation~\ref{e-def-DF}.
 
 We then combine these operators into a single classification operator $T$ defined coordinatewise as:
 \begin{align}
-  T(x)_i = \operatorname{\max}_2\{T^1(x)_i, \dots, T^K(x)_i\}\label{eq:single_operator},
+  T(y)_i = \operatorname{\max}_2\{T^1(y)_i, \dots, T^K(y)_i\}\label{eq:single_operator},
 \end{align}
-where $\operatorname{\max}_2$ denotes the second-largest value among a collection of $K$ real numbers. For binary classification ($K=2$), this simplifies to $T(x)=\min\{T^1(x), T^2(x)\}$, the minimum being understood entrywise.
+where $\operatorname{\max}_2$ denotes the second-largest value among a collection of $K$ real numbers. For binary classification ($K=2$), this simplifies to $T(y)=\min\{T^1(y), T^2(y\}$, the minimum being understood entrywise. Since the
+the cloud sets $X^1,\dots,X^k$ are finite, the eigenproblem
+$T(u) =\lambda + u$ has a solution $u\in \R^n$ and $\lambda\in \R$,
+and the eigenvalue $\lambda$ is unique and coincides with $\rho(T)$ -- this follows
+from Theorem~13 of~\cite{gaubert2004}, along the lines of the proof of Proposition~23
+in~\cite{akiangaubertqisaadi}. The eigenvector vector $u$ is generally non unique.
+\todo{SG: added this explanation}
+
+
 
 \paragraph{Separating point clouds with a hyperplane.}
 
@@ -398,14 +406,14 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
   \STATE \quad Run KM iterations (Algorithm \ref{alg:km_iteration}) to obtain $\rho(T)$ and the apex $a$ of a tropical hyperplane with accuracy $\epsilon>0$.
 \STATE \textbf{Assign Sectors to Classes:}
   \IF{$\rho(T) < 0$ \COMMENT{Separable case}}
-    \STATE Assign coordinate $i$ to class $k$ if $T^k(-a)_i > \rho(T) - a_i$
+    \STATE Assign coordinate $i$ to class $k$ if $T^k(a)_i > \rho(T) + a_i$
   \ELSE
     \STATE Use a heuristic (e.g., majority vote) for non-separable data
   \ENDIF
 \STATE \textbf{Output:} Vector $a$ the apex of the hyperplane, margin $-\rho(T)$ (if separable), and sector assignments for classification
 \end{algorithmic}
 \end{algorithm}
-\todo[inline,color=red]{SG: sign issue in algo in $T^k(-a)_i > \rho(T) - a_i$, from the proof it seems it should be $T^k(a)_i > \rho(T) + a_i$}
+\todo[inline,color=red]{SG: sign issue in algo 2 at line 9 in $T^k(-a)_i > \rho(T) - a_i$, from the proof it seems it should be $T^k(a)_i > \rho(T) + a_i$. I corrected, please check!}
 Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{e-def-DF},
 where $p_k$ denotes the cardinality of the set $X_k$. Hence, $T$ can be evaluated in
 $\mathcal{O}(pd)$ time, where $p=p_1+\dots+p_K$ is the total number of points.
@@ -546,9 +554,9 @@ although the finest results will be obtained with $\Pdiagfree_V$.
 We first characterize the maximal possible value for the margin.
 
 \begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
-Let $T^k$ be tropical projections on finite point clouds or their diagonal-free equivalents, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
+Let $T^k$ be tropical projections on finite point clouds or their diagonal-free coutnerparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
 If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, then $T(a) \leq -\gamma + a$.
-Therefore, if we have an eigenpair $(\rho(T),a)$ of $T$, necessarily $\gamma \le -\rho(T)$.
+Therefore, if $(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$, necessarily $\gamma \le -\rho(T)$.
 \end{lemma}
 
 \begin{proof}
@@ -561,29 +569,31 @@ d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i) \geq \ga
 
 This can be rewritten as: for all $i \in I^{\ell}$,
 \begin{align}
-x_i - a_i \leq \max_j(x_j - a_j) - \gamma.
+x_i - a_i \leq \max_j(x_j - a_j) - \gamma.\label{e-toreverse}
 \end{align}
 
 Note that $ \max_j(x_j - a_j) = \max_{j\neq i}(x_j - a_j) $ since $\gamma >0$.
-
-Taking the maximum over all $x \in X^k$, we get
-\begin{align}
+Then, we deduce from~\eqref{e-toreverse} that
+\[
+-\gamma + a_i \geq x_i +\min_{j\neq i} (-x_j + a_j) ,\qquad \text{for all }x\in X^k \enspace,
+\]
+and so, taking the maximum over $x\in X^k$, and noting that either $T^k=\Pdiagfree_{X^k}$ or
+$T^k=P_{X^k}\leq P\diagfree_{X^k}$,
+\[
+-\gamma  + a_i \geq [\Pdiagfree_{X^h}(a)]_i \geq [T^k(a)]_i\enspace .
+\]
+\todo[inline,color=red!30]{SG:  I didnot get the previous proof (double max at right is puzzling), so I detailed above -- previous proof
+``Taking the maximum over all $x \in X^k$, we get
+\(%\begin{align}
 \max_{x \in X^k}(x_i - a_i) \leq \max_{x \in X^k}\left(\max_{j\neq i}(x_j - a_j)\right) - \gamma.
-\end{align}
-%% or equivalently
+\)''}%\end{align}
+%% By the definition of $T^k$, this implies
 %% \begin{align}
-%%   a_i \leq \min_{x\in X^k} 
-%% %  \max_{x \in X^k}(x_i - a_i) \leq
-%% \Big(  -x_i +\max_{x \in X^k}\big(\max_{j\neq i}(x_j - a_j)\big)\Big) - \gamma.
+%% T^k(a)_i \leq -\gamma + a_i.
 %% \end{align}
-%% %% 
-By the definition of $T^k$, this implies
-\begin{align}
-T^k(a)_i \leq -\gamma + a_i.
-\end{align}
 
 Since this holds for all $i \in I^{\ell}$ and all classes $k \neq \ell$, we have $T(a)_i \leq -\gamma + a_i$ for all $i$, which gives us $T(a) \leq -\gamma + a$.
-Finally, if $T(a)=\rho(T)+a$, then $\rho(T)\le -\gamma$.
+Finally, if $T(a)=\rho(T)+a$, then, by the Collatz-Wieland theorem (see~\cite[Theorem~7]{akiangaubertqisaadi}), $\rho(T)\le -\gamma$.\todo{SG: reference added}
 \end{proof}
 
 \begin{lemma}[Max-margin hyperplane]\label{lemma:operator_to_hyperplane}
