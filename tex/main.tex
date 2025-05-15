@@ -190,7 +190,7 @@ A {\em tropical hyperplane} with {\em apex} $a=(a_1,\dots,a_d) \in \R^d$ is defi
 
 This hyperplane divides the space into $d$ sectors. The $i$-th sector contains points where the maximum of $x - a$ occurs at the $i$-th coordinate:
 \begin{align}
-S_i(a) = \left\{x \in \trop^d : i \in \underset{1\leq j\leq d}{\arg\max} (x_j - a_j)\right\}.
+\text{Sec}_i(a) = \left\{x \in \trop^d : i \in \underset{1\leq j\leq d}{\arg\max} (x_j - a_j)\right\}.
 \end{align}
 The vector $a$ is called the apex since 
 each of these sections is a cone
@@ -304,11 +304,11 @@ in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
 
 \paragraph{Separating Point Clouds with a Hyperplane.}
 
-We say that the hyperplane $\mathcal{H}_a$ with apex $a$ separates the point clouds $X^1, \ldots, X^K$ if there exists $K$ disjoint and non-empty subsets $I_1, \ldots, I_K$ of $\{1, \ldots, d\}$, corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$ and every point $x \in X^k$, the point $x$ belongs only to the sectors $S_i(a)$ with $i \in I_k$. 
+We say that the hyperplane $\mathcal{H}_a$ with apex $a$ separates the point clouds $X^1, \ldots, X^K$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1, \ldots, d\}$, corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$ and every point $x \in X^k$, the point $x$ belongs to the union $S^k$ of the sectors $(\text{Sec}_i)_{i\in I^k}$ assigned to class $k$.
 
-Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for any two distinct classes $k \neq \ell$ and any point $x \in X^k$, the Hilbert distance from $x$ to the union $S^\ell$ of the sectors assigned to class $\ell$ is at least $\gamma$, namely,
+Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for any two distinct classes $k \neq \ell$ and any point $x \in X^k$, the Hilbert distance from $x$ to $S^\ell$ is at least $\gamma$, namely,
 \begin{align}
-d_H(x, S^\ell) = \max_j(x_j - a_j) - \max_{i \in I_\ell}(x_i - a_i) \geq \gamma.
+d_H(x, S^\ell) = \max_j(x_j - a_j) - \max_{i \in I^\ell}(x_i - a_i) \geq \gamma.
 \end{align}
 Finally, we define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq K} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
 
