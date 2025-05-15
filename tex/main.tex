@@ -578,7 +578,7 @@ I^k = \left\{i : T^k(a)_i > \rho(T) + a_i\right\}.
 
 First, we show these sectors are disjoint. If $i \in I^k \cap I^{\ell}$ for $k \neq \ell$, then $T^k(a)_i > \rho(T) + a_i$ and $T^{\ell}(a)_i > \rho(T) + a_i$. But then the second-largest value among $\{T^1(a)_i,\ldots,T^K(a)_i\}$ would exceed $\rho(T) + a_i$, contradicting $T(a)_i = \rho(T) + a_i$.
 
-Next, we show that each point belongs to its assigned sector. For $x \in \mathcal{S}(T^k)$ and $i \not\in I^k$, we have
+Next, we show that each point belongs to one of its assigned sectors. For $x \in \mathcal{S}(T^k)$ and $i \not\in I^k$, we have
 \begin{align}
 x_i \leq T^k(x)_i = (T^k(x) - T^k(a))_i + T^k(a)_i.
 \end{align}
@@ -588,7 +588,7 @@ Since $T^k$ is non-expansive, $(T^k(x) - T^k(a))_i \leq \max_j(x_j - a_j)$. And 
 x_i - a_i \leq \max_j(x_j - a_j) + \rho(T).
 \end{align}
 
-With $\rho(T) < 0$, this implies $x_i - a_i < \max_j(x_j - a_j)$, meaning $i$ cannot be the $\arg\max$ of $x - a$. Therefore, the $\arg\max$ must lie in $I^k$, placing $x$ in its correct sector. In particular, $I^k$ is non-empty.
+With $\rho(T) < 0$, this implies $x_i - a_i < \max_j(x_j - a_j)$, meaning $i$ cannot be the $\arg\max$ of $x - a$. Therefore, the $\arg\max$ must lie in $I^k$, placing $x$ in one of its assigned sectors. In particular, $I^k$ is non-empty.
 
 Finally, for the margin, consider $x \in \mathcal{S}(T^k)$ and sector $S^{\ell}$ with $\ell \neq k$. The distance is 
 \begin{align}
