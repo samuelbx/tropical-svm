@@ -247,7 +247,7 @@ The projection finds a closest point in the conical convex hull~\cite{cohen2004,
 
 Projection operators will play a central role in our classification framework. We will use them to build class-specific operators that characterize the separability of data.
 Actually, we shall need the following ``diagonal-free'' variant of the canonical projection~\eqref{e-canonical},
-introduced in~\cite{akiangaubertqisaadi}:
+introduced in~\cite[Equation~(9)]{akiangaubertqisaadi} (up to a change of sign):\todo{SG: explained the change of sign}
 \begin{align}
   [P_X^{\text{DF}}(y)]_i = \max_{1 \leq j \leq p} \left\{X_{ij} + \min_{1\leq k\leq d,\; k \neq i} (-X_{kj} + y_k)\right\},
   \label{e-def-DF}
@@ -405,6 +405,7 @@ Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SV
 \STATE \textbf{Output:} Vector $a$ the apex of the hyperplane, margin $-\rho(T)$ (if separable), and sector assignments for classification
 \end{algorithmic}
 \end{algorithm}
+\todo[inline,color=red]{SG: sign issue in algo in $T^k(-a)_i > \rho(T) - a_i$, from the proof it seems it should be $T^k(a)_i > \rho(T) + a_i$}
 Every diagonal-free operator $T^k$ can be evaluated in $\mathcal{O}(p_k d)$ time, using formula~\eqref{e-def-DF},
 where $p_k$ denotes the cardinality of the set $X_k$. Hence, $T$ can be evaluated in
 $\mathcal{O}(pd)$ time, where $p=p_1+\dots+p_K$ is the total number of points.
@@ -569,7 +570,13 @@ Taking the maximum over all $x \in X^k$, we get
 \begin{align}
 \max_{x \in X^k}(x_i - a_i) \leq \max_{x \in X^k}\left(\max_{j\neq i}(x_j - a_j)\right) - \gamma.
 \end{align}
-
+%% or equivalently
+%% \begin{align}
+%%   a_i \leq \min_{x\in X^k} 
+%% %  \max_{x \in X^k}(x_i - a_i) \leq
+%% \Big(  -x_i +\max_{x \in X^k}\big(\max_{j\neq i}(x_j - a_j)\big)\Big) - \gamma.
+%% \end{align}
+%% %% 
 By the definition of $T^k$, this implies
 \begin{align}
 T^k(a)_i \leq -\gamma + a_i.
