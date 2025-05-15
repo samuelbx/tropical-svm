@@ -459,21 +459,25 @@ For homogeneous degree-$s$ monomials, this simplifies to $-\rho(T)/s$, meaning t
 
 This approach maintains the core theoretical guarantees of the hyperplane formulation while substantially increasing model flexibility, as illustrated in Figures~\ref{fig:homogeneous_selection} and \ref{fig:adaptive_polynomial} on the following pages.
 
-\newpage
+
 
 \vspace*{3em}
 \begin{figure}[ht!]
     \centering
-    \resizebox{0.8\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
-    \caption{Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho(T)/3$, as explained in the last paragraph of Section~\ref{sec:polynomials}.}
-    \label{fig:homogeneous_selection}
-\end{figure}
-\vspace*{4em}
-\begin{figure}[ht!]
-    \centering
-    \resizebox{0.8\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
-    \caption{Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref{sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.}
-    \label{fig:adaptive_polynomial}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
+        \caption{}
+        \label{fig:homogeneous_selection}
+    \end{subfigure}\hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
+        \caption{}
+        \label{fig:adaptive_polynomial}
+    \end{subfigure}
+    \caption{Left: Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho(T)/3$, as explained in the last paragraph of Section~\ref{sec:polynomials}. Right: Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref{sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.}
+    \label{fig:poly_classifier_comparison}
 \end{figure}
 \vspace*{3em}
 
