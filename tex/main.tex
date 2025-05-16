@@ -303,13 +303,12 @@ in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
 
 \paragraph{Separating Point Clouds with a Hyperplane.}
 
-We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists a partition of $\{1,\dots,d\}$ in $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$,\todo[color=red!30]{SG: We need to require that it is a partition, ie the union is equal to $1,\dots,d$}
-%of $\{1, \ldots, d\}$,
+We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1,\dots,d\}$
 corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$, every point $x \in X^k$, belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$.
 
-Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for any two distinct classes $k \neq \ell$ and any point $x \in X^k$, the Hilbert distance from $x$ to $S^\ell$ is at least $\gamma$, namely,
+Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for any class $k$ and any point $x \in X^k$, the Hilbert distance from $x$ to its non-assigned sectors $\bar{S}_k$ is at least $\gamma$, namely,
 \begin{align}
-d_H(x, S^\ell) = \max_j(x_j - a_j) - \max_{i \in I^\ell}(x_i - a_i) \geq \gamma.
+d_H(x, \bar{S}_k) = \max_j(x_j - a_j) - \max_{i \not\in I^k}(x_i - a_i) \geq \gamma.
 \end{align}
 Finally, we define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq K} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
 
@@ -533,21 +532,16 @@ We first characterize the maximal possible value for the margin.
 \begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
 Let $T^k$ be tropical projections on finite point clouds or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
 If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$,
-\todo[inline,color=red!30]{SG: we wrote ``and 
-  $(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$''
-  but this is not used, we prove that if we have a separation margin,
-  the $T(a)\leq -\gamma + a$, and by the Collatz-Wielandt theorem, $\rho(T)\leq -\gamma$, no need to assume that $a$ is an eigenvector.
-  }
   then $\gamma \leq -\rho(T)$.
 \end{lemma}
 
 \begin{proof}
-Suppose that the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$. Consider two different classes $k$ and $\ell$. Let $I^k$ denote the set of coordinates assigned to class $k$. For any point $x \in X^k$, the margin condition implies that its Hilbert distance to sector $S^{\ell}$ is not less than $\gamma$, namely
+Suppose that the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$. Consider a class $k$, and let $I^k$ denote the set of coordinates assigned to class $k$. For any point $x \in X^k$, the margin condition implies that its Hilbert distance to its non-assigned sectors $\bar{S}^k$ is not less than $\gamma$, namely
 \begin{align}
-d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i) \geq \gamma.
+d_H(x, \bar{S}^k) = \max_j(x_j - a_j) - \max_{i \not\in I^k}(x_i - a_i) \geq \gamma.
 \end{align}
 
-This can be rewritten as: for all $i \in I^{\ell}$,
+This can be rewritten as: for all $i \not\in I^k$,
 \begin{align}
 x_i - a_i \leq \max_j(x_j - a_j) - \gamma.\label{e-toreverse}
 \end{align}
@@ -560,20 +554,19 @@ Then, we deduce from~\eqref{e-toreverse} that
 and so, taking the maximum over $x\in X^k$, and noting that either $T^k=\Pdiagfree_{X^k}$ or
 $T^k=P_{X^k}\leq \Pdiagfree_{X^k}$,
 \[
--\gamma  + a_i \geq [\Pdiagfree_{X^k}(a)]_i \geq [T^k(a)]_i\enspace .
+-\gamma  + a_i \geq [\Pdiagfree_{X^k}(a)]_i \geq [T^k(a)]_i.
 \]
-
-Since this holds for all classes $k \neq \ell$, we have $-\gamma + a_i \geq T(a)_i$, for all $i\in I^\ell$. Since $\{1,\dots,d\}=I^1\cup\dots\cup I^K$, we deduce that $-\gamma +a\geq T(a)$.\todo{SG: Use explicitely the covering condition}
-Then, we deduce from
+Let $i$ in $\{1,\ldots,d\}$.
+Since the $I^k$ are disjoint, we have at least $K-1$ classes $k$ such that $i\not\in I^k$, hence $-\gamma + a_i \ge T(a)_i$.
+Hence $-\gamma + a \geq T(a)$, and we deduce from
 the Collatz-Wielandt theorem (see~\cite[Theorem~7]{akiangaubertqisaadi})
 that 
-%Finally, if $(\rho(T),a)$ is an eigenpair, $T(a)_i=\rho(T)+a_i$, hence
-$-\gamma\geq \rho(T)$.\todo{SG: added ref to CW theorem}
+$-\gamma\geq \rho(T)$.
 \end{proof}
 
 \begin{lemma}[Max-margin hyperplane]\label{lemma:operator_to_hyperplane}
-  Let $T^1,\dots,T^K$ be arbitrary Shapley operators, and $T$ defined as per~\eqref{eq:single_operator}.\todo{SG: make explicit that the $T^k$ are arbitrary}
-  If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the sub-fixed-point sets $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.\todo{SG: we defined separation only for $\tcone(X^k)$, not for any sub-fixed-point set, we will have to fix this}
+  Let $T^1,\dots,T^K$ be arbitrary Shapley operators, and $T$ defined as per~\eqref{eq:single_operator}.
+  If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the sub-fixed-point sets $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.
 \end{lemma}
 
 \begin{proof}
@@ -596,16 +589,16 @@ x_i - a_i \leq \max_j(x_j - a_j) + \rho(T).
 
 With $\rho(T) < 0$, this implies $x_i - a_i < \max_j(x_j - a_j)$, meaning $i$ cannot be the $\arg\max$ of $x - a$. Therefore, the $\arg\max$ must lie in $I^k$, placing $x$ in one of its assigned sectors. In particular, $I^k$ is non-empty.
 
-Finally, for the margin, consider $x \in \mathcal{S}(T^k)$ and sector $S^{\ell}$ with $\ell \neq k$. The distance is 
+Finally, for the margin, consider $x \in \mathcal{S}(T^k)$: 
 \begin{align}
-d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
+d_H(x, \bar{S}^k) = \max_j(x_j - a_j) - \max_{i \not\in I^k}(x_i - a_i).
 \end{align}
 
-Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
+Using the inequalities derived above, we get $d_H(x, \bar{S}^k) \geq -\rho(T)$.
 \end{proof}
 
 In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understanding of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)=\mathcal{S}(T^1)\cap\mathcal{S}(T^2)$. As shown by Theorem 16 in \cite{allamigeon_condition},
-\todo{SG: issue to be fixed quietly after submission to NEURIPS, Theorem 16 (originally proved by XA, SG, Katz) was reproduced in \cite{allamigeon_condition} without proof, it is an issue to quote a result whose proof is not available}
+%\todo{SG: issue to be fixed quietly after submission to NEURIPS, Theorem 16 (originally proved by XA, SG, Katz) was reproduced in \cite{allamigeon_condition} without proof, it is an issue to quote a result whose proof is not available}
 this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by Algorithm~\ref{alg:tropical_svm} lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
