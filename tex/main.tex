@@ -290,7 +290,7 @@ in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
 
 \subsubsection*{Separating Point Clouds with a Hyperplane.}
 
-We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1,\dots,d\}$ %
+We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1,\dots,d\}$
 corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$, every point $x \in X^k$, belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$. Then, it follows that the whole tropical cone $V^k=\tcone(X^k)$ is also included in $S^k$.
 
 Moreover, we say that the hyperplane separates {\em with margin} $\gamma > 0$ if, for any class $k$ and any point $x \in V^k$, the Hilbert distance from $x$ to the union of complementary sectors $\bar{S}_k= \cup_{i\not\in I^k} \text{Sec}_i(a)$
@@ -455,7 +455,7 @@ This approach maintains the core theoretical guarantees of the hyperplane formul
         \resizebox{0.65\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
         \caption{Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho(T)/3$, as explained in the last paragraph of Section~\ref{sec:polynomials}.}
         \label{fig:homogeneous_selection}
-    \end{subfigure}\\[1em] % Adds a bit of space between the two subfigures
+    \end{subfigure}\\[1em]
     \begin{subfigure}[t]{0.9\textwidth}
         \centering
         \resizebox{0.65\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
