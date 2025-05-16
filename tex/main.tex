@@ -637,10 +637,10 @@ This motivates the following abstract result, which applies in particular to $V^
   %%   Let $T^1,\dots,T^K$ be Shapley operators such that
   %% $\tcone(X^k)=\mathcal{S}(T^k)$,  for $1\leq k\leq K$,
   %% and let $T$ be defined as per~\eqref{eq:single_operator}.
-  Let $T^1,\dots,T^K$ be Shapley operators such that the images of $\{T^k(x)\mid x\in \R^d\}$ are all bounded
-  in Hilbert seminorm,
+  Let $T^1,\dots,T^K$ be Shapley operators such that all the images $\{T^k(x)\mid x\in \R^d\}$ with $1\leq k\leq k$ are bounded
+  in Hilbert seminorm, let $V^k=\mathcal{S}(T^k)$,
 and let $T$ be defined as per~\eqref{eq:single_operator}.\todo{SG: caveat new condition}
-  If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the tropical cones $V^k=\mathcal{S}(T^k)$ for $1\leq k\leq K$,
+  If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the tropical cones $V^1,\dots,V^k$
 %  sub-fixed-point sets $\mathcal{S}(T^k)$
   with a margin of at least $-\rho(T)$.
 \end{lemma}
@@ -658,7 +658,7 @@ and let $T$ be defined as per~\eqref{eq:single_operator}.\todo{SG: caveat new co
   By assumption, there is a positive number $R$ such that all the images of the operators $T^k$ are included in the Hilbert seminorm ball of radius $R$ and center $0$,
   $B(0,R)=\{x\in \R^d\mid \|x\|_H\leq R\}$.
 Then, the image of the second maximum operator $T$ is also included in this ball.
-  It follows that any orbit of $T$ starting in this ball stays in this ball, and by Theorem~9 of~\cite{gaubert2004}, there exists a vector $a\in \R^n$ such that $T(a)=\rho(T)+a$.
+  It follows that any orbit of $T$ starting in this ball stays in this ball, and by Theorem~9 of~\cite{gaubert2004}, there exists a vector $a\in \R^n$ such that $T(a)=\rho(T)+a$.\todo{SG: existence proof added}
 
   Recall that by assumption, $\rho(T)<0$.
   In Algorithm \ref{alg:tropical_svm}, we defined the sectors as
