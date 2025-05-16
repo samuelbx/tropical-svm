@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2023)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: unsrt.bst
@@ -18,45 +18,45 @@ Warning--I'm ignoring tang2020's extra "year" field
 Warning--I'm ignoring tang2020's extra "pages" field
 --line 180 of file references.bib
 Warning--empty title in Litvinov2001
-You've used 38 entries,
+You've used 39 entries,
             1791 wiz_defined-function locations,
-            712 strings with 10981 characters,
-and the built_in function-call counts, 10460 in all, are:
-= -- 953
-> -- 476
+            715 strings with 11168 characters,
+and the built_in function-call counts, 10605 in all, are:
+= -- 964
+> -- 484
 < -- 17
-+ -- 172
-- -- 134
-* -- 775
-:= -- 1613
-add.period$ -- 121
-call.type$ -- 38
-change.case$ -- 32
++ -- 175
+- -- 136
+* -- 778
+:= -- 1635
+add.period$ -- 124
+call.type$ -- 39
+change.case$ -- 33
 chr.to.int$ -- 0
-cite$ -- 39
-duplicate$ -- 452
-empty$ -- 982
-format.name$ -- 134
-if$ -- 2346
+cite$ -- 40
+duplicate$ -- 457
+empty$ -- 1000
+format.name$ -- 136
+if$ -- 2380
 int.to.chr$ -- 0
-int.to.str$ -- 38
+int.to.str$ -- 39
 missing$ -- 39
-newline$ -- 193
-num.names$ -- 46
-pop$ -- 100
+newline$ -- 198
+num.names$ -- 47
+pop$ -- 107
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 228
+skip$ -- 232
 stack$ -- 0
 substring$ -- 804
-swap$ -- 132
+swap$ -- 133
 text.length$ -- 17
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 103
-width$ -- 40
-write$ -- 434
+while$ -- 104
+width$ -- 41
+write$ -- 444
 (There were 8 warnings)

@@ -214,6 +214,13 @@ J.~Chaloupka.
 \newblock In {\em Algorithms---{ESA} 2009}, volume 5757 of {\em Lecture Notes
   in Comput. Sci.}, pages 599--610. Springer, Berlin, 2009.
 
+\bibitem{labiadsefiani}
+Hicham Sefiani and Ismail Labiad.
+\newblock Tropical support vector machines, 2022.
+\newblock Report of research project ``EA MAP511'', co-supervised by X.
+  Allamigeon and S. Gaubert, Applied Mathematics Department, \'Ecole
+  polytechnique.
+
 \bibitem{allamigeon_condition}
 Xavier Allamigeon, St{\'{e}}phane Gaubert, Ricardo~D. Katz, and Mateusz Skomra.
 \newblock Condition numbers of stochastic mean payoff games and what they say
