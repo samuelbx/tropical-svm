@@ -9,7 +9,6 @@
 \usepackage{pgfplots}
 \usepackage{amsfonts}
 \usepackage{nicefrac}
-\usepackage{microtype}
 \usepackage{xcolor}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{algorithm}
@@ -143,6 +142,8 @@ on tropical geometry.
     \label{fig:tropical_poly}
 \end{figure}
 The rest of the paper is organized as follows. Section~\ref{sec:prelim} introduces the essential concepts from tropical geometry. Section~\ref{sec:spectral} presents our spectral framework and main theoretical results, showing how separability connects to spectral properties. Section~\ref{sec:algorithm} details our algorithm and implementation, explaining how we achieve pseudo-polynomial complexity. Section~\ref{sec:polynomials} extends the framework to polynomials for more expressive decision boundaries. Section~\ref{sec:maslov} explores connections with classical SVMs, and Section~\ref{sec:discussion} discusses limitations and future directions.
+
+Code for fitting tropical SVMs and reproducing the figures and experiments is available online.\footnote{\url{https://github.com/samuelbx/tropical-svm}}
 
 \section{Tropical Geometry Preliminaries}\label{sec:prelim}
 
@@ -326,6 +327,7 @@ The primary limitation of our spectral approach is its sensitivity to outliers. 
 
 Additionally, because our method is formulated as a spectral criterion rather than an optimization problem, it is challenging to incorporate relaxation mechanisms that would handle misclassified points in a controlled way. Traditional SVMs use slack variables to allow soft margins and tolerate some misclassifications, but our current approach doesn't have a direct equivalent. This suggests an important direction for future research.
 
+\newpage
 \section{Algorithm and Implementation}\label{sec:algorithm}
 
 Having established the theoretical foundation, we now present our algorithm for tropical SVM based on the spectral criterion. The key insight is that we can compute the spectral radius and optimal hyperplane efficiently without exploring all possible sector assignments.
@@ -387,7 +389,6 @@ that this bound is {\em linear} in the input size $pd$.
 
 \subsubsection*{Proof of Concept.}
 We validated the computational complexity of our algorithm through empirical testing (detailed in Appendix~\ref{appendix:empirical}). Our implementation achieves tractable performance on standard benchmark datasets, with performance scaling linearly with both dataset size and feature dimension as predicted by our theoretical analysis.
-\footnotetext{The code for reproducing these experiments is available at \url{https://github.com/samuelbx/tropical_svm}.}
 
 For the first time, we demonstrate that tropical SVMs can be practically computed with pseudo-polynomial guarantees, removing the exponential barrier that limited previous approaches. While specialized classical SVM libraries remain faster on conventional tasks, our approach enables new applications where piecewise-linear decision boundaries offer advantages.
 
@@ -447,26 +448,24 @@ For homogeneous degree-$s$ monomials, this simplifies to $-\rho(T)/s$, meaning t
 
 This approach maintains the core theoretical guarantees of the hyperplane formulation while substantially increasing model flexibility, as illustrated in Figure~\ref{fig:poly_classifier_comparison}.
 
-\vspace*{3em}
 \begin{figure}[ht!]
     \centering
-    \begin{subfigure}[t]{0.48\textwidth}
+    \begin{subfigure}[t]{0.9\textwidth}
         \centering
-        \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
+        \resizebox{0.65\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
+        \caption{Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho(T)/3$, as explained in the last paragraph of Section~\ref{sec:polynomials}.}
         \label{fig:homogeneous_selection}
-    \end{subfigure}\hfill
-    \begin{subfigure}[t]{0.48\textwidth}
+    \end{subfigure}\\[1em] % Adds a bit of space between the two subfigures
+    \begin{subfigure}[t]{0.9\textwidth}
         \centering
-        \resizebox{\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
+        \resizebox{0.65\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
+        \caption{Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref{sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.}
         \label{fig:adaptive_polynomial}
     \end{subfigure}
-    \caption{Left: Multi-class classification using a cubic polynomial classifier (degree-3 monomials). Each color represents a different class, and the boundaries show where the dominant monomial changes. Note how the polynomial naturally separates the five clusters with piecewise-linear boundaries. The light orange band around the decision boundaries indicates a lower bound on the margin, equal to $-\rho(T)/3$, as explained in the last paragraph of Section~\ref{sec:polynomials}. Right: Visualization of a polynomial classifier using the adaptive monomial selection strategy described in Section~\ref{sec:polynomials}. Rather than using all possible monomials, this approach selects terms based on pairs of points from different classes, focusing computational resources on the most discriminative features. The resulting boundary adapts closely to the data's structure while maintaining margin guarantees.}
+    \caption{Comparison of polynomial classifiers.}
     \label{fig:poly_classifier_comparison}
 \end{figure}
-\vspace*{3em}
 
-
-\newpage
 \section{Connection to Classical SVMs}\label{sec:maslov}
 Tropical hyperplanes can be seen as limits of classical hyperplanes under logarithmic scaling, a process known as Maslov dequantization \cite{viro2001}. This connection suggests a naive approach to tropical SVM: raise the data to a power $\beta > 0$, apply a classical SVM in the transformed space to maximize the margin, then map the result back via a logarithm. As $\beta$ tends to infinity, the resulting decision boundary converges to a tropical hyperplane.
 
