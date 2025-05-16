@@ -278,7 +278,7 @@ The maximum is always achieved.
 Moreover, $\rho(T)$ is the infimum of the values $\lambda\in \R$ for which there exists a vector $u\in\R^d$
 satisfying $T(u) \leq \lambda + u$,
 see~\cite{nussbaum1986,AGGut10,akiangaubertqisaadi} for more information,
-especially~\cite[Theorem~7]{akiangaubertqisaadi}.
+especially~\cite[Theorem~1]{akiangaubertqisaadi}.
 
 \paragraph{Constructing the Classification Operator.}
 Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \R^d$.
@@ -303,16 +303,21 @@ in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
 
 \paragraph{Separating Point Clouds with a Hyperplane.}
 
-We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists a partition of $\{1,\dots,d\}$ in $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$,\todo[color=red!30]{SG: We need to require that it is a partition, ie the union is equal to $1,\dots,d$}
-%of $\{1, \ldots, d\}$,
-corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$, every point $x \in X^k$, belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$. Note that the union $S^k$ is always tropically convex. Then, it follows that the whole tropical cone $V^k=\tcone(X^k)$ is also included in $S^k$.\todo{SG: added this observation, since later we consider separation of convex sets (rather than finite sets of points)}
+%% <<<<<<< HEAD
+%% We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists a partition of $\{1,\dots,d\}$ in $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$,\todo[color=red!30]{SG: We need to require that it is a partition, ie the union is equal to $1,\dots,d$}
+%% %of $\{1, \ldots, d\}$,
+%% corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$, every point $x \in X^k$, belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$. Note that the union $S^k$ is always tropically convex. 
+%% %% =======
+%% %% We say that the hyperplane $\mathcal{H}_a$ with apex $a$ separates the point clouds $X^1, \ldots, X^K$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1, \ldots, d\}$, corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$ and every point $x \in X^k$, the point $x$ belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$.
+%% %% >>>>>>> 097ba6ca81c9900da84791426729a77d9b1a8d58
 %% =======
-%% We say that the hyperplane $\mathcal{H}_a$ with apex $a$ separates the point clouds $X^1, \ldots, X^K$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1, \ldots, d\}$, corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$ and every point $x \in X^k$, the point $x$ belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$.
-%% >>>>>>> 097ba6ca81c9900da84791426729a77d9b1a8d58
+We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1,\dots,d\}$ %
+corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$, every point $x \in X^k$, belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$. Then, it follows that the whole tropical cone $V^k=\tcone(X^k)$ is also included in $S^k$.\todo{SG: added this observation, since later we consider separation of convex sets (rather than finite sets of points)}
 
-Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for any two distinct classes $k \neq \ell$ and any point $x \in X^k$, the Hilbert distance from $x$ to $S^\ell$ is at least $\gamma$, namely,
+Moreover, we say that the hyperplane separates {\em with margin} $\gamma > 0$ if, for any class $k$ and any point $x \in X^k$, the Hilbert distance from $x$ to the union of complementary sectors $\bar{S}_k= \cup_{i\not\in I^k} \text{Sec}_i(a)$\todo{SG: I defined $\bar{S}_k$ explicitely, check.}
+is at least $\gamma$, meaning that
 \begin{align}
-d_H(x, S^\ell) = \max_j(x_j - a_j) - \max_{i \in I^\ell}(x_i - a_i) \geq \gamma.
+d_H(x, \bar{S}_k) = \max_j(x_j - a_j) - \max_{i \not\in I^k}(x_i - a_i) \geq \gamma.
 \end{align}
 Finally, we define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq K} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
 
@@ -521,10 +526,11 @@ games in practice~\cite{chaloupka}.
 \newpage
 \appendix
 \section{Proof of Theorem~\ref{thm:spectral_separability} (Spectral Radius and Margin)}\label{appendix:proofs}
-We provide a complete proof of our main result on spectral separability.
+We now prove our main result on spectral separability.
 
-For any Shapley operator $T$, we define its sub-fixed-point
-set as $\mathcal{S}(T) = \{x \in \trop^d : x \leq T(x)\}$.
+For any Shapley operator $T$, we define its
+{\em sub-fixed-point
+set} as $\mathcal{S}(T) = \{x \in \trop^d : x \leq T(x)\}$.
 An important property is that if $X$ is any finite subset of $\trop^d$
 and $V=\tcone(X)$ is the tropical cone generated by $X$, as per~\eqref{e-def-tcone},
 we have $V = S(P_V)$. Similarly, $V = S(P^{\text{DF}}_V)$.
@@ -534,28 +540,34 @@ although the finest results will be obtained with $\Pdiagfree_V$.
 We first characterize the maximal possible value for the margin.
 
 \begin{lemma}[Upper bound on margin]\label{lemma:hyperplane_to_operator}
-Let $T^k$ be tropical projections on finite point clouds $X^k\subset \R^d$, or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, for $1\leq k\leq K$, and let $T$ be defined as the $\operatorname{\max}_2$ of the $T^k$, as per \eqref{eq:single_operator}.
-If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$,
-\todo[inline,color=red!30]{SG: we wrote ``and 
-  $(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$''
-  but this is not used, we prove that if we have a separation margin,
-  the $T(a)\leq -\gamma + a$, and by the Collatz-Wielandt theorem, $\rho(T)\leq -\gamma$, no need to assume that $a$ is an eigenvector.
-  }
+%% <<<<<<< HEAD
+%% Let $T^k$ be tropical projections on finite point clouds $X^k\subset \R^d$, or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, for $1\leq k\leq K$, and let $T$ be defined as the $\operatorname{\max}_2$ of the $T^k$, as per \eqref{eq:single_operator}.
+%% If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$,
+%% \todo[inline,color=red!30]{SG: we wrote ``and 
+%%   $(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$''
+%%   but this is not used, we prove that if we have a separation margin,
+%%   the $T(a)\leq -\gamma + a$, and by the Collatz-Wielandt theorem, $\rho(T)\leq -\gamma$, no need to assume that $a$ is an eigenvector.
+%%   }
+%%   then $\gamma \leq -\rho(T)$.
+%% %% =======
+%% %% Let $T^k$ be tropical projections on finite point clouds or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
+%% %% If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, and 
+%% %% $(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$, then $\gamma \leq -\rho(T)$.
+%% %% >>>>>>> 097ba6ca81c9900da84791426729a77d9b1a8d58
+%%   =======
+ Let $T^k$ be tropical projections on finite point clouds $X^k\subset \R^d$, or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, for $1\leq k\leq K$, and let $T$ be defined as the $\operatorname{\max}_2$ of the operators $T^k$, as per \eqref{eq:single_operator}.
+%Let $T^k$ be tropical projections on finite point clouds or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
+If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, 
   then $\gamma \leq -\rho(T)$.
-%% =======
-%% Let $T^k$ be tropical projections on finite point clouds or their diagonal-free counterparts, so that $T^k = P_{X^k}$ or $T^k=\Pdiagfree_{X^k}$, and $T$ defined as the $\operatorname{\max}_2$ of the $T^k$, as in Equation \ref{eq:single_operator}.
-%% If the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$, and 
-%% $(\rho(T),a)$ with $a\in\R^n$ is any eigenpair of $T$, then $\gamma \leq -\rho(T)$.
-%% >>>>>>> 097ba6ca81c9900da84791426729a77d9b1a8d58
 \end{lemma}
 
 \begin{proof}
-Consider two different classes $k$ and $\ell$. Let $I^k$ denote the set of coordinates assigned to class $k$. For any point $x \in X^k$, the margin condition implies that its Hilbert distance to sector $S^{\ell}$ is bigger than $\gamma$, namely
+Suppose that the hyperplane $\mathcal{H}_a$ separates $X^1,\ldots,X^K$ with a margin of at least $\gamma > 0$. Consider a class $k$, and let $I^k$ denote the set of coordinates assigned to class $k$. For any point $x \in X^k$, the margin condition implies that its Hilbert distance to its non-assigned sectors $\bar{S}^k$ is not less than $\gamma$, namely
 \begin{align}
-d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i) \geq \gamma.
+d_H(x, \bar{S}^k) = \max_j(x_j - a_j) - \max_{i \not\in I^k}(x_i - a_i) \geq \gamma.
 \end{align}
 
-This can be rewritten as: for all $i \in I^{\ell}$,
+This can be rewritten as: for all $i \not\in I^k$,
 \begin{align}
 x_i - a_i \leq \max_j(x_j - a_j) - \gamma.\label{e-toreverse}
 \end{align}
@@ -567,33 +579,69 @@ Then, we deduce from~\eqref{e-toreverse} that
 \]
 and so, taking the maximum over $x\in X^k$, and noting that either $T^k=\Pdiagfree_{X^k}$ or
 $T^k=P_{X^k}\leq \Pdiagfree_{X^k}$,
-\[
--\gamma  + a_i \geq [\Pdiagfree_{X^k}(a)]_i \geq [T^k(a)]_i\enspace .
-\]
-
-Since this holds for all classes $k \neq \ell$, we have $T(a)_i \leq -\gamma + a_i$.
-Finally, if $(\rho(T),a)$ is an eigenpair, $T(a)_i=\rho(T)+a_i$, hence $\rho(T)\leq -\gamma$.
+\begin{align}
+  -\gamma  + a_i \geq [\Pdiagfree_{X^k}(a)]_i \geq [T^k(a)]_i.
+  \label{e-ourkey}
+\end{align}
+We just showed that~\eqref{e-ourkey} holds
+for all $1\leq i\leq d$ and $1\leq k\leq K$ such that $i\not\in I_k$.
+Let us fix $1\leq i\leq d$.
+Then, since the sets $I^1,\dots,I^k$
+are disjoint, there is at most one value of $k$ from which~\eqref{e-ourkey} may not hold.
+So, $[T(a)]_i$, which is the second maximum of the values $[T^k(a)]_i$ as $1\leq k\leq K$, must
+satisfy  $-\gamma  + a_i \geq [T(a)]_i$. Since this holds for all $1\leq i\leq d$,
+we have $-\gamma + a \geq T(a)$.\todo{SG: Theo, your argument was ok but a bit fast, but I have added details}
+Then, we deduce from
+the Collatz-Wielandt theorem (see~\cite[Theorem~1]{akiangaubertqisaadi})
+that 
+$-\gamma\geq \rho(T)$.
 \end{proof}
-%% We defined above the notion of separation for {\em finitely generated} tropical
-%% cones, namely,
-%% for sets of the form $V^k=\tcone(X^k)$ where $X^k\subset \R^d$ is finite.
-%% The same notion
-%% makes sense for non-necessarily finitely generated sets of the form $V^k\cap \R^d$ where $V^k$
+We defined above the notion of separation for tropical cones $V^k$ given by a finite
+set of generators $X^k\subset \R^d$, meaning that $V^k =\tcone(X^k)$, and we exploited
+the fact that $V^k$ is the sub-fixed-point set of $P_{X^k}$ and $\Pdiagfree_{X^k}$.
+However, in some applications, the tropical polyhedral cone $V^k$ may be given implicitely,
+by a finite system of tropical linear inequalities (this is similar to describing
+a classical polyhedron by facets instead of vertices). In this
+situation, we still know an explicit Shapley operator $T$ such that $V^k=\mathcal{S}(T^k)$, see~\cite{AGGut10}.
+Moreover, if $V^k$ is bounded in Hilbert seminorm
+$T$ may be chosen such that its image bounded in Hilbert seminorm.
+Moreover, assuming as above that $X^k$ is finite, the images of $P_{X^k}$ and $\Pdiagfree_{X^k}$ are automatically bounded in this seminorm.
+This motivates the following abstract result, which applies in particular to $V^k=\tcone(X^k)$.\todo{SG: I have added this discussion to explain and motivate the generality}
+
+
+%% the same notion
+%% makes sense more generally for closed tropical convex cones $V^k \subset \trop^d$.
 %% is a closed tropically convex cone of $\trop^d$. Such sets $V^k\cap \R^d$ can always
 %% be represented as sub-fixed-point sets of Shapley operators $T^k$ (it suffices
 %% to take $T^k = P_{V^k}$). The following lemma applies to this general setting.
-In the following lemma, we only require $T^k$ to be a Shapley operator such that $\tcone(X^k)=\mathcal{S}(T^k)$. This applies in particular to $T^k  = P_{X^k}$
-and $T^k=\Pdiagfree_{X^k}$.
+%% In the following lemma, we only require $T^k$ such that the sub-fixed point set $V^k= \mathcal{S}(T^k)$ is bounded in Hilbert seminorm. This applies in particular to $T^k  = P_{X^k}$
+%% and $T^k=\Pdiagfree_{X^k}$ where $X^k$ is a finite subset of $\R^d$ as above.
+%% This generality allows us to tackle situations in which, instead of being given by ``generators''
+%% as $V^k=\tcone{X^k}$ as above, the tropical cone $V^k$ is determined implicitely by a system of inequalities,
+%% since in this case, an operator $T^k$ is readily available~\cite{AGGut10}.
+\todo[inline,color=red!50]{I need range of $T$ to be bounded in Hilbert seminorm for the proof of the following lemma. It is not obvious in general that there is a {\em finite} vector $a$ such $T(a)=\rho+a$.}
 \begin{lemma}[Max-margin hyperplane]\label{lemma:operator_to_hyperplane}
-%<<<<<<< HEAD
-  Let $X^1,\dots,X^K\subset \R^d$ be finite point clouds.
-  Let $T^1,\dots,T^K$ be Shapley operators such that
-  $\tcone(X^k)=\mathcal{S}(T^k)$,  for $1\leq k\leq K$,
-  and let $T$ be defined as per~\eqref{eq:single_operator}.
-  If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the sub-fixed-point sets $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.\todo{SG: we defined separation only for $\tcone(X^k)$, not for any sub-fixed-point set, so I fixed this. The best would be to define ab initio the separtion for general tropical cones; we can do it later}
-%% =======
-%% Let $T^k$ be Shapley operators, and $T$ defined as before. If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.
-%% >>>>>>> 097ba6ca81c9900da84791426729a77d9b1a8d58
+%% <<<<<<< HEAD
+%% %<<<<<<< HEAD
+%%   Let $X^1,\dots,X^K\subset \R^d$ be finite point clouds.
+%%   Let $T^1,\dots,T^K$ be Shapley operators such that
+%%   $\tcone(X^k)=\mathcal{S}(T^k)$,  for $1\leq k\leq K$,
+%%   and let $T$ be defined as per~\eqref{eq:single_operator}.
+%%   If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the sub-fixed-point sets $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.\todo{SG: we defined separation only for $\tcone(X^k)$, not for any sub-fixed-point set, so I fixed this. The best would be to define ab initio the separtion for general tropical cones; we can do it later}
+%% %% =======
+%% %% Let $T^k$ be Shapley operators, and $T$ defined as before. If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.
+%% %% >>>>>>> 097ba6ca81c9900da84791426729a77d9b1a8d58
+%%   =======
+  %% Let $X^1,\dots,X^K\subset \R^d$ be finite point clouds.
+  %%   Let $T^1,\dots,T^K$ be Shapley operators such that
+  %% $\tcone(X^k)=\mathcal{S}(T^k)$,  for $1\leq k\leq K$,
+  %% and let $T$ be defined as per~\eqref{eq:single_operator}.
+  Let $T^1,\dots,T^K$ be Shapley operators such that the images of $\{T^k(x)\mid x\in \R^d\}$ are all bounded
+  in Hilbert seminorm,
+and let $T$ be defined as per~\eqref{eq:single_operator}.\todo{SG: caveat new condition}
+  If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the tropical cones $V^k=\mathcal{S}(T^k)$ for $1\leq k\leq K$,
+%  sub-fixed-point sets $\mathcal{S}(T^k)$
+  with a margin of at least $-\rho(T)$.
 \end{lemma}
 
 \begin{proof}
@@ -605,8 +653,13 @@ and $T^k=\Pdiagfree_{X^k}$.
 %% Since $\
 %%   By the Collatz-Wielandt theorem (~\cite[Theorem~7]{akiangaubertqisaadi}),
 %%   for all $\mu>\rho(T)$,\todo[color=red!30]{SG: it was wrong to say that $T(a)=\rho(T)+a$ in such a generality. This is correct if $V^k =\tcone(X^k)$ with $X^k$ finite but not  in general}
-%% %  Since $\rho(T) < 0$,
-  There exists $a \in \R^d$ such that $T(a)=\rho(T) + a$\todo{SG: this requires a proofin the presejt generality}, and by assumption $\rho(T)<0$.
+  %% %  Since $\rho(T) < 0$,
+  By assumption, there is a positive number $R$ such that all the images of the operators $T^k$ are included in the Hilbert seminorm ball of radius $R$ and center $0$,
+  $B(0,R)=\{x\in \R^d\mid \|x\|_H\leq Hilbert\}$,
+. Then, the image of the second maximum operator $T$ is also included in this ball.
+  It follows that any orbit of $T$ starting in this ball stays in this ball, and by Theorem~9 of~\cite{gaubert2004}, there exists a vector $a\in \R^n$ such that $T(a)=\rho(T)+a$.
+
+  Recall that by assumption, $\rho(T)<0$.
   In Algorithm \ref{alg:tropical_svm}, we defined the sectors as
 \begin{align}
 I^k = \left\{i : T^k(a)_i > \rho(T) + a_i\right\}.
@@ -619,22 +672,28 @@ Next, we show that each point belongs to one of its assigned sectors. For $x \in
 x_i \leq T^k(x)_i = (T^k(x) - T^k(a))_i + T^k(a)_i.
 \end{align}
 
-Since $T^k$ is non-expansive, $(T^k(x) - T^k(a))_i \leq \max_j(x_j - a_j)$. And since $i \not\in I^k$, we have $T^k(a)_i \leq \rho(T) + a_i$. Combining these,
+Since $T^k$ is a Shapley operator, it is order preserving and commutes with the addition of a constant,
+and so we deduce from $x\leq \max_j (x_j-a_j) + a$ that $T^k(x) \leq \max_{j}(x_j-a_j)+T^k(a)$,  and so,
+$(T^k(x) - T^k(a))_i \leq \max_j(x_j - a_j)$.\todo{SG: added explanation}
+Moreover, since $i \not\in I^k$, we have $T^k(a)_i \leq \rho(T) + a_i$. Combining these,
+we get
 \begin{align}
 x_i - a_i \leq \max_j(x_j - a_j) + \rho(T).
 \end{align}
 
 With $\rho(T) < 0$, this implies $x_i - a_i < \max_j(x_j - a_j)$, meaning $i$ cannot be the $\arg\max$ of $x - a$. Therefore, the $\arg\max$ must lie in $I^k$, placing $x$ in one of its assigned sectors. In particular, $I^k$ is non-empty.
 
-Finally, for the margin, consider $x \in \mathcal{S}(T^k)$ and sector $S^{\ell}$ with $\ell \neq k$. The distance is 
+Finally, for the margin, consider $x \in \mathcal{S}(T^k)$: 
 \begin{align}
-d_H(x, S^{\ell}) = \max_j(x_j - a_j) - \max_{i \in I^{\ell}}(x_i - a_i).
+d_H(x, \bar{S}^k) = \max_j(x_j - a_j) - \max_{i \not\in I^k}(x_i - a_i).
 \end{align}
 
-Using the inequalities derived above, we get $d_H(x, S^{\ell}) \geq -\rho(T)$.
+Using the inequalities derived above, we get $d_H(x, \bar{S}^k) \geq -\rho(T)$.
 \end{proof}
 
-In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understanding of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)=\mathcal{S}(T^1)\cap\mathcal{S}(T^2)$. As shown by Theorem 16 in \cite{allamigeon_condition}, this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by Algorithm~\ref{alg:tropical_svm} lies exactly at the center of the inner ball of this intersection.
+In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understanding of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)=\mathcal{S}(T^1)\cap\mathcal{S}(T^2)$. As shown by Theorem 16 in \cite{allamigeon_condition},
+%\todo{SG: issue to be fixed quietly after submission to NEURIPS, Theorem 16 (originally proved by XA, SG, Katz) was reproduced in \cite{allamigeon_condition} without proof, it is an issue to quote a result whose proof is not available}
+this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by Algorithm~\ref{alg:tropical_svm} lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
 \begin{align}
@@ -651,8 +710,9 @@ Intuitively, this can be thought of as representing the union of pairwise inters
 
 The following Lemma is the only one where using the diagonal-free operator is needed.
 
-\begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
-Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have empty intersection.
+\begin{lemma}[Overlap interpretation in the binary classification problem]\label{lemma:perturbation}
+  Let $T^k$ be the diagonal-free projection of $\tcone(X^k)$, for $k=1,2$.
+  Let $T=\min(T^1,T^2)$, and suppose that $\rho(T) \geq 0$. Then, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have a trivial intersection.
 \end{lemma}
 \begin{proof}
 Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
@@ -685,7 +745,7 @@ Therefore, for any $y$ in the tropical convex hull of class $c\in\{1,2\}$,
 \end{equation}
 Also note that for any $i$, by definition of $T^{c}$, if $X^c \cap \text{Sec}_i $ is not empty we can rewrite
 \begin{equation}
-T^{c}(a)_{i}=\max_{x \in {X^c \cap \text{Sec}_i(a)}}(x_{i}-a_{i} - \max_{k\neq i} (x_{k}-a_{k}))  + a_i = \max_{x \in {X^c \cap \text{Sec}_i(a)}}(d_{H}\left(x,\mathcal{H}_{a}\right)) + a_i  .\label{eq:rewrite}
+T^{c}(a)_{i}=\max_{x \in {X^c \cap \text{Sec}_i(a)}}\left(x_{i}-a_{i} - \max_{k\neq i} (x_{k}-a_{k})\right)  + a_i = \max_{x \in {X^c \cap \text{Sec}_i(a)}}(d_{H}\left(x,\mathcal{H}_{a}\right)) + a_i  .\label{eq:rewrite}
 \end{equation}
 
 Fix a coordinate $i$. If $x\in X^{1}\cup X^{2}$ is in sector $s\ne i$, and reaches its second argmax at coordinate $t$, then for $k\ne s$, by definition,

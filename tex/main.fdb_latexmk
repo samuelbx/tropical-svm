@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex main"] 1747337917 "main.aux" "main.bbl" "main" 1747337921
+["bibtex main"] 1747337917 "main.aux" "main.bbl" "main" 1747351466
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/unsrt.bst" 1292289607 18030 1376b4b231b50c66211e47e42eda2875 ""
-  "main.aux" 1747337921 17086 d5e879470ece927d4c6c0c43cf6075a4 "pdflatex"
+  "main.aux" 1747351448 17086 d5e879470ece927d4c6c0c43cf6075a4 "pdflatex"
   "references.bib" 1747307532 21491 b4543804acf4654208a45ced1e7dd6a3 ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1747337917 "main.tex" "main.pdf" "main" 1747337921
+["pdflatex"] 1747351466 "main.tex" "main.pdf" "main" 1747351466
   "/etc/texmf/web2c/texmf.cnf" 1677109391 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -62,6 +62,7 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb" 1248133631 31764 459c573c03a4949a528c2cc7f557e217 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam7.pfb" 1248133631 33366 60462f3d16c3d0f024f1f856e64b09cd ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1248133631 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb" 1248133631 35309 940e81a5b9e04201a07e8b33a3ae6e64 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb" 1136849748 44648 23115b2a545ebfe2c526c3ca99db8b95 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb" 1136849748 44729 811d6c62865936705a31c797a1d5dada ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb" 1136849748 46026 6dab18b61c907687b520c72847215a68 ""
@@ -288,10 +289,10 @@
   "figures/non-separable.pgf" 1744496029 34993 6fa9f009e60762f2688caafcb6558999 ""
   "figures/pca_degree_scaling.pgf" 1747060080 70466 ab45385281d019c549c1135ec731df05 ""
   "figures/sample_size_scaling.pgf" 1744496029 27172 ecb011d74f7c04b26c001db6a4b22bb2 ""
-  "main.aux" 1747337921 17086 d5e879470ece927d4c6c0c43cf6075a4 "pdflatex"
+  "main.aux" 1747351448 17086 d5e879470ece927d4c6c0c43cf6075a4 "pdflatex"
   "main.bbl" 1747337917 9398 de7db16377fe2fc423a23eccb1b29e1b "bibtex main"
-  "main.out" 1747337921 1826 917fb2dca89b5205c6a85b57e691b881 "pdflatex"
-  "main.tex" 1747309142 76171 1f9f552b7f856358a72dd18aa1397cea ""
+  "main.out" 1747350192 1826 917fb2dca89b5205c6a85b57e691b881 "pdflatex"
+  "main.tex" 1747351448 80615 5201f9c3e2fde1008f8b04533aeb6110 ""
   "neurips_2025.sty" 1747203215 13023 2817c1b954c70ec3156371423da6545c ""
   (generated)
   "main.aux"
