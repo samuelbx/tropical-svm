@@ -1,9 +1,8 @@
-\documentclass{article}
+\documentclass[11pt, oneside]{amsart}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-%\usepackage[preprint]{neurips_2025}
-\usepackage{neurips_2025}
 \usepackage{url}
+\usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{multirow}
@@ -17,9 +16,7 @@
 \usepackage{algorithmic}
 \usepackage{adjustbox}
 \usepackage{graphicx}
-\usepackage{titlesec}
 \usepackage{subcaption}
-\usepackage[colorinlistoftodos,bordercolor=orange,backgroundcolor=orange!20,linecolor=orange,textsize=scriptsize]{todonotes}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -42,32 +39,17 @@
 \title{Efficient Tropical SVMs via Mean-Payoff Games}
 
 \author{
-  Xavier Allamigeon \\
-  {\small\tt xavier.allamigeon@inria.fr}\\
-  Inria and CMAP \\
-  École polytechnique \\
-  Palaiseau, France \\
-  \And
-  Samuel Boïté \\
-  {\small\tt samuel.boite@polytechnique.org}\\
-  École polytechnique \\
-  Palaiseau, France \\
-  \And
-  Stéphane Gaubert \\
-  {\small\tt stephane.gaubert@inria.fr}\\
-  Inria and CMAP \\
-  École polytechnique \\
-  Palaiseau, France \\
-  \And
-  Théo Molfessis \\
-  {\small\tt theo.molfessis@polytechnique.org}\\
-  École polytechnique \\
-  Palaiseau, France \\
+Xavier Allamigeon\textsuperscript{1},
+Samuel Boïté\textsuperscript{2},
+Stéphane Gaubert\textsuperscript{1},
+Théo Molfessis\textsuperscript{2}
 }
+
+\thanks{\textsuperscript{1}Inria and CMAP, École polytechnique, Palaiseau, France. \texttt{\{xavier.allamigeon, stephane.gaubert\}@inria.fr}}
+\thanks{\textsuperscript{2}École polytechnique, Palaiseau, France. \texttt{\{samuel.boite, theo.molfessis\}@polytechnique.org}}
 
 \begin{document}
 
-\maketitle
 \begin{abstract}
     In 2006, Gärtner and Jaggi introduced a tropical analogue of support vector machines, using a single tropical hyperplane in dimension $d$ to separate $d$ classes of points.
     Efficient computation of tropical separators has since remained an open problem. We introduce an algorithm for tropical support vector machines that overcomes the combinatorial explosion of previous approaches.
@@ -76,20 +58,23 @@
     Finally, we combine tropical classifiers with linear feature maps to construct flexible piecewise-linear classifiers.
 \end{abstract}
 
+\maketitle
+
+
 \section{Introduction}\label{sec:intro}
 
 Classification is a fundamental task in machine learning, and Support Vector Machines (SVMs) have been a cornerstone method for decades. Traditional SVMs create decision boundaries using affine hyperplanes, which provide maximum-margin separation with strong generalization guarantees \cite{vapnik1999}. However, these linear boundaries are limiting when faced with complex, nonlinear data patterns, typically requiring kernel methods or feature engineering \cite{scholkopf2002}.
 
-\paragraph{Motivation: Beyond Linear Boundaries.} We build on max-plus algebra, a framework where standard addition becomes the maximum operation, and multiplication becomes addition \cite{maclagan2015}. This leads to different geometric structures with attractive properties for machine learning: (1) instead of creating binary partitions, tropical hyperplanes divide space into multiple sectors, making them naturally suited for multi-class problems; (2) their piecewise-linear nature captures more complex patterns while maintaining interpretability; (3) the resulting decision boundaries coincide with those created by simple deep learning models with ReLU activations~\cite{zhang2018}.
+\subsubsection*{Motivation: Beyond Linear Boundaries.} We build on max-plus algebra, a framework where standard addition becomes the maximum operation, and multiplication becomes addition \cite{maclagan2015}. This leads to different geometric structures with attractive properties for machine learning: (1) instead of creating binary partitions, tropical hyperplanes divide space into multiple sectors, making them naturally suited for multi-class problems; (2) their piecewise-linear nature captures more complex patterns while maintaining interpretability; (3) the resulting decision boundaries coincide with those created by simple deep learning models with ReLU activations~\cite{zhang2018}.
 
 Tropical geometry has emerged as a powerful tool for modeling piecewise-linear phenomena in machine learning. Together with polyhedral geometry,
 it has been used to bound the number of linearity regions of functions realized by these networks~\cite{zhang2018,montufar}.
 It has been successfully applied to linear regression \cite{maragos2020,akiangaubertqisaadi}, principal component analysis \cite{yoshida2019} and neural network analysis \cite{maragos2021}.
 
-\paragraph{Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multi-class problems, since a single tropical hyperplane in dimension $d$ partitions the space into $d$ regions.
+\subsubsection*{Tropical SVMs.} Gärtner and Jaggi \cite{gartner2008} introduced tropical SVMs using linear programming formulations. Their work introduced an elegant geometric approach to multi-class problems, since a single tropical hyperplane in dimension $d$ partitions the space into $d$ regions.
 Despite these theoretical benefits, their method required exploring all possible sector assignment combinations, leading to exponential worst-case complexity. This computational barrier has limited practical applications.
 
-\paragraph{Background on Mean‐Payoff Games.}
+\subsubsection*{Background on Mean‐Payoff Games.}
 Our approach uses concepts from game theory--specifically, Shapley operators arising in zero-sum dynamic games.
 Shapley introduced an ``operator approach'' for discounted stochastic games~\cite{shapley1953}, and Gillette later formulated the undiscounted, infinite-horizon variant now known as mean-payoff games~\cite{gillette1957}.
 The Shapley operators we employ encode the one-step payoffs and transitions in such games, whose objective is the long-run average reward per time unit~\cite{zwick1996}. 
@@ -98,7 +83,7 @@ In particular, the spectral radius of a Shapley operator equals the game's value
 Mean-payoff games lie in NP $\cap$ coNP, but no polynomial-time algorithm is known.
 Nonetheless, large instances can be solved efficiently by iterative schemes such as relative Krasnoselskii--Mann iteration, which require $O(L/\varepsilon^2)$ operator evaluations, which is \emph{linear} in input size $L$ for a precision $\varepsilon$.
 
-\paragraph{Contributions.} We develop a new approach to tropical classification using mean-payoff games,
+\subsubsection*{Contributions.} We develop a new approach to tropical classification using mean-payoff games,
 overcoming the computational limitations of previous approaches:
 
 \begin{enumerate}
@@ -113,7 +98,7 @@ overcoming the computational limitations of previous approaches:
 
 This work makes tropical SVMs tractable for real-world applications, enabling natural multi-class classification, and opening new directions for piecewise-linear methods that balance expressivity, interpretability, and computational efficiency.
 
-\paragraph{Related Work.}
+\subsubsection*{Related Work.}
 The theoretical foundation of this work relies on a separation theorem of Cohen, Gaubert and Quadrat~\cite{cohen2004}, refined in~\cite{AGNS10},  showing that the projection onto a tropical cone provides a nearest point in Hilbert's seminorm. This led to the development of the tropical
 analogue of Von Neumann cyclic projection algorithm, providing an effective
 way to separate two tropical convex sets, see~\cite{gaubert2011}, and also~\cite{CuninghameGreen2003} for an early result
@@ -163,7 +148,7 @@ The rest of the paper is organized as follows. Section~\ref{sec:prelim} introduc
 
 We now introduce the key concepts from tropical geometry that form the foundation of our approach.
 
-\paragraph{The Max-Plus Semiring.}
+\subsubsection*{The Max-Plus Semiring.}
 The tropical (or max-plus) semiring is the set $\trop = \R \cup \{-\infty\}$
 equipped with the following operations:
 \begin{align}
@@ -173,7 +158,7 @@ x \odot y &= x + y \quad \text{(tropical multiplication)}.
 
 These operations may seem strange at first, but they naturally model systems where we care about ``bottlenecks'' or ``critical paths.'' For example, in project planning, if task A takes $x$ days and task B takes $y$ days, the project completion time depends on the maximum ($x \oplus y$) of these durations if tasks are parallel, and their sum ($x \odot y$) if sequential.
 
-\paragraph{Projective Space.}  
+\subsubsection*{Projective Space.}  
 The tropical projective space $\proj \trop^d$ identifies vectors of $\trop^d$ that differ by adding the same constant to all coordinates. Formally, it is the quotient of $\trop^d \setminus \{(-\infty,\dots,-\infty)\}$ by the equivalence relation $x \sim y$ if $x = y + c \cdot \mathbf{1}$ for some constant $c$, where $\mathbf{1}$ denotes the ``all ones'' vector. In practice, we embed data from $\R^{d-1}$ into the projective space $\proj \trop^d$ via:
 \[
 x=(x_1,\dots,x_{d-1})\mapsto [(x_1,\dots,x_{d-1},-(x_1+\cdots+x_{d-1}))],
@@ -182,7 +167,7 @@ where $[\cdot]$ denotes the equivalence class of a vector in  $\trop^d \setminus
 
 This transformation makes our classifier invariant to shifts—adding the same constant to all features doesn't change the classification. It is similar to how projective geometry in computer vision makes analysis invariant to camera distance.
 
-\paragraph{Hyperplanes and Sectors.}
+\subsubsection*{Hyperplanes and Sectors.}
 A {\em tropical hyperplane} with {\em apex} $a=(a_1,\dots,a_d) \in \R^d$ is defined as:
 \begin{align}
 \mathcal{H}_a = \left\{ x \in \trop^d : \text{the maximum of }(x_i - a_i)\text{ over $1\leq i\leq d$ is attained at least twice} \right\}.
@@ -198,7 +183,7 @@ originating from point $a$.
 
 Unlike classical hyperplanes that create two half-spaces, tropical hyperplanes (see Figure~\ref{fig:tropical_poly} on the left) create multiple sectors, one for each dimension. They naturally support multi-class classification, where we can assign different sectors to different classes.
 
-\paragraph{Hilbert Seminorm.}
+\subsubsection*{Hilbert Seminorm.}
 The Hilbert seminorm measures the spread of coordinates:
 \begin{align}
 \|x\|_H = \left(\max_i x_i\right) - \left(\min_i x_i\right).
@@ -206,7 +191,7 @@ The Hilbert seminorm measures the spread of coordinates:
 
 This induces a projective distance $d_H(x,y) = \|x - y\|_H$ that is invariant under adding the same constant to all coordinates \cite{cohen2004}. We use this distance to define margins in tropical classification.
 
-\paragraph{Convexity and Projections.}
+\subsubsection*{Convexity and Projections.}
 A set $C \subset \trop^d$ is a tropical convex cone if for all $x,y$ in $C$ and coefficients $\lambda,\mu$ in $\trop$,
 the point $(\lambda \odot x) \oplus (\mu \odot y)$ is also in $C$ \cite{cohen2004,develin2004}.
 The tropical cone generated by a subset $X=\{x_1,\ldots,x_p\}$, where
@@ -263,7 +248,7 @@ of the $i$th coordinate of  $P_X^{\text{DF}}(y)$. In terms
 
 Having recalled basic elements of tropical convexity, we now develop our spectral approach to classification. The key insight is connecting the separability of data classes to the spectral properties of a specially constructed operator.
 
-\paragraph{Shapley Operators and Their Spectral Theory.}
+\subsubsection*{Shapley Operators and Their Spectral Theory.}
 A {\em Shapley operator} is a map $T: \R^d \to \R^d$ satisfying the two following properties~\cite{kolokoltsov1992}:
 \begin{enumerate}
     \item \textit{Monotonicity:} If $x \leq y$ coordinatewise, then $T(x) \leq T(y)$ coordinatewise
@@ -281,7 +266,7 @@ satisfying $T(u) \leq \lambda + u$,
 see~\cite{nussbaum1986,AGGut10,akiangaubertqisaadi} for more information,
 especially~\cite[Theorem~1]{akiangaubertqisaadi}.
 
-\paragraph{Constructing the Classification Operator.}
+\subsubsection*{Constructing the Classification Operator.}
 Consider a classification problem with $K$ classes, each represented by a set of points $X^1,\dots,X^K \subset \R^d$.
 We define an operator $T^k$ for each class $k$ by taking the diagonal-free variant of the tropical projection onto the convex hull of points in that class:
 \[
@@ -302,7 +287,7 @@ in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
 
 
 
-\paragraph{Separating Point Clouds with a Hyperplane.}
+\subsubsection*{Separating Point Clouds with a Hyperplane.}
 
 We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$ of $\{1,\dots,d\}$ %
 corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$, every point $x \in X^k$, belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$. Then, it follows that the whole tropical cone $V^k=\tcone(X^k)$ is also included in $S^k$.
@@ -314,7 +299,7 @@ d_H(x, \bar{S}_k) = \max_j(x_j - a_j) - \max_{i \not\in I^k}(x_i - a_i) \geq \ga
 \end{align}
 Finally, we define the {\em distance} between a collection of perturbed point clouds $\tilde{X}^1,\dots, \tilde{X}^K$ and an original collection of point clouds $X^1,\dots,X^K$ as $\max_{1\leq k\leq K} \delta_H(X_k,\tilde{X}_k)$ where $\delta_H$ denotes the Hausdorff distance induced by Hilbert seminorm.
 
-\paragraph{Main Theorem: Spectral Radius and Margin.}
+\subsubsection*{Main Theorem: Spectral Radius and Margin.}
 Our central result establishes the connection between separability and the spectral radius. 
 \begin{theorem}\label{thm:spectral_separability}
 Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the classification operator defined above. Then:
@@ -331,12 +316,12 @@ A complete proof is provided in Appendix~\ref{appendix:proofs}, where we will se
 It is organized as follows: first, Lemma~\ref{lemma:hyperplane_to_operator} states that for tropical projections (or their diagonal-free counterpart), $-\rho(T)$ is a lower bound on the margin.
 Then, Lemma~\ref{lemma:operator_to_hyperplane} gives a construction for a separating hyperplane of margin $-\rho(T)$ in the separable case. Finally, Lemma~\ref{lemma:perturbation} handles the binary overlapping case.
 
-\paragraph{Benefits of the Spectral Approach.} 
+\subsubsection*{Benefits of the Spectral Approach.} 
 Our framework advances the tropical SVM foundation established by Gärtner and Jaggi \cite{gartner2008}. Their work showed that tropical SVM could be formulated as finding a point of maximum margin within a tropical polytope defined by sector constraints, but required exhaustive exploration of sector assignments, leading to exponential complexity.
 
 In contrast, our spectral characterization offers a complete theoretical understanding of when data are tropically separable, an exact formula for the optimal margin, an efficient algorithm to find the optimal classifier without combinatorial exploration and a natural interpretation for non-separable cases.
 
-\paragraph{Limitations.} 
+\subsubsection*{Limitations.} 
 The primary limitation of our spectral approach is its sensitivity to outliers. Since convex hulls encompass all points in each class, a single misplaced point can significantly alter the classification boundary and potentially render previously separable data inseparable.
 
 Additionally, because our method is formulated as a spectral criterion rather than an optimization problem, it is challenging to incorporate relaxation mechanisms that would handle misclassified points in a controlled way. Traditional SVMs use slack variables to allow soft margins and tolerate some misclassifications, but our current approach doesn't have a direct equivalent. This suggests an important direction for future research.
@@ -346,7 +331,7 @@ Additionally, because our method is formulated as a spectral criterion rather th
 Having established the theoretical foundation, we now present our algorithm for tropical SVM based on the spectral criterion. The key insight is that we can compute the spectral radius and optimal hyperplane efficiently without exploring all possible sector assignments.
 
 
-\paragraph{Computing the Spectral Radius with Krasnoselskii--Mann Iterations.}
+\subsubsection*{Computing the Spectral Radius with Krasnoselskii--Mann Iterations.}
 \label{subsec:spectral_computation}
 To compute the spectral radius $\rho(T)$ and a corresponding eigenvector $a\in \R^n$, we use
 Algorithm~\ref{alg:km_iteration}, a modification of relative value
@@ -373,7 +358,7 @@ $\left\|T(y^{(k)})-y^{(k)}\right\|_H
 see~\cite{akianmfcs} for details. 
 Hence, Algorithm~\ref{alg:km_iteration} terminates in $O(1/\varepsilon^2)$ iterations.
 
-\paragraph{The Tropical SVM Algorithm.}\label{subsec:complete_algorithm}
+\subsubsection*{The Tropical SVM Algorithm.}\label{subsec:complete_algorithm}
 Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SVM classification, achieving margin optimality of Theorem~\ref{thm:spectral_separability} in the separable case.
 
 \begin{algorithm}
@@ -400,8 +385,9 @@ $\mathcal{O}(pd)$ time, where $p=p_1+\dots+p_K$ is the total number of points.
 Hence, Algorithm~\ref{alg:tropical_svm} terminates in $O(pd/\varepsilon^2)$ time. Observe
 that this bound is {\em linear} in the input size $pd$.
 
-\paragraph{Proof of Concept.}
+\subsubsection*{Proof of Concept.}
 We validated the computational complexity of our algorithm through empirical testing (detailed in Appendix~\ref{appendix:empirical}). Our implementation achieves tractable performance on standard benchmark datasets, with performance scaling linearly with both dataset size and feature dimension as predicted by our theoretical analysis.
+\footnotetext{The code for reproducing these experiments is available at \url{https://github.com/samuelbx/tropical_svm}.}
 
 For the first time, we demonstrate that tropical SVMs can be practically computed with pseudo-polynomial guarantees, removing the exponential barrier that limited previous approaches. While specialized classical SVM libraries remain faster on conventional tasks, our approach enables new applications where piecewise-linear decision boundaries offer advantages.
 
@@ -411,7 +397,7 @@ Future optimizations could include kernel methods, sparse representations for la
 
 While hyperplanes provide effective classification boundaries, we can achieve even greater expressivity by extending our framework to polynomials. They create more flexible and numerous decision boundaries while maintaining theoretical guarantees.
 
-\paragraph{Tropical Polynomial Kernel.}
+\subsubsection*{Tropical Polynomial Kernel.}
 A tropical (Laurent) polynomial in $\trop^d$ takes the form:
 \begin{align}
 f(x) = \max_{\alpha \in A} (-c_\alpha + \langle \alpha, x \rangle),
@@ -425,7 +411,7 @@ To fit such polynomials, we use a feature map $\Phi_A: \trop^d \to \trop^{|A|}$ 
 
 This feature map transforms the original data into a higher-dimensional space where each coordinate corresponds to a monomial term. A hyperplane in this feature space corresponds to a polynomial in the original space.
 
-\paragraph{Strategic Monomial Selection.}
+\subsubsection*{Strategic Monomial Selection.}
 The choice of monomial set $A$ critically affects both the expressivity and computational complexity of the resulting classifier. We explore two complementary approaches:
 
 \begin{enumerate}
@@ -437,7 +423,7 @@ The choice of monomial set $A$ critically affects both the expressivity and comp
 
 The degree parameter $s$ controls the trade-off between expressivity and overfitting. Higher degrees create more flexible boundaries but may overfit the training data. Cross-validation can guide this selection process.
 
-\paragraph{Classification with Polynomials.}\label{subsec:poly_classification}
+\subsubsection*{Classification with Polynomials.}\label{subsec:poly_classification}
 To perform classification with polynomials:
 
 \begin{enumerate}
@@ -454,7 +440,7 @@ To perform classification with polynomials:
 \end{enumerate}
 
 Remark that we can now divide the space in $|A|$ sectors, allowing us to classify more than $d$ classes in dimension $d$.
-\paragraph{Margin Guarantees.}
+\subsubsection*{Margin Guarantees.}
 When extending to polynomial classifiers, we maintain theoretical guarantees on the margin. Specifically, when $\rho(T)<0$ (indicating separability in the feature space), the data are separable in the original space with a margin of at least $-\rho(T)/\lVert \Phi_A\rVert_{\text{op},\infty}$, where $\lVert \Phi_A\rVert_{\text{op},\infty}$ is the operator norm of the feature map.
 
 For homogeneous degree-$s$ monomials, this simplifies to $-\rho(T)/s$, meaning the margin scales inversely with the polynomial degree. This gives a principled way to balance expressivity with generalization through the choice of polynomial degree.
@@ -507,11 +493,9 @@ We presented here a proof of concept, based on a first implementation in Python:
 (relative value iteration), in a non-optimized way. We could rely instead on the policy iteration algorithm~\cite{DG-06} and its refinement allowing parallelization in~\cite{chaloupkathesis}, which has been reported experimentally to provide the fastest method to solve mean-payoff
 games in practice~\cite{chaloupka}.
 
-% -- Samuel: Temporarily removed for NIPS submission --
-% \section*{Acknowledgements}
-% Xavier Allamigeon and St\'ephane Gaubert thank Hicham Sefiani and Ismail Labiad
-% for their preliminary investigation into the application of game theory methods to the resolution of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani}.
-% \todo[color=red!30,inline]{SG to XA: verifie mon remerciement. Les eleevs ont ecrit Sefiani en premier auteur renversant l'ordre, j'ai garde cela dans la ref biblio.}
+\section*{Acknowledgements}
+Xavier Allamigeon and St\'ephane Gaubert thank Hicham Sefiani and Ismail Labiad
+for their preliminary investigation into the application of game theory methods to the resolution of tropical SVMs, carried out as part of a research project within their curriculum at \'Ecole polytechnique~\cite{labiadsefiani}.
 
 \bibliographystyle{unsrt}
 \bibliography{references}
@@ -633,7 +617,6 @@ Using the inequalities derived above, we get $d_H(x, \bar{S}^k) \geq -\rho(T)$.
 \end{proof}
 
 In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understanding of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)=\mathcal{S}(T^1)\cap\mathcal{S}(T^2)$. As shown by Theorem 16 in \cite{allamigeon_condition},
-%\todo{SG: issue to be fixed quietly after submission to NEURIPS, Theorem 16 (originally proved by XA, SG, Katz) was reproduced in \cite{allamigeon_condition} without proof, it is an issue to quote a result whose proof is not available}
 this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by Algorithm~\ref{alg:tropical_svm} lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
@@ -775,221 +758,5 @@ a proof of concept that tropical SVMs can be practically computed.
     \caption{Performance scaling analysis of tropical SVM on MNIST data \cite{MNIST}.}
     \label{fig:scaling_analysis}
 \end{figure}
-
-
-\newpage
-\section*{NeurIPS Paper Checklist}
-
-\begin{enumerate}
-
-\item {\bf Claims}
-    \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: The abstract and introduction clearly state the contributions—including the spectral characterization, margin optimality, pseudo‐polynomial algorithm, and extension to tropical polynomials—which are supported by both theoretical results and a proof of concept.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the abstract and introduction do not include the claims made in the paper.
-        \item The abstract and/or introduction should clearly state the claims made, including the contributions made in the paper and important assumptions and limitations. A No or NA answer to this question will not be perceived well by the reviewers. 
-        \item The claims made should match theoretical and experimental results, and reflect how much the results can be expected to generalize to other settings. 
-        \item It is fine to include aspirational goals as motivation as long as it is clear that these goals are not attained by the paper. 
-    \end{itemize}
-
-\item {\bf Limitations}
-    \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: The paper explicitly discusses limitations such as sensitivity to outliers and the challenge of incorporating soft margins (see the ``Limitations'' paragraph in Section~\ref{sec:spectral})
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper has no limitation while the answer No means that the paper has limitations, but those are not discussed in the paper. 
-        \item The authors are encouraged to create a separate "Limitations" section in their paper.
-        \item The paper should point out any strong assumptions and how robust the results are to violations of these assumptions (e.g., independence assumptions, noiseless settings, model well-specification, asymptotic approximations only holding locally). The authors should reflect on how these assumptions might be violated in practice and what the implications would be.
-        \item The authors should reflect on the scope of the claims made, e.g., if the approach was only tested on a few datasets or with a few runs. In general, empirical results often depend on implicit assumptions, which should be articulated.
-        \item The authors should reflect on the factors that influence the performance of the approach. For example, a facial recognition algorithm may perform poorly when image resolution is low or images are taken in low lighting. Or a speech-to-text system might not be used reliably to provide closed captions for online lectures because it fails to handle technical jargon.
-        \item The authors should discuss the computational efficiency of the proposed algorithms and how they scale with dataset size.
-        \item If applicable, the authors should discuss possible limitations of their approach to address problems of privacy and fairness.
-        \item While the authors might fear that complete honesty about limitations might be used by reviewers as grounds for rejection, a worse outcome might be that reviewers discover limitations that aren't acknowledged in the paper. The authors should use their best judgment and recognize that individual actions in favor of transparency play an important role in developing norms that preserve the integrity of the community. Reviewers will be specifically instructed to not penalize honesty concerning limitations.
-    \end{itemize}
-
-\item {\bf Theory Assumptions and Proofs}
-    \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: All major theoretical results—including the spectral separability theorem—are supported by clearly stated assumptions and complete proofs provided in the Appendix~\ref{appendix:proofs}.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not include theoretical results. 
-        \item All the theorems, formulas, and proofs in the paper should be numbered and cross-referenced.
-        \item All assumptions should be clearly stated or referenced in the statement of any theorems.
-        \item The proofs can either appear in the main paper or the supplemental material, but if they appear in the supplemental material, the authors are encouraged to provide a short proof sketch to provide intuition. 
-        \item Inversely, any informal proof provided in the core of the paper should be complemented by formal proofs provided in appendix or supplemental material.
-        \item Theorems and Lemmas that the proof relies upon should be properly referenced. 
-    \end{itemize}
-
-    \item {\bf Experimental Result Reproducibility}
-    \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: The algorithm is fully described in Section~\ref{sec:algorithm}. The experimental section provides details on data splits (5-fold cross-validation), training times, accuracy metrics, and references a repository for code and reproduction (see Table~\ref{tab:benchmark_results} and Appendix~\ref{appendix:empirical}).
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not include experiments.
-        \item If the paper includes experiments, a No answer to this question will not be perceived well by the reviewers: Making the paper reproducible is important, regardless of whether the code and data are provided or not.
-        \item If the contribution is a dataset and/or model, the authors should describe the steps taken to make their results reproducible or verifiable. 
-        \item Depending on the contribution, reproducibility can be accomplished in various ways. For example, if the contribution is a novel architecture, describing the architecture fully might suffice, or if the contribution is a specific model and empirical evaluation, it may be necessary to either make it possible for others to replicate the model with the same dataset, or provide access to the model. In general. releasing code and data is often one good way to accomplish this, but reproducibility can also be provided via detailed instructions for how to replicate the results, access to a hosted model (e.g., in the case of a large language model), releasing of a model checkpoint, or other means that are appropriate to the research performed.
-        \item While NeurIPS does not require releasing code, the conference does require all submissions to provide some reasonable avenue for reproducibility, which may depend on the nature of the contribution. For example
-        \begin{enumerate}
-            \item If the contribution is primarily a new algorithm, the paper should make it clear how to reproduce that algorithm.
-            \item If the contribution is primarily a new model architecture, the paper should describe the architecture clearly and fully.
-            \item If the contribution is a new model (e.g., a large language model), then there should either be a way to access this model for reproducing the results or a way to reproduce the model (e.g., with an open-source dataset or instructions for how to construct the dataset).
-            \item We recognize that reproducibility may be tricky in some cases, in which case authors are welcome to describe the particular way they provide for reproducibility. In the case of closed-source models, it may be that access to the model is limited in some way (e.g., to registered users), but it should be possible for other researchers to have some path to reproducing or verifying the results.
-        \end{enumerate}
-    \end{itemize}
-
-
-\item {\bf Open access to data and code}
-    \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: The supplementary material includes code and instructions for reproducing the experiments.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that paper does not include experiments requiring code.
-        \item Please see the NeurIPS code and data submission guidelines (\url{https://nips.cc/public/guides/CodeSubmissionPolicy}) for more details.
-        \item While we encourage the release of code and data, we understand that this might not be possible, so “No” is an acceptable answer. Papers cannot be rejected simply for not including code, unless this is central to the contribution (e.g., for a new open-source benchmark).
-        \item The instructions should contain the exact command and environment needed to run to reproduce the results. See the NeurIPS code and data submission guidelines (\url{https://nips.cc/public/guides/CodeSubmissionPolicy}) for more details.
-        \item The authors should provide instructions on data access and preparation, including how to access the raw data, preprocessed data, intermediate data, and generated data, etc.
-        \item The authors should provide scripts to reproduce all experimental results for the new proposed method and baselines. If only a subset of experiments are reproducible, they should state which ones are omitted from the script and why.
-        \item At submission time, to preserve anonymity, the authors should release anonymized versions (if applicable).
-        \item Providing as much information as possible in supplemental material (appended to the paper) is recommended, but including URLs to data and code is permitted.
-    \end{itemize}
-
-
-\item {\bf Experimental Setting/Details}
-    \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: The paper details the experimental setup, including the use of 5-fold cross-validation, data standardization, and provides training times and accuracy metrics in Table~\ref{tab:benchmark_results} and related figures in the appendix.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not include experiments.
-        \item The experimental setting should be presented in the core of the paper to a level of detail that is necessary to appreciate the results and make sense of them.
-        \item The full details can be provided either with the code, in appendix, or as supplemental material.
-    \end{itemize}
-
-\item {\bf Experiment Statistical Significance}
-    \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: The results are reported with standard deviations.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not include experiments.
-        \item The authors should answer "Yes" if the results are accompanied by error bars, confidence intervals, or statistical significance tests, at least for the experiments that support the main claims of the paper.
-        \item The factors of variability that the error bars are capturing should be clearly stated (for example, train/test split, initialization, random drawing of some parameter, or overall run with given experimental conditions).
-        \item The method for calculating the error bars should be explained (closed form formula, call to a library function, bootstrap, etc.)
-        \item The assumptions made should be given (e.g., Normally distributed errors).
-        \item It should be clear whether the error bar is the standard deviation or the standard error of the mean.
-        \item It is OK to report 1-sigma error bars, but one should state it. The authors should preferably report a 2-sigma error bar than state that they have a 96\% CI, if the hypothesis of Normality of errors is not verified.
-        \item For asymmetric distributions, the authors should be careful not to show in tables or figures symmetric error bars that would yield results that are out of range (e.g. negative error rates).
-        \item If error bars are reported in tables or plots, The authors should explain in the text how they were calculated and reference the corresponding figures or tables in the text.
-    \end{itemize}
-
-\item {\bf Experiments Compute Resources}
-    \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: All experiments were conducted on a MacBook Air M2. These specifications are typical for small-scale benchmark experiments, and the reported training times reflect the performance on this hardware.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not include experiments.
-        \item The paper should indicate the type of compute workers CPU or GPU, internal cluster, or cloud provider, including relevant memory and storage.
-        \item The paper should provide the amount of compute required for each of the individual experimental runs as well as estimate the total compute. 
-        \item The paper should disclose whether the full research project required more compute than the experiments reported in the paper (e.g., preliminary or failed experiments that didn't make it into the paper). 
-    \end{itemize}
-    
-\item {\bf Code Of Ethics}
-    \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics \url{https://neurips.cc/public/EthicsGuidelines}?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: The work is theoretical and algorithmic with supporting experiments on standard benchmark datasets; there are no ethical issues or concerns related to the research.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the authors have not reviewed the NeurIPS Code of Ethics.
-        \item If the authors answer No, they should explain the special circumstances that require a deviation from the Code of Ethics.
-        \item The authors should make sure to preserve anonymity (e.g., if there is a special consideration due to laws or regulations in their jurisdiction).
-    \end{itemize}
-
-
-\item {\bf Broader Impacts}
-    \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
-    \item[] Answer: \answerNA{}
-    \item[] Justification: The research is primarily theoretical and methodological with no direct societal impact, and no discussion of broader impacts is necessary.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that there is no societal impact of the work performed.
-        \item If the authors answer NA or No, they should explain why their work has no societal impact or why the paper does not address societal impact.
-        \item Examples of negative societal impacts include potential malicious or unintended uses (e.g., disinformation, generating fake profiles, surveillance), fairness considerations (e.g., deployment of technologies that could make decisions that unfairly impact specific groups), privacy considerations, and security considerations.
-        \item The conference expects that many papers will be foundational research and not tied to particular applications, let alone deployments. However, if there is a direct path to any negative applications, the authors should point it out. For example, it is legitimate to point out that an improvement in the quality of generative models could be used to generate deepfakes for disinformation. On the other hand, it is not needed to point out that a generic algorithm for optimizing neural networks could enable people to train models that generate Deepfakes faster.
-        \item The authors should consider possible harms that could arise when the technology is being used as intended and functioning correctly, harms that could arise when the technology is being used as intended but gives incorrect results, and harms following from (intentional or unintentional) misuse of the technology.
-        \item If there are negative societal impacts, the authors could also discuss possible mitigation strategies (e.g., gated release of models, providing defenses in addition to attacks, mechanisms for monitoring misuse, mechanisms to monitor how a system learns from feedback over time, improving the efficiency and accessibility of ML).
-    \end{itemize}
-    
-\item {\bf Safeguards}
-    \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse (e.g., pretrained language models, image generators, or scraped datasets)?
-    \item[] Answer: \answerNA{}
-    \item[] Justification: The work does not involve the release of data or models that present a high risk of misuse.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper poses no such risks.
-        \item Released models that have a high risk for misuse or dual-use should be released with necessary safeguards to allow for controlled use of the model, for example by requiring that users adhere to usage guidelines or restrictions to access the model or implementing safety filters. 
-        \item Datasets that have been scraped from the Internet could pose safety risks. The authors should describe how they avoided releasing unsafe images.
-        \item We recognize that providing effective safeguards is challenging, and many papers do not require this, but we encourage authors to take this into account and make a best faith effort.
-    \end{itemize}
-
-\item {\bf Licenses for existing assets}
-    \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
-    \item[] Answer: \answerYes{}.
-    \item[] Justification: All referenced works and datasets are properly cited.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not use existing assets.
-        \item The authors should cite the original paper that produced the code package or dataset.
-        \item The authors should state which version of the asset is used and, if possible, include a URL.
-        \item The name of the license (e.g., CC-BY 4.0) should be included for each asset.
-        \item For scraped data from a particular source (e.g., website), the copyright and terms of service of that source should be provided.
-        \item If assets are released, the license, copyright information, and terms of use in the package should be provided. For popular datasets, \url{paperswithcode.com/datasets} has curated licenses for some datasets. Their licensing guide can help determine the license of a dataset.
-        \item For existing datasets that are re-packaged, both the original license and the license of the derived asset (if it has changed) should be provided.
-        \item If this information is not available online, the authors are encouraged to reach out to the asset's creators.
-    \end{itemize}
-
-\item {\bf New Assets}
-    \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
-    \item[] Answer: \answerYes{}
-    \item[] Justification: The paper introduces a novel algorithm and provides experimental code, with documentation available in the supplementary code repository.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not release new assets.
-        \item Researchers should communicate the details of the dataset/code/model as part of their submissions via structured templates. This includes details about training, license, limitations, etc. 
-        \item The paper should discuss whether and how consent was obtained from people whose asset is used.
-        \item At submission time, remember to anonymize your assets (if applicable). You can either create an anonymized URL or include an anonymized zip file.
-    \end{itemize}
-
-\item {\bf Crowdsourcing and Research with Human Subjects}
-    \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)? 
-    \item[] Answer: \answerNA{}
-    \item[] Justification: The work does not involve crowdsourcing or human subjects.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
-        \item Including this information in the supplemental material is fine, but if the main contribution of the paper involves human subjects, then as much detail as possible should be included in the main paper. 
-        \item According to the NeurIPS Code of Ethics, workers involved in data collection, curation, or other labor should be paid at least the minimum wage in the country of the data collector. 
-    \end{itemize}
-
-\item {\bf Institutional Review Board (IRB) Approvals or Equivalent for Research with Human Subjects}
-    \item[] Question: Does the paper describe potential risks incurred by study participants, whether such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) approvals (or an equivalent approval/review based on the requirements of your country or institution) were obtained?
-    \item[] Answer: \answerNA{}
-    \item[] Justification: The research does not involve human subjects, so IRB approval is not applicable.
-    \item[] Guidelines:
-    \begin{itemize}
-        \item The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
-        \item Depending on the country in which research is conducted, IRB approval (or equivalent) may be required for any human subjects research. If you obtained IRB approval, you should clearly state this in the paper. 
-        \item We recognize that the procedures for this may vary significantly between institutions and locations, and we expect authors to adhere to the NeurIPS Code of Ethics and the guidelines for their institution. 
-        \item For initial submissions, do not include any information that would break anonymity (if applicable), such as the institution conducting the review.
-    \end{itemize}
-
-\end{enumerate}
 
 \end{document}
