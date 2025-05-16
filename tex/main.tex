@@ -303,9 +303,9 @@ in~\cite{akiangaubertqisaadi}. The eigenvector $u$ is generally non unique.
 
 \paragraph{Separating Point Clouds with a Hyperplane.}
 
-We say that the hyperplane $\mathcal{H}_a$ with apex $a$ separates the point clouds $X^1, \ldots, X^K$ if there exists a partition of $\{1,\dots,d\}$ in $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$,\todo[color=red!30]{SG: We need to require that it is a partition, ie the union is equal to $1,\dots,d$}
+We say that the hyperplane $\mathcal{H}_a$ with apex $a$ {\em separates} the point clouds $X^1, \ldots, X^K\subset \R^d$ if there exists a partition of $\{1,\dots,d\}$ in $K$ disjoint and non-empty subsets $I^1, \ldots, I^K$,\todo[color=red!30]{SG: We need to require that it is a partition, ie the union is equal to $1,\dots,d$}
 %of $\{1, \ldots, d\}$,
-corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$ and every point $x \in X^k$, the point $x$ belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$.
+corresponding to the sectors assigned to each class, such that for every class $1 \leq k \leq K$, every point $x \in X^k$, belongs to the union $S^k$ of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$.
 
 Moreover, we say that the hyperplane separates with margin $\gamma > 0$ if, for any two distinct classes $k \neq \ell$ and any point $x \in X^k$, the Hilbert distance from $x$ to $S^\ell$ is at least $\gamma$, namely,
 \begin{align}
@@ -572,7 +572,8 @@ $-\gamma\geq \rho(T)$.\todo{SG: added ref to CW theorem}
 \end{proof}
 
 \begin{lemma}[Max-margin hyperplane]\label{lemma:operator_to_hyperplane}
-Let $T^k$ be Shapley operators, and $T$ defined as before. If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.
+  Let $T^1,\dots,T^K$ be arbitrary Shapley operators, and $T$ defined as per~\eqref{eq:single_operator}.\todo{SG: make explicit that the $T^k$ are arbitrary}
+  If $\rho(T) < 0$, then there exists a hyperplane $\mathcal{H}_a$ that separates the sub-fixed-point sets $\mathcal{S}(T^k)$ with a margin of at least $-\rho(T)$.\todo{SG: we defined separation only for $\tcone(X^k)$, not for any sub-fixed-point set, we will have to fix this}
 \end{lemma}
 
 \begin{proof}
@@ -622,8 +623,9 @@ Intuitively, this can be thought of as representing the union of pairwise inters
 
 The following Lemma is the only one where using the diagonal-free operator is needed.
 
-\begin{lemma}[Overlap interpretation]\label{lemma:perturbation}
-Let $T^k$ be the diagonal-free projections. For binary classification with $\rho(T) \geq 0$, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the intersection of the tropical convex hulls of the perturbed sets have empty interior.
+\begin{lemma}[Overlap interpretation in the binary classification problem]\label{lemma:perturbation}
+  Let $T^k$ be the diagonal-free projection of $\tcone(X^k)$, for $k=1,2$.
+  Let $T=\min(T^1,T^2)$, and suppose that $\rho(T) \geq 0$. Then, there exists a perturbation of the point sets $X^1$ and $X^2$, with each point moved by at most $\rho(T)$ in the tropical metric, such that the tropical convex hulls of the perturbed sets have a trivial intersection.
 \end{lemma}
 \begin{proof}
 Let $a$ be the eigenvector corresponding to $\rho(T)$, i.e., $T(a) = \rho(T) + a$. Let $\mathcal{H}_a$ be the tropical hyperplane with apex $a$. We construct a perturbation by projecting onto $\mathcal{H}_a$ any point whose distance to $\mathcal{H}_a$ is less than $\rho(T)$.
