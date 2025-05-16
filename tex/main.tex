@@ -31,7 +31,8 @@
 \renewcommand{\leq}{\leqslant}
 \renewcommand{\preceq}{\preccurlyeq}
 \renewcommand{\succeq}{\succcurlyeq}
-
+\def\ge{\geqslant}
+\def\le{\leqslant}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Rmax}{\mathbb{R}_{\max}}
 \newcommand{\trop}{\mathbb{T}}
@@ -655,7 +656,7 @@ and let $T$ be defined as per~\eqref{eq:single_operator}.\todo{SG: caveat new co
 %%   for all $\mu>\rho(T)$,\todo[color=red!30]{SG: it was wrong to say that $T(a)=\rho(T)+a$ in such a generality. This is correct if $V^k =\tcone(X^k)$ with $X^k$ finite but not  in general}
   %% %  Since $\rho(T) < 0$,
   By assumption, there is a positive number $R$ such that all the images of the operators $T^k$ are included in the Hilbert seminorm ball of radius $R$ and center $0$,
-  $B(0,R)=\{x\in \R^d\mid \|x\|_H\leq Hilbert\}$,
+  $B(0,R)=\{x\in \R^d\mid \|x\|_H\leq R\}$,
 . Then, the image of the second maximum operator $T$ is also included in this ball.
   It follows that any orbit of $T$ starting in this ball stays in this ball, and by Theorem~9 of~\cite{gaubert2004}, there exists a vector $a\in \R^n$ such that $T(a)=\rho(T)+a$.
 
