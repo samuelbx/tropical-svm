@@ -2,10 +2,13 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
 \HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
 \global\let\oldnewlabel\newlabel
 \gdef\newlabel#1#2{\newlabelxx{#1}#2}
 \gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
 \AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
 \let\newlabel\oldnewlabel
 \fi}
 \fi}
@@ -186,7 +189,7 @@
 \citation{akiangaubertqisaadi}
 \citation{AGGut10}
 \citation{gaubert2004}
-\@writefile{toc}{\contentsline {section}{\tocsection {Appendix}{A}{Proof of Theorem\nonbreakingspace \ref {thm:spectral_separability} (Spectral Radius and Margin)}}{13}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\tocsection {Appendix}{A}{Proof of Theorem\nonbreakingspace \ref  {thm:spectral_separability} (Spectral Radius and Margin)}}{13}{appendix.A}\protected@file@percent }
 \newlabel{appendix:proofs}{{A}{13}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Radius and Margin)}{appendix.A}{}}
 \newlabel{lemma:hyperplane_to_operator}{{2}{13}{Upper bound on margin}{theorem.2}{}}
 \newlabel{e-toreverse}{{17}{13}{Proof of Theorem~\ref {thm:spectral_separability} (Spectral Radius and Margin)}{equation.A.17}{}}
