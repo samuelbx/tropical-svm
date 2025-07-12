@@ -72,10 +72,9 @@
     In 2006, Gärtner and Jaggi introduced a tropical analogue of support vector machines, using a single tropical hyperplane in dimension $d$ to separate $d$ classes of points.
     Efficient computation of tropical separators has since remained an open problem. We introduce an algorithm for tropical support vector machines that overcomes the combinatorial explosion of previous approaches.
     Our main result shows that the spectral radius of a naturally constructed Shapley operator characterizes separability and the maximal margin, as well as the data overlap in the non-separable binary case.
-    This provides a reduction to mean-payoff games, a well-studied class of problems in algorithmic game theory. It enables computing an optimal separating hyperplane via scalable iterative algorithms, with complexity polynomial in the size of the dataset and pseudo-polynomial in the desired precision.
+    This provides a reduction to mean-payoff games, a well-studied class of problems in algorithmic game theory. It enables computing an optimal separating hyperplane via scalable iterative algorithms, with complexity linear in the size of the dataset and pseudo-polynomial in the desired precision.
     Finally, we combine tropical classifiers with linear feature maps to construct flexible piecewise-linear classifiers.
 \end{abstract}
-\todo[color=red!30]{SG: we forgot the implied constant in the KM algorithm, this leads to a complexity in $pd^2$ instead of $pd$, hence not linear in the data set.}
 \section{Introduction}\label{sec:intro}
 
 Classification is a fundamental task in machine learning, and Support Vector Machines (SVMs) have been a cornerstone method for decades. Traditional SVMs create decision boundaries using affine hyperplanes, which provide maximum-margin separation with strong generalization guarantees \cite{vapnik1999}. However, these linear boundaries are limiting when faced with complex, nonlinear data patterns, typically requiring kernel methods or feature engineering \cite{scholkopf2002}.
@@ -96,8 +95,10 @@ The Shapley operators we employ encode the one-step payoffs and transitions in s
 The spectral properties of these operators have been extensively studied to characterize fixed points and convergence in nonlinear systems~\cite{kolokoltsov1997,gaubert2004}.
 In particular, the spectral radius of a Shapley operator equals the game's value.
 Mean-payoff games lie in NP $\cap$ coNP, but no polynomial-time algorithm is known.
-Nonetheless, large instances can be solved efficiently by iterative schemes such as relative Krasnoselskii--Mann iteration, which require $O(1/\varepsilon^2)$ operator evaluations, where the implied constant depends linearly
-in the number of states of the game. \todo{SG: we said linear in the input size but this is not true}
+Nonetheless, large instances can be solved efficiently by iterative schemes such as relative Krasnoselskii--Mann iteration, which require $O(1/\varepsilon^2)$ operator evaluations, where for the subclass of games under consideration
+in this paper, the implied constant depends on the maximal absolute
+value of the entries of the data points but not on the number of data points or dimension.
+\todo{SG: we said linear in the input size but imput size is ambiguous. Actually, in general, number of iteration of KM linear in the number of states, but the matrices are full, hence a small trick (new lemma in the appendix) implies the number of iteration is in $O(W)$. SO I rewrote}
 
 \paragraph{Contributions.} We develop a new approach to tropical classification using mean-payoff games,
 overcoming the computational limitations of previous approaches:
@@ -107,7 +108,7 @@ overcoming the computational limitations of previous approaches:
     
     \item We prove that when data are separable, the optimal margin equals $-\rho(T)$. Moreover, in the binary non-separable case, $\rho(T)$ quantifies exactly how much the data points would need to be perturbed to achieve separability.
     
-    \item We develop an algorithm based on mean-payoff games and Krasnoselskii--Mann iteration that computes the optimal classifier in a time that is polynomial in the dimension and in the number of vectors of the data set.\todo{SG: we said linear but caveat, this was wrong, we get $pd^2$ as the detailed analysis below reveals}
+    \item We develop an algorithm based on mean-payoff games and Krasnoselskii--Mann iteration that computes the optimal classifier in a time that is linear in the dimension and in the number of vectors of the data set.\todo{SG: more precised explanation about linearity}
     
     \item We extend our framework to tropical polynomial classifiers, enabling more expressive piecewise-linear decision boundaries (see Figure~\ref{fig:tropical_poly}) while preserving theoretical margin guarantees.
 \end{enumerate}
@@ -338,7 +339,7 @@ Let $X^1,\ldots,X^K \subset \trop^d$ be labeled point sets and let $T$ be the cl
 (3) \textit{Soft-Margin Interpretation:} For non separable data, and for the binary classification problem, $\rho(T)$ is positive and coincides with the minimal distance of the original data $(X^1,X^2)$ to perturbed data $(\tilde{X}^1,\tilde{X}^2)$ such that $\tcone (\tilde{X}^1)\cap \tcone(\tilde{X}^2)$ is of non-empty interior. 
 \todo{SG: replaced ``that nullifies $\rho(T)$.'' by a more informative geometric statement. For $\rho(T)=0$ is more difficult to interpret. An illustrative example should be given}
 
-Moreover, both $\rho(T)$ and a vector $a$ satisfying $T(a) = \rho(T)+a$ up to a precision $\epsilon$ can be computed up in a time that is polynomial in the dimension and in the number of vectors of the data set and pseudopolnomial in $\epsilon$ using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).\todo{SG: linear $\to$ polynomial, rewritten, we oversold a bit!}
+Moreover, both $\rho(T)$ and a vector $a$ satisfying $T(a) = \rho(T)+a$ up to a precision $\epsilon$ can be computed up in a time that is linear in the dimension and in the number of vectors of the data set and pseudopolnomial in $\epsilon$ using mean-payoff game algorithms (see Section~\ref{sec:algorithm}).\todo{SG: explained mrore precisely linearity}
 \end{theorem}
 A complete proof is provided in Appendix~\ref{appendix:proofs}, where we will see that some of these results remain with more general assumptions.
 It is organized as follows: first, Lemma~\ref{lemma:hyperplane_to_operator} states that for tropical projections (or their diagonal-free counterpart), $-\rho(T)$ is a lower bound on the margin.
@@ -346,7 +347,7 @@ Then, Lemma~\ref{lemma:operator_to_hyperplane} gives a construction for a separa
 
 \paragraph{Benefits of the Spectral Approach.} 
 Our framework advances the tropical SVM foundation established by Gärtner and Jaggi \cite{gartner2008}. Their work showed that tropical SVM could be formulated as finding a point of maximum margin within a tropical polytope defined by sector constraints, but required exhaustive exploration of sector assignments, leading to a complexity in $\Omega(2^d)$.
-In contrast, Theorem~\ref{thm:spectral_separability} leads to a complexity quadratically bounded in $d$ (experiments reveal an even more favorable practical behavior, linear in $d$).\todo{SG: I was more precise, we said exponential but better to say in which variable. And linear was wrong in theory... but true in practice ? }
+In contrast, Theorem~\ref{thm:spectral_separability} leads to a complexity linearly bounded in $d$ \todo{SG: I was more precise, we said exponential but better to say in which variable. }
 In fact, our spectral characterization offers a complete theoretical understanding of when data are tropically separable, leading to an exact formula for the optimal margin, an efficient algorithm to find the optimal classifier without combinatorial exploration and a natural interpretation for non-separable cases.
 
 \paragraph{Limitations.} 
@@ -383,9 +384,9 @@ It follows from a theorem of Baillon and Bruck~\cite{baillonbruck} that
 as soon as the eigenproblem $T(a)=\lambda + a$ with $a\in \R^n$ and $\lambda \in \R$ is solvable, which as observed above is always the case for the operator $T$ in~\eqref{eq:single_operator},
 we have
 $\left\|T(y^{(k)})-y^{(k)}\right\|_H
-= \mathcal{O}(1/k^{1/2})$, where the constant implied in the $\mathcal{O}(\cdot)$ is explicit, of order $dW$ where $W=\max_{i,k} \|X^k_{\cdot,i}\|_H$,\todo{SG: warning a factor $n$ is hidden in the constant since the constant is in $\|u\|_H$ where $u$ is an eigenvector, the latter quantity is in $O(dW)$. This is not so obvious though (the proof I know is to use blackwell optimality)}
-see~\cite{akianmfcs} for details. 
-Hence, Algorithm~\ref{alg:km_iteration} terminates in $O(1/\varepsilon^2)$ iterations.
+= \mathcal{O}(1/k^{1/2})$, where the constant implied in the $\mathcal{O}(\cdot)$ is explicit, of order $W$ where $W=\max_{i,j,k} |X^k_{i,j}|$,\todo{SG: We forgot to make explicit the constant which could have led to a mistake, because the constant is generally in $dW$, but there is a hack exploiting the full character which allows to us to reduce to $W$, eventually justifying our claim to be linear in the dimension, see the new lemma in the appendix}
+see~\cite{akianmfcs} for details, and the discussion of the appendix.
+Hence, Algorithm~\ref{alg:km_iteration} terminates in $O(W/\varepsilon^2)$ iterations, independently of the dimension $d$ or of the number of data points.\todo{SG: emphasized}
 
 \paragraph{The Tropical SVM Algorithm.}\label{subsec:complete_algorithm}
 Algorithm~\ref{alg:tropical_svm} presents our complete procedure for tropical SVM classification, achieving margin optimality of Theorem~\ref{thm:spectral_separability} in the separable case.
@@ -648,7 +649,7 @@ Using the inequalities derived above, we get $d_H(x, \bar{S}^k) \geq -\rho(T)$.
 \end{proof}
 
 In the binary case where data overlaps, the use of the diagonal-free variant of $T$ allows a greater understanding of the overlap. We have $T = \min(T^1, T^2)$, hence $\mathcal{S}(T)=\mathcal{S}(T^1)\cap\mathcal{S}(T^2)$. As shown by Theorem 16 in \cite{allamigeon_condition},
-%\todo{SG: issue to be fixed quietly after submission to NEURIPS, Theorem 16 (originally proved by XA, SG, Katz) was reproduced in \cite{allamigeon_condition} without proof, it is an issue to quote a result whose proof is not available}
+\todo{SG: issue to be fixed quietly after submission to NEURIPS, Theorem 16 (originally proved by XA, SG, Katz) was reproduced in \cite{allamigeon_condition} without proof, it is an issue to quote a result whose proof is not available}
 this implies that $\rho(T)$ equals the inner radius of this intersection, defined as the supremum of the radii of balls (for $\lVert\cdot\rVert_H$) included in $\mathcal{S}(T^1) \cap \mathcal{S}(T^2)$. In the non-separable case, the apex $a$ given by Algorithm~\ref{alg:tropical_svm} lies exactly at the center of the inner ball of this intersection.
 
 In the multi-class case, the corresponding Shapley operator $T$ can be equivalently expressed as
@@ -726,6 +727,25 @@ Moreover, for any $x\in X^1$ belonging to sector $i$,
 Equation \ref{eq:major} yields $d_{H}(x,\mathcal{H}_{a})\le\rho(T)$. Hence by Equations \ref{eq:major}, \ref{eq:rewrite} and \ref{eq:dist}, we have $\tilde{T}^{1}(a)_{i}=a_{i}$  and $\tilde{T}^{2}(a)_{i} \ge a_{i}$, hence $\tilde{T}(a)_{i}=a_{i}$.
 Since this holds for all $i$ we have finally $\tilde{T}(a)=a$. We conclude by Theorem 16 in \cite{allamigeon_condition} that $S(\tilde{T})$ has empty interior, and therefore the intersection of convex hulls of both transformed point clouds, namely $\mathcal{S}(\tilde{T}^1) \cap \mathcal{S}(\tilde{T}^2) \subset S(\tilde{T})$, has empty interior too.
 \end{proof}
+The following result allows us to bound $\rho(T)$ as well as an eigenvector $u$ such that $T(u) = \rho(T) +u$.\todo{SG: new lemma added. This is needed to achieve the linear bound}
+\begin{lemma}\label{lemma-short}
+  Let $W=\max_{k,i,j}|X^k_{ij}|$. Then, $|\rho(T)|\leq $, and
+  any vector $u\in \R^d$ such $T(u) = \rho(T)+u$ satisfied $\|u\|_H\leq 2W$.
+\end{lemma}
+\begin{proof}
+  We observe that every vector of $X^1\cup\dots \cup X^K$
+  is included in the ball $B(0,2W)$ in Hilbert's seminorm.
+  Since this ball is stable by tropical linear combinations,
+  it follows that the sets $\tcone(X^1),\dots,\tcone(X^k)$ are all
+  included in $B(0,W)$. Now, we see from the formula~\eqref{e-def-DF}
+  defining $P_X^{\text{DF}}$ that the range of $P_X^{\text{DF}}$ is included
+  in $\tcone(X)$. So, all the ranges of $P_{X^1}^{\text{DF}},\dots, P_{X^K}^{\text{DF}}$
+  are included in $B(0,2W)$. Since $B(0,2W)$ is not only stable by sup,
+  but also by inf, it follows that for all $y\in\R^d$, $T(y) =\max_{k<l}\min(P_{X^k}^{\text{DF}}(y), P_{X^l}^{\text{DF}}(y))\in B(0,2W)$. This implies that
+  any eigenvector $u\in \R^d$ of $T$ belongs to $B(0,2W)$. Since the eigenspace
+  of $T$ is preserved by adding constant vectors, we can choose an eigenvector such that $0\leq u_i \leq 2W$ holds for all $i\in [d]$. Then, Using the expression of $T$, together with \eqref{def-DF}, we deduce from $\lambda +u = T(u)$ that
+  there exists $k,l,j$ and $\lambda + u_i = X^k_{ij}-X^k_{lj + u_j$, which entails that $|\lambda| \leq 6W$. Hence, $|\rho(T)|\leq 6W$.
+  \end{proof}
 
 We summarize the proof of the Main Theorem, which holds entirely when $T^k$ are diagonal-free projections (and only for part $1$ and $2$ when they are non diagonal-free):
 
@@ -735,6 +755,13 @@ For part 1 (Separability Criterion): If we have an eigenpair $(\rho(T),a)$ such 
 For part 2 (Margin Optimality): Lemma~\ref{lemma:hyperplane_to_operator} shows that no hyperplane can achieve a margin larger than $-\rho(T)$, while Lemma~\ref{lemma:operator_to_hyperplane} provides a construction achieving exactly this margin.
 
 Part 3 (Soft-Margin Interpretation) is handled by Lemma~\ref{lemma:perturbation}.
+
+Finally, the Baillon-Bruck theorem~\cite{baillonbruck} implies
+that if $u$ is any eigenvector of $T$, then, Algorithm~\ref{}
+terminates in $O(\|u\|_H/\epsilon^2)$ iterations. By Lemma~\ref{lemma-short},
+this number of iterations is bounded in $O(W/\epsilon^2)$.
+
+
 \end{proof}
 
 \section{Proof of Concept}\label{appendix:empirical}
@@ -769,7 +796,7 @@ With $\varepsilon = 10^{-12}$, we typically get $10^3$ KM iterations before conv
 
 As expected, the number of monomials increases from $d+1$ in standard tropical SVM to $O(d^k)$ in the polynomial variant, explaining the observed computation-accuracy tradeoff. Table~\ref{tab:benchmark_results}
 shows that the current interpreted (Python/NumPy) implementation is slower, by a factor $10^3$, than a state-of-the-art implementation of classical SVMs. However, Figures~\ref{fig:scaling_analysis} show that the execution time of our method scales linearly
-in the number of entries $pd$ of the training set\todo{SG: rewrote (we said the size but the size is in the turing model, ie $\log W$ is part of the size)}
+in the number of entries $pd$ of the training set\todo{SG: replaced size by number of entries to be less ambiguous}
 and in the number of features (monomials), thereby providing
 a proof of concept that tropical SVMs can be practically computed.
 
