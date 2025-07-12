@@ -1,0 +1,1004 @@
+\documentclass[12pt]{beamer}
+\usepackage{beamerinnerthemeX}
+\usepackage{graphics,color,hyperref,mathrsfs}
+\usepackage{amsmath,amssymb,listings,frenchineq}
+\usepackage{xcolor,colortbl}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\setbeamertemplate{bibliography item}[text]
+\usepackage[authoryear]{natbib}
+\definecolor{darkgreen}{rgb}{0.0, 0.2, 0.13}
+\definecolor{vtx_color}{HTML}{e9190f}
+\definecolor{cp_color1}{HTML}{FFA500}
+\definecolor{cp_color2}{HTML}{a1dab4}
+\definecolor{cp_color3}{HTML}{41b6c4}
+\definecolor{cp_color4}{HTML}{2c7fb8}
+\definecolor{cp_color5}{HTML}{253494}
+
+\definecolor{color1}{RGB}{41,56,102}  %
+\definecolor{color2}{RGB}{42,161,133} %
+\definecolor{color3}{RGB}{134,166,91} %
+
+\newcommand{\ver}{\operatorname{ver}}
+\newcommand{\tcone}{\operatorname{tcone}}
+\newcommand{\hla}[1]{\textcolor{color1}{#1}}
+\newcommand{\hlb}[1]{\textcolor{color2}{#1}}
+\newcommand{\hlc}[1]{\textcolor{color3}{#1}}
+
+\bibliographystyle{plainnat}
+%
+%
+\usepackage{fixmath}
+\usepackage{bbm}    
+\usepackage{bm}
+\newcounter{mypart}
+\stepcounter{mypart}
+\newcommand{\cH}{\mathcal{H}}\newcommand{\cV}{\mathcal{V}}
+\newcommand{\myemph}[1]{\bl{#1}}
+\newcommand{\NEW}[1]{\myemph{#1}}%
+\newcommand{\proj}{\mathbb{P}}
+\newcommand{\TT}{\mathbb{T}}
+\newcommand{\Sp}{\operatorname{Sp}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\Lip}{\operatorname{Lip}}
+\newcommand{\Col}{\operatorname{Col}}
+\newcommand{\Row}{\operatorname{Row}}
+
+\newcommand\puiseuxCEX[1]{\textbf{\textsc{LW}}_{#1}}
+\newcommand\puiseuxCEXslack[1]{\textbf{\textsc{LW}}_{#1}^{=}}
+\newcommand\dualPuiseuxCEXslack[1]{\textbf{\textsc{DualLW}}_{#1}^{=}}
+\newcommand\perturbedPuiseuxCEX[2]{\textbf{\textsc{LW}}_{#1}^{#2}}
+\newcommand\realCEX[2]{\puiseuxCEX{#1}(#2)}
+\newcommand\realCEXslack[2]{\puiseuxCEXslack{#1}(#2)}
+\newcommand\dualRealCEXslack[2]{\dualPuiseuxCEXslack{#1}(#2)}
+
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Qcal}{\mathcal{Q}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\tdot}{\odot}
+\newcommand{\Rmax}{\R_{\max}}
+\newcommand{\doag}{\R}
+\newcommand{\supc}{\operatorname{sup}_C}
+\newcommand{\infc}{\operatorname{inf}_C}
+\newcommand{\informativefootnote}[1]{{\color{darkgreen}\footnotesize #1\par}}
+\newcommand{\informative}[1]{{\color{darkgreen}\scriptsize #1\par}}
+\newcommand{\informativenobreak}[1]{{\color{darkgreen}\scriptsize #1}}
+\newcommand{\informativesmall}[1]{{\color{darkgreen}\tiny #1\par}}
+\newcommand{\informativesmallnobreak}[1]{{\color{darkgreen}\tiny #1}}
+\renewcommand{\themypart}{\Roman{mypart}}
+\newcommand{\puiseux}{\mathbb{K}}
+\newcommand{\pospuiseux}{\puiseux_{>0}}
+\newcommand{\nnpuiseux}{\puiseux_{\geq 0}}
+\newcommand{\puiseuxcvg}{\puiseux}
+\newcommand{\nnpuiseuxcvg}{\nnpuiseux}
+\newcommand{\bspectra}{\mathbfcal{S}}
+\newcommand{\spectra}{\mathcal{S}}
+
+\newcommand{\bo}[1]{\mathbold{#1}}
+\newcommand{\sval}{\operatorname{sval}}
+\newcommand{\cvggenpuiseux}{\R\{\{t^{-\R}\}\}_{\text{cvg}}}
+\newcommand{\cvgCgenpuiseux}{\C\{\{t^{-\R}\}\}_{\text{cvg}}}
+\usepackage{ifthen}
+\usepackage{pgf}
+\usepackage{pgfplots}
+\usepackage{mathtools}
+\usepackage{tikz,tikz-3dplot}
+\usepackage{ifthen}
+\newboolean{withtikz}
+\setboolean{withtikz}{true}
+\usetikzlibrary{arrows}
+\usetikzlibrary{patterns}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes} 
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{fit}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{automata}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{barycentric}
+\newcommand{\tikzmark}[1]{\tikz[overlay,remember picture] \node (#1) {};}
+
+\newcommand{\drawfigure}{1}
+ \colorlet{kaki}{rgb:red,50;green,50;blue,0}
+\newcommand{\x}[0]{\mathbf{x}}
+\newcommand{\mtop}{\mathsf{t}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\detpm}{\operatorname{det}^\pm}
+\newcommand{\detmp}{\operatorname{det}^\mp}
+\newcommand{\detpp}{\operatorname{det}^+}
+\newcommand{\detmm}{\operatorname{det}^-}
+\newcommand{\cone}{\operatorname{cone}}
+\newcommand{\ve}[1]{\mathbf{#1}}
+\newcommand{\puiseuxP}[0]{\bm{\mathcal{P}}}   %
+\newcommand{\puiseuxH}[0]{\bm{\mathcal{H}}}             %
+\newcommand{\puiseuxC}[0]{\bm{\mathcal{C}}}   %
+\newcommand{\puiseuxD}[0]{\bm{\mathcal{D}}}   %
+\newcommand{\puiseuxE}[0]{\bm{\mathcal{E}}}   %
+\newcommand{\cpath}{\mathcal{C}}
+\newcommand{\troppath}{\mathcal{C}^{\text{\rm trop}}}
+
+\def\myblack#1{{\color{black}#1}}
+\def\s(#1,#2){\left( #1,#2\right)}
+\def\<#1,#2>{\langle #1,#2\rangle}
+\newcommand{\lpvalue}{\nu}
+\newcommand{\hardyex}{{\bf LP}} %
+
+\newcommand{\genpuiseux}{\mathbb{K}}
+\newcommand{\genpuiseuxcvg}{\mathbb{K}_{\text{cvg}}}
+\newcommand{\trace}{\operatorname{tr}}
+\newcommand{\myquote}[2]{{\tiny\color{purple}#1\citep*{#2}}}
+\newcommand{\bl}[1]{{\color{blue} #1}}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\Spec}{\operatorname{Spec}}
+\newcommand{\Funk}{\operatorname{RFunk}}
+\newcommand{\Extr}{\operatorname{Extr}}
+\newcommand{\overl}[2]{\begin{overlayarea}{\textwidth}{#1}#2
+\end{overlayarea}}
+\newcommand{\moverl}[3]{\begin{overlayarea}{\textwidth}{#1}\only<#2>{#3}
+\end{overlayarea}}
+\newcommand{\centeredframe}[1]{\begin{frame}\vfill
+\centerline{#1}\vfill\end{frame}}
+\newcommand{\deltat}{h}
+\newcommand{\ncols}{n}
+\newcommand{\nrows}{m}
+\newcommand{\mpscal}[2]{\trop{\langle #1,#2\rangle}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\set}[2]{\{#1\mid #2\}}
+\newcommand{\russianzero}{\mathbbold{0}}
+\newcommand{\zero}{\russianzero}
+\newcommand{\russianunit}{\mathbbold{1}}
+\newcommand{\rhomax}{\rho_{\max}}
+\newcommand{\Int}{\operatorname{int}}
+\newcommand{\mb}[1]{\mathbf{#1}}
+\newcommand{\mpplus}{+}
+\newcommand{\mptimes}{}
+\newcommand{\mon}{-}
+\newcommand{\mop}{+}
+\newcommand{\cw}{\operatorname{cw}}
+\newcommand{\res}{^{\sharp}}
+\newcommand{\per}{\operatorname{per}}
+\newcommand{\sA}{\mathcal{A}}
+\def\dbox{\Box\!\!\!\cdot}
+\def\mydot{\;\cdot\;}
+\newcommand{\transpose}[1]{{#1}^\top}
+\newenvironment{stepitemize}{\begin{itemize}[<+->]}{\end{itemize} }
+\newenvironment{stepenumerate}{\begin{enumerate}[<+->]}{\end{enumerate}}
+\newtheorem{question}{Question}
+\newtheorem{myalgorithm}{Algorithm}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{proposition}{Proposition}
+\newtheorem{observation}{Observation}
+\newcommand{\mpzeroone}{\{\,\mpzero,0\,\}}%
+\newenvironment{trop}{\color{blue}\text{``}}{\text{''}}
+\newcommand{\mytop}{\operatorname{top}}
+\newcommand{\mytrop}[1]{\ltr #1\rtr}
+\newcommand{\mybounds}[3]{[#2,#1]}
+\newcommand{\mybound}[3]{#1}
+\newcommand{\pred}{Z}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\spec}{\operatorname{spec}}\newcommand{\cond}{\operatorname{cond}}
+\newcommand{\authdate}[2]{{\color{purple} #1} {\color{green}#2}}
+\newcommand{\auth}[1]{{\color{purple} #1}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\tangent}{\mathcal{T}}
+\newcommand{\vect}[1]{#1}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\inblue}[1]{{\color{blue}#1}}
+\colorlet{myblue}{gray!50!black}
+\colorlet{myred}{gray!50!black}
+\colorlet{mygreen}{gray!50!black}
+\newcommand{\ibid}{\giveref{ibid.}}
+\newcommand{\smallgiveref}[1]{{\footnotesize\color{purple}#1}}
+\newcommand{\verysmallgiveref}[1]{{\scriptsize\color{purple}#1}}
+\newcommand{\val}{\operatorname{val}}
+\def\ltr{\begin{trop}}
+\def\rtr{\end{trop}}
+\def\lltr{\color{blue}\text{``}}
+\def\ltrr{\color{blue}}
+\def\rtrr{}
+\newcommand{\mpone}{{1}}
+\def\rrtr{\text{''}}\newcommand{\mponealt}{\mpone}
+\newcommand{\maxplus}{\mathbb{R}_{\max}}
+\newcommand{\mpzerovect}{0}
+\newcommand{\mponevect}{{1}}
+\DeclareMathAlphabet{\mathbfcal}{OMS}{cmsy}{b}{n}
+\newcommand{\bbfamily}{\fontencoding{U}\fontfamily{bbold}\selectfont}
+\DeclareMathAlphabet{\mathbbold}{U}{bbold}{m}{n}
+\newcommand{\floor}[1]{\lfloor #1\rfloor}
+\newcommand{\mpzero}{{0}}
+\newcommand{\mpunit}{{1}}
+\newcommand{\sT}{\mathcal{T}}
+\newcommand{\sV}{\mathcal{V}}
+\newcommand{\sW}{\mathcal{W}}
+\newcommand{\sH}{\mathcal{H}}
+\newcommand{\sL}{\mathcal{L}}
+\newcommand{\sR}{\mathcal{R}}
+\newcommand{\sK}{\mathcal{K}}
+\newcommand{\sM}{\mathcal{M}}
+\newcommand{\sB}{\mathcal{B}}
+\newcommand{\sC}{\mathcal{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\K}{\mathbb{K}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\rmax}{\R_{\max}}
+\newcommand{\rmaxb}{\overline{\R}_{\max}}
+\newcommand{\smax}{\mathbb{S}_{\max}}
+\newcommand{\rmin}{\R_{\min}}
+\newcommand{\rminb}{\overline{\R}_{\min}}
+\newcommand{\qmax}{\Q_{\max}}
+\newcommand{\zmax}{\Z_{\max}}
+\newcommand{\bal}{\nabla}
+\newcommand{\balance}{\nabla}
+\newcommand\ntrop{N^{\text{tpath}}}
+\newcommand\ntropext{N^{\text{trop}}}
+\newcommand\nclass{N^{\text{path}}}
+\newcommand\adj{\rm{adj}}
+\newcommand\npm{N^{+-}}
+\newcommand\nmp{N^{-+}}
+\newcommand\pmp{-+}
+\newcommand\ppm{+-}
+\newcommand{\argmax}{\arg\max}
+\newcommand{\argmin}{\arg\min}
+\newcommand{\sP}{\mathscr{P}}
+\newcommand{\unit}{}
+\font\manual=manfnt
+\def\dbend{{\manual\char127}} 
+\newcommand{\mychoose}[2]{{{#1}\choose{#2}}}
+\newcommand{\giveref}[1]{{\normalsize\color{purple}#1}}
+\newcommand{\normalgiveref}[1]{{\color{purple}#1}}
+\newcommand{\cmin}{C^{\min}}
+\newcommand{\cmax}{C^{\max}}
+\newcommand{\pmin}{P^{\min}}
+\newcommand{\pmax}{P^{\max}}
+
+%
+\usetheme{CambridgeUS}
+%
+\newcommand{\axisandedges}{
+   \draw[axis, ->] (-4, -4) -- (1.3, -4);
+   \draw[axis, ->] (-4, -4) -- (-4, 1.3);
+   
+
+   \foreach \x in {-4, -3, ..., 0} { 
+     \node [anchor=north] at (\x,-4.1) {${\scriptstyle\x}$}; 
+     \draw[axis] (\x, -4.1) -- (\x, -3.9);
+   }
+   \foreach \y in {-4, -3, ..., 0} { 
+     \node [anchor=east] at  (-4.1,\y) {${\scriptstyle\y}$};
+     \draw[axis] (-4.1, \y) -- (-3.9, \y);
+   }
+     
+
+   \node[below] at (1.3, -4) {$x_1$};
+   \node[left] at (-4, 1.3) {$x_2$};
+    \draw[edge] (-4,0) -- (0,0) -- (0,-4);
+    \draw[edge] (-4, -1) -- (-3, -1) -- (-1,1);
+    \draw[edge] (-2,-4) -- (1,-1);
+    \draw[edge] (-1,-4) -- (-1,-2) -- (1,0);
+}
+\begin{document}
+\tikzstyle{every picture}+=[remember picture]
+
+\tikzset{alertbox/.style={rectangle,draw=none,fill opacity=0.9,fill=mylightred,text=black, anchor=base,inner sep=2ex}}
+\tikzset{grid/.style={gray!30,very thin}}
+\tikzset{axis/.style={gray!50,->,>=stealth'}}
+\tikzset{convex/.style={draw=none,fill=lightgray,fill opacity=0.7}}
+\tikzset{convexborder/.style={very thick}}
+\tikzset{point/.style={blue!50}}
+\tikzset{ray/.style={ultra thick,green!60!black}}
+\tikzset{hs/.style={fill opacity=0.3,fill=orange,draw=none}}
+\tikzset{hsborder/.style={orange,ultra thick,dashdotted}}
+
+\renewcommand{\thefootnote}{}
+\renewcommand{\footnoterule}{}
+\title[Efficient Tropical SVM]{Efficient Tropical SVM via mean-payoff games}
+%
+\author[St\'ephane Gaubert]{Stephane.Gaubert@inria.fr}
+\institute[INRIA and CMAP]{INRIA and CMAP, \'Ecole polytechnique, IPP, CNRS}
+\date[SIAM AG 2025]{\small SIAM AG 2025, Madison\\
+\small July 2025}
+
+\providecommand{\doiref}[2]{\href{http://dx.doi.org/#1}{#2}}
+\newcommand{\arxiv}[1]{\href{http://www.arXiv.org/abs/#1}{arXiv:#1}}
+
+\begin{frame}[plain]
+\maketitle
+\vfill
+\small%
+Joint work with \auth{Xavier Allamigeon}, \auth{Samuel Bo\"it\'e} and \auth{Th\'eo Molfessis}
+
+%
+%
+%
+%
+%
+%
+
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+\vfill
+
+\end{frame}
+\large
+\begin{frame}[plain]{This talk}
+
+\begin{itemize}[<+->]
+\item
+  Tropical SVM : introduced by \giveref{G\"artner and Jaggi} in 2006.
+\item Allow one to separate $n$ classes with a single hyperplane, in dimension $n$;
+\item The \alert{original algorithm needs exponential time};
+\item  
+  This has inspired a number of works on tropical best approximation (\giveref{Yoshida et al.}, \giveref{Maragos et al}, \dots), but tropical SVM remained little used.
+\item Here: \bl{reduction to mean-payoff games} (membership in P is unsettled but
+  highly scalable algorithms).
+\item $\to$ \bl{tropical SVM solvable in practice}.  
+\end{itemize}
+%
+\vfill
+\end{frame}
+\normalsize
+\begin{frame}[plain]{Tropical hyperplanes and half-spaces}
+$\TT:=\R\cup\{-\infty\}$, Given $a,b\in \TT^n$, $a,b\not\equiv -\infty$, 
+%
+\[
+H^{\leq}:=\{x\in\R^n\mid  \only<1>{\ltr ax \leq b x \rtr}\only<2->{\max_{1\leq i\leq n} a_i+ x_i \leq \max_{1\leq i\leq n} b_i+x_i}  \}
+\]
+union of sectors separated by
+\[
+H_c:= \{x\in \R^n\mid  \max_{1\leq i\leq n} c_i + x_i \text{ achieved twice}\}, \; c_i=\max(a_i,b_i)
+\]
+%
+%
+%
+%
+%
+%
+
+%
+
+
+%
+\overl{6cm}{
+\begin{center}
+\only<2>{\input{halfspace}}%
+\only<3>{\input{halfspacesector2}}%
+\only<4>{\input{halfspacesector3}}%
+\only<5>{\input{halfspacesector4}}%
+\end{center}}
+  
+\end{frame}
+\begin{frame}[plain]{Tropical hypersurfaces}
+  \bl{Locus where $\max_{\alpha \in A} (p_\alpha + \<\alpha, x>)$ is achieved at least twice}; $A\subset \Z^n$, finite; $p_\alpha\in\R$.
+    Divides $\R^n$ in at most $|A|$ sectors. 
+  Here  $\max(1,  2+x_1, 1+x_2, 1+x_1+x_2)$.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1cm,y=1cm,scale=0.7]
+\clip(-7,-3) rectangle (6,4);
+\draw [line width=2pt,color=color1] (-1,0) -- (-12,0);
+\draw [line width=2pt,color=color1] (-1,0) -- (-1,-8);
+\draw [line width=2pt,color=color1] (-1,0) -- (0,1);
+\draw [line width=2pt,color=color1] (0,1) -- (0,8);
+\draw [line width=2pt,color=color1] (0,1) -- (12,1);
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+\end{tikzpicture}
+\end{figure}
+  \end{frame}
+\begin{frame}[plain]{Tropical SVMs}
+  \begin{problem}
+  Given $V^1,\ldots,V^K \subset \R^n$ labeled (colored) finite point sets, find a tropical
+  hyperplane $H_c  = \{x \in \R^n \mid \max_{i} (c_i + x_i)\text{ achieved twice}\}$
+  such that no sector contains two points of different colors;
+  or assert that no such hyperplane exists.
+\end{problem}
+\vfill
+  \bl{Same problem for tropical hypersurfaces, with a given set of monomials
+    $A\subset \R^n$}.
+  Problem introduced by \auth{Charisopoulos and P. Maragos} at ISMM 2017.
+
+  \vfill
+  Reduces to the linear case, by embedding
+  the points of $V^1,\dots,V^K$ in $\R^A$, through the tropical Veronese map
+  $\ver (x) = (\<\alpha,x>)_{\alpha \in A}\in \R^A$. 
+  
+
+
+\end{frame}
+\begin{frame}[plain]
+    \centering
+        \resizebox{0.5\linewidth}{!}{%
+        \centering
+    \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/bintoy-separated_1.pgf}}
+        }
+
+        \bl{Binary classification using a linear tropical classifier}
+\end{frame}
+\begin{frame}[plain]
+  \begin{center}
+            \resizebox{0.65\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
+  \end{center}
+\bl{Multi-class classification using a cubic polynomial classifier}
+  \end{frame}
+
+\begin{frame}[plain]{Tool: mean-payoff games}
+\normalsize
+$G=(V,E)$ bipartite graph. $V=\{$ states of the game $\}$, $E = \{$ moves $\}$.
+$r_{ij}\in \mathbb{Z}$ \bl{price} of the move $i \to j$.
+
+\vfill 
+\bl{Players MAX and MIN move a token, alternatively.}
+%
+%
+$n$ MIN nodes, $m$ MAX nodes.
+
+\vfill \bl{MIN always pays to MAX the price of
+the move} (having a negative fortune is allowed)
+%
+%
+
+\vfill 
+%
+\end{frame}\large
+\normalsize
+\begin{frame}[plain]
+\begin{center}\small
+\begin{tikzpicture}[scale=0.6,shorten >=2pt, shorten <=2pt,>=stealth',row/.style={draw,rectangle,minimum size=0.65cm},col/.style={draw,circle,minimum size=0.50cm}]
+  \node[col] (j0) at (0,0) {$i_1$};
+\draw (0,-0.6) -- (0,-0.6) node[anchor=north,pos=0.5] {MIN};
+\node[row] (i1) at (2.5,0) {$j_1$};
+\draw (2.5,-0.6) -- (2.5,-0.6) node[anchor=north,pos=0.5] {MAX};
+\node[col] (j1) at (5,0) {$i_2$};
+\draw (5,-0.6) -- (5,-0.6) node[anchor=north,pos=0.5] {MIN};
+\node[row] (i2) at (7.5,0) {$j_2$};
+\draw (7.5,-0.6) -- (7.5,-0.6) node[anchor=north,pos=0.5] {MAX};
+\node (j2) at (10,0) {$\dots$};
+\draw[->] (j0) -- node[above] {$\textcolor{redX}{r_{i_1, j_1}}$} (i1);
+\draw[->] (i1) -- node[above] {$\bl{r_{j_1, i_2}}$} (j1);
+\draw[->] (j1) -- node[above] {$\textcolor{redX}{r_{i_2, j_2}}$} (i2);
+\draw[->] (i2) -- node[above] {$\bl{r_{j_2, i_3}}$} (j2);
+\end{tikzpicture}
+\end{center}
+\vfill\pause
+%
+   \alert{Initial position $i_1:=\imath$} given. \bl{Player MAX wants to maximize
+his \emph{mean payoff}}, $\liminf$ of:
+   \begin{align*}
+ \frac{\textcolor{redX}{r_{i_1, j_1}} + \bl{r_{j_1, i_2}} + \textcolor{redX}{r_{i_2, j_2}} + \dots + \bl{r_{j_N, i_{N+1}}}}{N} \qquad \text{when} \ N \rightarrow +\infty \label{eq:ratio}
+ \end{align*}
+  while \bl{Player MIN wants to minimize
+ her \emph{mean loss}, the $\limsup$}. %
+%
+\vfill\pause
+\begin{theorem}[\citealp{EhrenfeuchtMycielski79}]
+\bl{There exists a \emph{value} $\chi_{\imath} \in \R$, and \emph{positional strategies}} $\sigma$ and $\tau$ of Players MAX and MIN such that:
+\begin{itemize}
+\item with strategy $\sigma$, the mean payoff of Player MAX is at least equal to $\chi_{\imath}$,
+\item with strategy $\tau$, the mean loss of Player MIN does not exceed $\chi_{\imath}$.
+\end{itemize}
+\end{theorem}
+\end{frame}
+\large
+\begin{frame}[plain]
+%
+%
+%
+%
+%
+%
+%
+%
+\begin{overlayarea}{\textwidth}{5cm}
+\begin{tabular}{cc}
+\only<1>{\includegraphics[scale=0.7]{gameMINMAX/gameMINMAXsigned.eps}}%
+\only<2>{\includegraphics[scale=0.7]{gameMINMAX/gameMINMAXsigneda.eps}}%
+\only<3>{\includegraphics[scale=0.7]{gameMINMAX/gameMINMAXsignedb.eps}}%
+\only<4>{\includegraphics[scale=0.7]{gameMINMAX/gameMINMAXsignedc.eps}}%
+\only<5>{\includegraphics[scale=0.7]{gameMINMAX/gameMINMAXsignedd.eps}}%
+\only<6>{\includegraphics[scale=0.7]{gameMINMAX/gameMINMAXsignede.eps}}%
+\only<7>{\includegraphics[scale=0.7]{gameMINMAX/gameMINMAXsignedf.eps}}%
+ &  
+%
+\raisebox{2cm}{\Large $%
+  %
+  %
+  %
+  \bl{(\chi_1,\chi_2)= (-1,5)}$}
+\end{tabular}
+\end{overlayarea}
+\end{frame}
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+
+
+%
+%
+%
+%
+\normalsize
+\begin{frame}[plain]
+\begin{overlayarea}{\textwidth}{2.5cm}
+\bl{$v_i^k$ value of the game in horizon $k$ and initial state $(i,MIN)$}.
+\begin{visibleenv}<1->
+\begin{align*}
+\!\!\!\!v^k_1 &\!= \min(-2+1+v_1^{k-1}\!,-8+\max(-3+v_1^{k-1}\!,-12+v_2^{k-1}))\\
+\!\!\!\!v^k_2&\!=0+\max(-9+v^{k-1}_1,5+v^{k-1}_2)
+\end{align*}
+\if{
+\only<1>{\[
+A= \begin{pmatrix} 2 & -\infty\\
+                       8  &   -\infty \\
+                       -\infty & 0 
+\end{pmatrix}
+\qquad
+B= 
+\begin{pmatrix} 1 & -\infty\\
+                       -3  &   -12 \\
+                       -9 & 5 
+\end{pmatrix}
+\]}
+\only<2->{\begin{align*}%
+\begin{array}{rl}
+2+x_1&\leq 1+x_1 \\ 
+8+x_1&\leq \max(-3+x_1,-12+x_2)\\
+x_2&\leq \max(-9+x_1,5 +x_2)
+\end{array}
+\end{align*}}}\fi
+\end{visibleenv}
+\end{overlayarea}
+\vfill
+\begin{overlayarea}{\textwidth}{5cm}
+\begin{tabular}{cc}
+\input{gameMINMAXsigned} &  \only<1>{}\only<1->{
+\raisebox{2cm}{\begin{tabular}{l}$v^1=(0,0)$\\ $v^2=(-11,5)$\\ $v^3=(-15,10)$\\
+$v^4=(-16,15)$\\ %
+$\chi= \lim_{k\to\infty} v^k/k=(-1,5)\if{, x=(-\infty,0) \; \text{sol.}}\fi$\end{tabular}}}
+\end{tabular}
+\end{overlayarea}
+\end{frame}
+\begin{frame}[plain]\normalsize
+  \begin{proposition}
+    The \bl{value vector $v^k$ of the game in horizon $k$} satisfies
+  \[ v^k=T(v^{k-1}), \qquad v^0=0 \]
+  where $T:\R^n\to \R^n$ is the \bl{Shapley operator}:
+  \[
+[T(x)]_j= \min_{i\in [m],\; j\to i} \left(r_{ji}+ \max_{k\in [n],\;i\to k} (r_{ik} + x_k)\right)
+\]
+The mean-payoff $\chi$ coincides with the limit
+\[
+\lim_k v^k/k = \lim_k T^k(0)/k \enspace .
+\]
+  \end{proposition}
+  \begin{theorem}[Collatz-Wielandt, see \giveref{Akian, Guterman, SG, IJAC, 2012}]\vspace{-1.5ex}
+    \[
+ \rho(T):=   \max_i \chi_i = \max \{\lambda \in \R\mid \exists u \in \TT^n, \, u\not\equiv -\infty, \; T(u) = \lambda +u \} 
+    \]
+    \end{theorem}
+%
+%
+%
+\end{frame}
+\begin{frame}[plain]{Quantitative tropical linear independence}
+  We equip $\R^n$ with \bl{Hilbert's seminorm}
+  $\|x\|_H = \max_i x_i -\min_i x_i$.
+  Given $V\in \R^{n\times m}$, $\tcone(V)$ denotes the set of tropical linear
+  combinations of the columns of $V$.
+
+  \vfill
+  The \bl{tit-for-tat} game is the mean-payoff game with Shapley operator
+  \begin{align*}
+  [T_V(x)]_i = \max_{j\in[m]}\Big(V_{ij} + \min_{k\in [n]\setminus\{i\}}( -V_{kj} + x_k)\Big)
+  \end{align*}
+  Max can cancel the last move of Min, but not vice-versa. Introduced in \giveref{Akian, SG, Guterman 2012} to decide linear independence.
+  \begin{theorem}[\giveref{Akian, SG, Qi, Saadi, SIAM Disc. Math. 2023}]
+    \vspace{-3ex}
+    \begin{align*}
+    \rho(T_V) &= \max\{ r\mid \exists u\in \R^n, B(u,r)\subset \tcone(V)\}\\
+    &= \inf_{u\in \R^n} \max_k \operatorname{dist}_H(V_{\cdot,k}, H_u)
+    \end{align*}
+  \end{theorem}
+  \informative{\footnotesize \alert{Advertisement (recent extension)}. Game approach carries over to \alert{linear independence of rational functions over tropical curves}; we end up with a stochastic game, \giveref{\footnotesize Amini, SG, Gierczak 2504.02715}. %
+  }
+\end{frame}
+\begin{frame}[plain]\small
+  \begin{center}
+    \input{figWitnesses2-nocolor.tex}
+  \end{center}
+\[V=\left(\begin{array}{ccccccccc}
+  -3 & 0  &  0 &  1  & 1 & -1 & 0 & 0 & -1\\
+   0 & -3 &  0  & 0  & -1 & 1 & 1 & -1 & 0\\
+   -1 & -1  & -4 & -2  &  -1  &  -1  & -2  & 0  & 0
+\end{array}
+\right)
+\]
+  \end{frame}
+
+\begin{frame}[plain]
+The hyperplane $H_a$ \bl{separates} the point sets $V^1, \ldots, V^K\subset \R^n$ if there exists $K$ disjoint non-empty subsets $I^1, \ldots, I^K$ of $\{1,\dots,n\}$, such that every vector $V_{\cdot k}$
+  belongs to the union of the sectors $(\text{Sec}_i(a))_{i\in I^k}$ assigned to class $k$; $\text{Sec}_i(a) := \{x\in \R^n\mid x_i + a_i \geq \max_{j\neq i} x_j + a_j\}$.
+
+  \vfill
+\begin{center}
+        \resizebox{0.2\linewidth}{!}{%
+        \centering
+    \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/bintoy-separated_1.pgf}}
+        }
+\end{center}
+  \vfill
+The hyperplane separates \bl{with margin $\gamma > 0$} if, for any class $k$ and any point $x \in V^k$, the Hilbert distance from $x$ to the union of complementary sectors $\bar{S}_k= \cup_{i\not\in I^k} \text{Sec}_i(a)$
+is at least $\gamma$:
+\begin{align*}
+d_H(x, \bar{S}_k) = \max_j(x_j + a_j) - \max_{i \not\in I^k}(x_i + a_i) \geq \gamma.
+\end{align*}
+\end{frame}
+\begin{frame}[plain]
+Given labeled collections of points $V^1,\dots,V^K$, we
+set $T^{(k)}= T_{V^k}$ (\bl{tit-for-tat operator}), for $k\in[K]$, and define
+the Shapley operator:
+  \[
+  T \!=\! {\textstyle\max_2} (T^{(1)},\dots, T^{(K)})\!=\!\!\!\max_{k,l\in[K]\,k<l} \min(T^{(k)}, T^{(l)})\; \text{(second maximum)}
+  \]
+  
+  \begin{theorem}[Tropical SVM]
+    \begin{enumerate}
+\item The point sets are separable by a linear hyperplane iff $\rho(T)<0$.
+\item Then, \bl{$-\rho(T)$ is the optimal margin}. Any vector $u\in \R^n$
+  such that $T(u)=\rho(T)+u$ gives the \bl{apex of a separating hyperplane}.
+\item \bl{Soft margin interpretation in the non-separable case}.
+  If $K=2$, there exists perturbed sets
+  $\tilde{V}^1$   and $\tilde{V}^2$, each at distance $\rho(T)$ of the original set, such that
+  $\tcone(\tilde{V}^1)\cap \tcone(\tilde{V}^2)$ is of empty interior,
+  and $\rho(T)$ is the smallest number with this property.
+      \end{enumerate}
+    \end{theorem}
+\end{frame}
+\begin{frame}[plain]{Non separable example}
+  \begin{center}
+    \resizebox{0.5\textwidth}{!}{\clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/non-separable.pgf}}}
+    \end{center}
+  $\rho(T) \geq 0$, indicating class overlap. The value of the game, $\rho(T)$,
+  coincides
+  with the inner radius of the convex hulls' intersection, it
+  quantifies the minimum perturbation required for this intersection to have empty interior.
+  \vfill
+  \bl{Builds on}\dots 
+  \end{frame}
+\begin{frame}[plain]\small
+\begin{theorem}[\bl{tropical Von-Neumann cyclic projections}, 
+    \giveref{\footnotesize SG, Sergeev, %
+      07}]
+ If $\tcone(V^1) \cap \dots \cap \tcone(V^K) = \{-\infty\}$,
+we can find half-spaces
+$H_i$ such that $H_i\supset \tcone(V^i)$ and $H_1\cap \cdots \cap H_K=\{-\infty\}$. The apices of these half-spaces are obtained from
+an eigenvector $u$ of the cylic projector, and \vspace{-1.5ex}
+\[
+P_{V^1}\cdots P_{V^k}(u)=\lambda +u
+\]
+\end{theorem}
+\begin{align*}
+  [P_{V}(x)]_i &= \max_j \Big(V_{ij} +\min_{k} (-V_{kj} + x_k)\Big)=\max\{x \in\tcone{V}\mid x\leq v\}
+\\
+    [T_{V}(x)]_i & = \max_j \Big(V_{ij} +\min_{\bl{k\neq i}} (-V_{kj} + x_k)\Big)  \quad\text{(\bl{tit-for-tat operator})}
+    \\
+    &\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!
+    x\!\in\tcone\!V\Leftrightarrow x\leq P_V(x)\Leftrightarrow x\leq T_V(x),\;  P_{V^1}\cdots P_{V^k} \text{ vs } \bl{{\textstyle \max_2}(T_{V^1} ,\dots,T_{V^K})}
+    \end{align*}
+\begin{center}
+\includegraphics[scale=0.7]{twosemi2}
+\end{center}
+\end{frame}
+\begin{frame}[plain]
+  \begin{myalgorithm}[Tropical SVM]
+\begin{itemize}
+\item \textbf{Input:} Labeled point sets $V^1,\dots,V^K \subset \R^d$
+\item \textbf{Compute an eigenpair} $T(a) = \rho(T) +a$, $a\in \R^n$,
+$\rho(T)\in \R$,
+where $T = \operatorname{\max}_2\{T_{V^1}, \dots, T_{V^K}\}$.
+\item \textbf{Assign Sectors to Classes:}
+  \begin{itemize}
+\item If $\rho(T) < 0$ (Separable case), 
+Assign coordinate $i$ to class $k$ if $T_{V^k}(a)_i > \rho(T) + a_i$
+\item Else Fail (Non separable). 
+%
+  \end{itemize}
+\item \textbf{Output:} Vector $a$ the apex of the hyperplane, margin $-\rho(T)$ and sector assignments for classification (if separable).
+  \end{itemize}
+  \end{myalgorithm}
+  \bl{Relative value iteration with Krasnoselskii-Mann damping},
+  $z^{(k+1)} \leftarrow \frac{1}{2}\bigl(y^{(k)} + T(y^{(k)})\bigr)$,
+$y^{(k+1)}=z^{(k+1)}-\max z^{(k+1)}$ 
+  returns a vector $a$ such that $T(a) = \rho(T)+ a$ up
+  to an error $\epsilon$ in $O(1/\epsilon^2)$ iterations.
+
+  Total complexity $O(np/\epsilon^2)$ where $p=|V^1|+\dots |V^K|$
+  is the number of points,
+  vs. $\Omega(2^n)$ in \giveref{G\"artner and Jaggi 2006}.
+\end{frame}
+\begin{frame}[plain]
+  \begin{center}
+            \resizebox{0.65\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/blobs.pgf}}}
+  \end{center}
+  \bl{Multi-class classification using a cubic polynomial classifier}.
+  The orange bands represents the \bl{guaranteed margin} of $-\rho(T)/\|\operatorname{ver}\|_{\textrm{op}}$ where $\|\operatorname{ver}\|_{\textrm{op}}$ is the operator norm of the tropical Veronese map, $x\in \R^n\mapsto (\<\alpha,x>)_{\alpha \in A}\in \R^A$.
+\end{frame}
+ \begin{frame}[plain]
+     \centering
+         \resizebox{0.5\linewidth}{!}{%
+         \centering
+             \clipbox{0.15\width{} 0.15\height{} 0.15\width{} 0.15\height{}}{\input{figures/circular_3.pgf}}
+         }
+         \end{frame}
+\begin{frame}[plain]
+  \begin{center}
+        \resizebox{0.65\textwidth}{!}{\clipbox{0.15\width{} 0.30\height{} 0.15\width{} 0.30\height{}}{\input{figures/moons-feat-sel.pgf}}}
+  \end{center}
+  Adaptative construction of the set $A$ of tropical monomials. 
+  \end{frame}
+\begin{frame}[plain]{Concluding remarks}
+  \begin{itemize}
+  \item Mean-payoff game algorithms allow one to compute efficiently
+    tropical linear SVM and tropical polynomial separators, with margin guarantees.
+
+  \item Non separable case is not handled (but the distance to separable instances is controlled).
+  \item The tropical / mean-payoff game approach only applies
+    to sup-norm-type problems. This is sensitive to outliers.
+Is there an $\ell_1$ approach? 
+  \end{itemize}
+\vfill
+  \centerline{Thank you ! }
+  \end{frame}
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+%
+%
+%
+%
+
+%
+%
+%
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+%
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+
+%
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+%
+%
+%
+%
+
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
+%
+%
+\tiny\nocite{1610.06746,xasgmsissacjsc,heltonnie,benchimol2013,cansolve,AGGut10,itenberg,mikhalkin,DS,DSS,joswig04,SGKatz,cgq02,gelfand,passare,mikhalkinamoebas,,zwick,de2010central,ABG2014a,siamreview,stoc}
+\bibliography{nonexpansive,maxplus_foot2011,maxplus_refer2011,newrefsg,biblio,tropical,journal,allconf,soumis}
+\end{document}

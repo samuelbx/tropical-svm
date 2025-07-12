@@ -1,0 +1,70 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{barycentric}[2009/05/05 Standard LaTeX package]
+
+\RequirePackage{tikz}
+\usetikzlibrary{calc}
+
+\makeatletter
+%\newcounter{barycentric@barynb}
+%\setcounter{nb}{0}
+
+\newcommand{\expo}[1]{exp(0.7*(#1))}
+
+\newcommand{\barycenter}[4]{\node[coordinate] (#1) at (barycentric cs:x={#2},y={#3},z={#4}) {};}
+
+\newcommand{\baryx}{x}
+\newcommand{\baryy}{y}
+\newcommand{\baryz}{z}
+
+\newcommand{\equilateral}[2]{
+\draw[gray!#2] (0,0) node[coordinate] (x) {} node[below left] {$\baryx$};
+\draw[gray!#2] (${#1}*(1,0)$) node[coordinate] (y) {} node[below right] {$\baryy$};
+\draw[gray!#2] (${#1*0.5*sqrt(3)}*(0,1)+{#1*0.5}*(1,0)$) node[coordinate] (z) {} node[above] {$\baryz$};
+\draw[gray!#2, thin] (x) -- (y) -- (z) -- cycle;
+\node[coordinate] (xy) at ($ (x)!0.5!(y) $) {};
+\node[coordinate] (yz) at ($ (y)!0.5!(z) $) {};
+\node[coordinate] (zx) at ($ (z)!0.5!(x) $) {};
+\draw[gray!60] (x) -- (yz);
+\draw[gray!60] (y) -- (zx);
+\draw[gray!60] (z) -- (xy)
+}
+
+\newcommand{\isobarycenter}[2]{
+\coordinate (barycentric@baryc) at (0,0);
+\foreach \i [count=\barycentric@barynb from 1] in {#2} {}
+\foreach \i in {#2} {
+\path (barycentric@baryc) ++ (${1/\barycentric@barynb}*(\i)$) coordinate (barycentric@baryc);
+}
+\coordinate (#1) at (barycentric@baryc)
+}
+
+\makeatother
+
+% \newcommand{\equilateralxyz}[2]{
+% \draw[gray!#2] (0,0) node[coordinate] (x) {} node[below left] {$x$};
+% \draw[gray!#2] (xyz cs:x={#1}) node[coordinate] (y) {} node[below right] {$y$};
+% \draw[gray!#2] (xyz cs:x={{#1}*0.5}, y={{#1}*0.5*sqrt(3)}) node[coordinate] (z) {} node[above] {$z$};
+% \draw[gray!#2] (xyz cs:x={{#1}*0.5}, y={{#1}*0.5*sqrt(3)/3}, z={{#1}*0.5*sqrt(3)}) node[coordinate] (t) {} node[above] {$t$};
+% \draw[gray!#2, thin] (x) -- (y) -- (z) -- cycle;
+% \draw[gray!#2, thin] (x) -- (y) -- (t) -- cycle;
+% \draw[gray!#2, thin] (x) -- (z) -- (t) -- cycle;
+% \draw[gray!#2, thin] (y) -- (z) -- (t) -- cycle;
+% \node[coordinate] (xy) at ($ (x)!0.5!(y) $) {};
+% \node[coordinate] (yz) at ($ (y)!0.5!(z) $) {};
+% \node[coordinate] (zx) at ($ (z)!0.5!(x) $) {};
+% \node[coordinate] (xt) at ($ (x)!0.5!(t) $) {};
+% \node[coordinate] (yt) at ($ (y)!0.5!(t) $) {};
+% \node[coordinate] (zt) at ($ (z)!0.5!(t) $) {};
+% \draw[gray!60] (x) -- (yz);
+% \draw[gray!60] (x) -- (zt);
+% \draw[gray!60] (x) -- (yt);
+% \draw[gray!60] (y) -- (zx);
+% \draw[gray!60] (y) -- (zt);
+% \draw[gray!60] (y) -- (xt);
+% \draw[gray!60] (z) -- (xy);
+% \draw[gray!60] (z) -- (xt);
+% \draw[gray!60] (z) -- (yt);
+% \draw[gray!60] (t) -- (xy);
+% \draw[gray!60] (t) -- (yz);
+% \draw[gray!60] (t) -- (zx);
+% }

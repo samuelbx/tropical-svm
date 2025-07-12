@@ -1,0 +1,18 @@
+#
+# TransFig makefile
+#
+
+all: gameMINMAXsignedf.eps 
+
+# translation into eps
+
+gameMINMAXsignedf.tex: gameMINMAXsignedf.eps Makefile
+	fig2ps2tex gameMINMAXsignedf.eps >gameMINMAXsignedf.tex
+clean::
+	rm -f gameMINMAXsignedf.eps
+
+gameMINMAXsignedf.eps: gameMINMAXsignedf.fig Makefile
+	fig2dev -L eps gameMINMAXsignedf.fig gameMINMAXsignedf.eps
+clean::
+	rm -f gameMINMAXsignedf.eps
+

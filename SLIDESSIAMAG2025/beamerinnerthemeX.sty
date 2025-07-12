@@ -1,0 +1,173 @@
+% Copied from beamerinnerthemerounded.sty
+%
+% Copyright 2007 by Till Tantau
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+%
+% See the file doc/licenses/LICENSE for more details.
+
+%\ProvidesPackageRCS $Header: /cvsroot/latex-beamer/latex-beamer/themes/inner/beamerinnerthemerounded.sty,v 1.5 2007/01/28 20:48:30 tantau Exp $
+
+\usepackage{fancybox}
+\usepackage{dashbox}
+
+\DeclareOptionBeamer{shadow}[true]{\def\beamer@themerounded@shadow{#1}}
+\ExecuteOptionsBeamer{shadow=false}
+\ProcessOptionsBeamer
+
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{sections/subsections in toc}[circle]
+\setbeamertemplate{title page}[default][colsep=-4bp,rounded=false,shadow=\beamer@themerounded@shadow]
+\setbeamertemplate{part page}[default][colsep=-4bp,rounded=false,shadow=\beamer@themerounded@shadow]
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{navigation symbols}{}
+
+\newlength{\mylengthcolorbox}
+
+\newenvironment{blockbox}{%
+\setlength{\fboxsep}{1pt}%
+\setlength{\fboxrule}{1pt}%
+\setlength{\mylengthcolorbox}{\textwidth}%
+\addtolength{\mylengthcolorbox}{-2\fboxsep}%
+\addtolength{\mylengthcolorbox}{-2\fboxrule}%
+\begin{Sbox}%
+\begin{minipage}{\mylengthcolorbox}}%
+{\end{minipage}\end{Sbox}\color{myblue}{\dashbox{\TheSbox}}}
+
+
+\setbeamertemplate{block begin}
+{
+  \par\vskip\medskipamount%
+  \begin{blockbox}\begin{beamercolorbox}[sep=0.5ex,wd=\mylengthcolorbox]{block title}
+  \usebeamerfont*{block title}\insertblocktitle%
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \ifbeamercolorempty[bg]{block title}
+  {}
+  {\ifbeamercolorempty[bg]{block body}{}{\nointerlineskip\vskip0.5pt}}%
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[sep=0.5ex, vmode, wd=\mylengthcolorbox]{block body}%
+    \ifbeamercolorempty[bg]{block body}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}
+
+\setbeamertemplate{block end} 
+{\end{beamercolorbox}\end{blockbox}\vskip\smallskipamount}
+
+\newenvironment{examplebox}{%
+\setlength{\fboxsep}{2pt}%
+\setlength{\fboxrule}{1pt}%
+\setlength{\mylengthcolorbox}{\textwidth}%
+\addtolength{\mylengthcolorbox}{-2\fboxsep}%
+\addtolength{\mylengthcolorbox}{-2\fboxrule}%
+\begin{Sbox}%
+\begin{minipage}{\mylengthcolorbox}}%
+{\end{minipage}\end{Sbox}\color{mygreen}{\dashbox{\TheSbox}}}
+
+\setbeamertemplate{block example begin}
+{
+  \par\vskip\medskipamount%
+  \begin{examplebox}
+  \begin{beamercolorbox}[sep=0.5ex, wd=\mylengthcolorbox]{block title example}
+  \usebeamerfont*{block title example}\insertblocktitle%
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \ifbeamercolorempty[bg]{block body example}
+  {}
+  {\ifbeamercolorempty[bg]{block body example}{}{\nointerlineskip\vskip0.5pt}}%
+  \usebeamerfont{block body example}%
+  \begin{beamercolorbox}[sep=0.5ex,vmode, wd=\mylengthcolorbox]{block body example}%
+    \ifbeamercolorempty[bg]{block body example}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}
+
+\setbeamertemplate{block example end} 
+{\end{beamercolorbox}\end{examplebox}\vskip\smallskipamount}
+
+\newenvironment{alertbox}{%
+\setlength{\fboxsep}{2pt}%
+\setlength{\fboxrule}{1pt}%
+\setlength{\mylengthcolorbox}{\textwidth}%
+\addtolength{\mylengthcolorbox}{-2\fboxsep}%
+\addtolength{\mylengthcolorbox}{-2\fboxrule}%
+\begin{Sbox}%
+\begin{minipage}{\mylengthcolorbox}}%
+{\end{minipage}\end{Sbox}\color{myred}{\dashbox{\TheSbox}}}
+
+\setbeamertemplate{block alerted begin}
+{
+  \par\vskip\medskipamount%
+  \begin{alertbox}
+  \begin{beamercolorbox}[sep=0.5ex, wd=\mylengthcolorbox]{block title alerted}
+  \usebeamerfont*{block title alerted}\insertblocktitle%
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \ifbeamercolorempty[bg]{block body alerted}
+  {}
+  {\ifbeamercolorempty[bg]{block body alerted}{}{\nointerlineskip\vskip0.5pt}}%
+  \usebeamerfont{block body alerted}%
+  \begin{beamercolorbox}[sep=0.5ex,vmode, wd=\mylengthcolorbox]{block body alerted}%
+    \ifbeamercolorempty[bg]{block body alerted}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}
+
+\setbeamertemplate{block alerted end} 
+{\end{beamercolorbox}\end{alertbox}\vskip\smallskipamount}
+
+
+\newenvironment{example*}
+{
+  \par\vskip\medskipamount%
+  \begin{examplebox}
+  %{\parskip0pt\par}%
+%   \ifbeamercolorempty[bg]{block body example}
+%   {}
+%   {\ifbeamercolorempty[bg]{block body example}{}{\nointerlineskip\vskip0.5pt}}%
+  \usebeamerfont{block body example}%
+  \begin{beamercolorbox}[sep=0.5ex,vmode, wd=\mylengthcolorbox]{block body example}%
+    %\ifbeamercolorempty[bg]{block body example}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}{\end{beamercolorbox}\end{examplebox}\vskip\smallskipamount}
+
+\newenvironment{alert*}
+{
+  \par\vskip\medskipamount%
+  \begin{alertbox}
+%   \ifbeamercolorempty[bg]{block body alerted}
+%   {}
+%   {\ifbeamercolorempty[bg]{block body alerted}{}{\nointerlineskip\vskip0.5pt}}%
+  \usebeamerfont{block body alerted}%
+  \begin{beamercolorbox}[sep=0.5ex,vmode, wd=\mylengthcolorbox]{block body alerted}%
+    %\ifbeamercolorempty[bg]{block body alerted}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}
+{\end{beamercolorbox}\end{alertbox}\vskip\smallskipamount}
+  
+\mode<all>
+
+%%% Local Variables: 
+%%% TeX-master: "~/texmf/tex/latex/beamer/test/test.tex"
+%%% End: 
+
+\defbeamertemplate{simple block begin}{default}
+{
+\nointerlineskip\vskip-0.5pt
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[colsep*=.75ex,vmode]{simple block body}%
+    \ifbeamercolorempty[bg]{simple block body}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}
+
+\defbeamertemplate{simple block end}{default}  
+{\end{beamercolorbox}\vskip\smallskipamount}
+
+\setbeamertemplate{simple block begin}[default]
+\setbeamertemplate{simple block end}[default]
+\newenvironment<>{simpleblock}{%
+    \begin{actionenv}#1%
+      \par%
+      \usebeamertemplate{simple block begin}}
+    {\par%
+      \usebeamertemplate{simple block end}%
+    \end{actionenv}}
+\definecolor{blueX}{RGB}{0,153,255}
+\definecolor{greenX}{RGB}{93,189,52}
+\definecolor{redX}{RGB}{232,64,2}
+
